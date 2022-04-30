@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const validate = require("./middleware/validator");
+const validator = require("./middleware/validator");
 
 const port = 3030;
 
