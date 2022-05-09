@@ -5,14 +5,24 @@ const validator = require("./middleware/validator");
 
 const port = 3030;
 
-//Routes ->
+//Middleware ->
+app.use(express.statis("/public"));
+
+//Routers ->
 const userRouter = require("./routes/userRouter");
 const sessionRouter = require("./routes/sessionRouter");
 
-//Use routes at ->
+//Routers ->
+app.get("/", (req, res) => res.render("home"));
+
 app.use("/api/users", userRouter);
 app.use("/api/session", sessionRouter);
+
+
+//Database connection ->
+
 
 app.listen(port, () => {
     console.log("app is running");
 });
+
