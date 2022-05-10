@@ -1,4 +1,4 @@
-const fetchExample = async(id) => {
+const fetchExample = async(data) => {
     let url = "exampleUrl/api/users/";
     let options = {
         method: 'GET', //PUT, DELETE, POST
