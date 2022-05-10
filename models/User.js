@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 const {isEmail} = require("validator");
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
 
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: [true, "U heeft geen e-mailadres ingevuld"],
-        unique: [false, "Er bestaat al een account met dit e-mailadres"],
+        unique: true,
         lowercase: true,
         validate: [isEmail, "Het opgegeven e-mailadres is niet geldig"]
     },
@@ -37,6 +39,12 @@ const userSchema = new mongoose.Schema({
     purchases: {
         type: Array
     }
+});
+
+userSchema.pre("save", async function(next) {
+    let salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
 });
 
 const User = mongoose.model('user', userSchema);
