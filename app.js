@@ -28,6 +28,11 @@ app.use(express.static("/public"));
 app.use(express.json());
 app.use(cookieParser());
 
+// Serving bootstrap files ->
+app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')))
+app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
+app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
+
 //Api routers / routes ->
 const userRouter = require("./routes/userRouter");
 const sessionRouter = require("./routes/sessionRouter");
@@ -40,3 +45,8 @@ const sessionViewRouter = require("./routes/viewRoutes/sessionViewRouter");
 
 app.use(sessionViewRouter);
 app.get("/", (req, res) => res.render("home"));
+
+app.get("/home", (req, res) =>
+{
+    res.sendFile(path.join(__dirname, 'public/html/login.html'));
+});
