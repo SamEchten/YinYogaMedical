@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 const port = 3030;
 
-//Database connection ->
+//Database connection / launch server->
 const dbpass = "EH4cSD4JSCbuDei4";
 const dburi = "mongodb://admin:"+dbpass+"@localhost:27017/YinYogaMedical";
 mongoose.connect(dburi, {useNewUrlParser: true, useUnifiedTopology: true}, () => {
@@ -20,12 +20,15 @@ mongoose.connect(dburi, {useNewUrlParser: true, useUnifiedTopology: true}, () =>
 app.use(express.static("/public"));
 app.use(express.json());
 
-//Routers ->
+//Api routers / routes ->
 const userRouter = require("./routes/userRouter");
 const sessionRouter = require("./routes/sessionRouter");
 
-//Routers ->
-app.get("/", (req, res) => res.render("home"));
-
-app.use("/api/users", userRouter);
+app.use("/api/user", userRouter);
 app.use("/api/session", sessionRouter);
+
+//View routers / routes->
+const sessionViewRouter = require("./routes/viewRoutes/sessionViewRouter");
+
+app.use(sessionViewRouter);
+app.get("/", (req, res) => res.render("home"));

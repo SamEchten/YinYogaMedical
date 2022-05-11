@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         maxLength: [256, "Uw notities mogen maximaal 256 karakters lang zijn"]
     },
+    isEmployee: {
+        type: Boolean,
+        required: true
+    },
     subscription: {
         type: Array
     },
@@ -46,6 +50,27 @@ userSchema.pre("save", async function(next) {
     this.password = await bcrypt.hash(this.password, salt);
     next();
 });
+
+userSchema.statics.login = async function(email, password) {
+    let user = await this.findOne({email});
+    //User with given email exists ->
+    if(user) {
+        let auth = await bcrypt.compare(password, user.password);
+        if(auth) {
+            return user;
+        }
+        throw Error(JSON.stringify({
+            path: "password",
+            message: "Incorrect wachtwoord"
+        }));
+    }
+
+    //User with given email does not exist ->
+    throw Error(JSON.stringify({
+        path: "email",
+        message: "Incorrect e-mailadres"
+    }));
+}
 
 const User = mongoose.model('user', userSchema);
 module.exports = User;
