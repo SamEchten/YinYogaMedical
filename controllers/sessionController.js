@@ -3,8 +3,12 @@ const jwt = require("jsonwebtoken");
 const secret = "C!]TM#qU9=pD5`t5T$o]:/%Ai%vG:{";
 const maxAge = 24 * 60 * 60;
 
+//handleErrors
+//Params:   err
+//Handles the error passed through by the login and signup methods
+//Returns an error object containing the error messages for the different fields
 const handleErrors = (err) => {
-    const errors = {email: null, password: null, phoneNumber: null, notes: null};
+    const errors = {fullName: null, email: null, password: null, phoneNumber: null, notes: null};
 
     //Duplicate email ->
     if(err.code == 11000) {
@@ -32,11 +36,24 @@ module.exports.login_get = (req, res) => {
     res.send("login page");
 }
 
+module.exports.signup_get = (req, res) => {
+    res.send("signup page");
+}
+
+//Login_post
+//Endpoint to login a user
+//Succes -> 200 OK + user info object
+//Error -> 400 Bad Request + error object
 module.exports.login_post = async (req, res) => {
     let { email, password } = req.body;
 
     try {
         let user = await User.login(email, password);
+        
+        //Send jwt token to client ->
+        sendJwtCookie(res, user._id, user.fullName, user.isEmployee);
+
+        //Send user info to client ->
         res.status(200).json({
             "id": user._id,
             "fullName": user.fullName
@@ -47,22 +64,18 @@ module.exports.login_post = async (req, res) => {
     } 
 }
 
-module.exports.signup_get = (req, res) => {
-    res.send("signup page");
-}
-
+//Signup_post
+//Endpoint for signing up users
+//Succes -> 201 Created + user info object
+//Error -> 400 Bad Request + error object
 module.exports.signup_post = async (req, res) => {
     const {fullName, email, password, phoneNumber, notes} = req.body;
     try {
         //Insert user into database
         const user = await User.create({fullName, email, password, phoneNumber, notes, isEmployee: true});
-        const token = createToken(user._id, user.fullName, user.isEmployee);
 
         //Send jwt cookie to client
-        res.cookie("jwt", token, {
-            expiresIn: maxAge * 1000,
-            httpOnly: true
-        });
+        sendJwtCookie(res, user._id, user.fullName, user.isEmployee);
 
         //Send user info back to client
         res.status(201).json({
@@ -75,6 +88,27 @@ module.exports.signup_post = async (req, res) => {
     }
 }
 
+//SendJwtCookie
+//Params:   res
+//          id
+//          fullName
+//          isEmployee
+//Creates a token and sends it to the client via the response
+//Cookie is valid for 1 day and is httpOnly
+const sendJwtCookie = (res, id, fullName, isEmployee) => {
+    let token = createToken(id, fullName, isEmployee);
+    res.cookie("jwt", token, {
+        expiresIn: maxAge * 1000,
+        httpOnly: true
+    });
+}
+
+
+//createToken
+//Params:   id
+//          fullName
+//          isEmployee
+//Creates a jwt token using the given paramaters, expires in 1 day
 const createToken = (id, fullName, isEmployee) => {
     return jwt.sign({id, fullName, isEmployee}, secret, {
         expiresIn: maxAge
