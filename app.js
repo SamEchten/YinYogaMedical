@@ -31,6 +31,7 @@ app.use(cookieParser());
 // Serving css and js files -> 
 app.use("/static", express.static(path.join(__dirname, "public/css")));
 app.use("/static", express.static(path.join(__dirname, "public/js")));
+app.use("/static", express.static(path.join(__dirname, "public/images")))
 
 // Serving bootstrap files ->
 app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')))
@@ -46,6 +47,7 @@ app.use("/api/user", validateJwt, userRouter);
 
 //View routers / routes ->
 const sessionViewRouter = require("./routes/viewRoutes/sessionViewRouter");
+const { application } = require("express");
 
 app.use(sessionViewRouter);
 app.get("/", (req, res) => res.render("home"));
