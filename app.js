@@ -1,14 +1,21 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const validator = require("./middleware/validator");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-Parser");
+const config = require("./config").config;
+
+//Validator ->
+const {validateJwt} = require("./middleware/validator");
+const {validateAdmin} = require("./middleware/validator");
 
 const port = 3030;
 
 //Database connection / launch server->
-const dbpass = "EH4cSD4JSCbuDei4";
-const dburi = "mongodb://admin:"+dbpass+"@localhost:27017/YinYogaMedical";
+const dbpass = config.database.password;
+const dbuser = config.database.user;
+const dburi = "mongodb://"+dbuser+":"+dbpass+"@localhost:27017/YinYogaMedical";
+
 mongoose.connect(dburi, {useNewUrlParser: true, useUnifiedTopology: true}, () => {
     console.log("Database connected");
     app.listen(port, () => {
@@ -19,13 +26,14 @@ mongoose.connect(dburi, {useNewUrlParser: true, useUnifiedTopology: true}, () =>
 //Middleware ->
 app.use(express.static("/public"));
 app.use(express.json());
+app.use(cookieParser());
 
 //Api routers / routes ->
 const userRouter = require("./routes/userRouter");
 const sessionRouter = require("./routes/sessionRouter");
 
-app.use("/api/user", userRouter);
 app.use("/api/session", sessionRouter);
+app.use("/api/user", validateJwt, userRouter);
 
 //View routers / routes->
 const sessionViewRouter = require("./routes/viewRoutes/sessionViewRouter");

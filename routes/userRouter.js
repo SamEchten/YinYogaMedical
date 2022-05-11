@@ -5,7 +5,7 @@ router.use(express.json());
 
 //Get all users
 router.get("/", async (req, res) => {
-
+    res.send("get user");
 }); 
 
 //Get user by id
