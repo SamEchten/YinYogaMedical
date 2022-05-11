@@ -25,9 +25,12 @@ mongoose.connect(dburi, {useNewUrlParser: true, useUnifiedTopology: true}, () =>
 });
 
 //Middleware ->
-app.use(express.static("/public"));
 app.use(express.json());
 app.use(cookieParser());
+
+// Serving css and js files -> 
+app.use("/static", express.static(path.join(__dirname, "public/css")));
+app.use("/static", express.static(path.join(__dirname, "public/js")));
 
 // Serving bootstrap files ->
 app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')))
