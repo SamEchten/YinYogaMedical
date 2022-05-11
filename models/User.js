@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const {isEmail} = require("validator");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 
 const userSchema = new mongoose.Schema({
@@ -46,8 +46,8 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("save", async function(next) {
-    let salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt);
+    let salt = await bcrypt.genSaltSync(10);
+    this.password = await bcrypt.hashSync(this.password, salt);
     next();
 });
 
@@ -55,7 +55,7 @@ userSchema.statics.login = async function(email, password) {
     let user = await this.findOne({email});
     //User with given email exists ->
     if(user) {
-        let auth = await bcrypt.compare(password, user.password);
+        let auth = await bcrypt.compareSync(password, user.password);
         if(auth) {
             return user;
         }
