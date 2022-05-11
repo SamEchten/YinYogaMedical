@@ -9,9 +9,10 @@ const config = require("./config").config;
 const {validateJwt} = require("./middleware/validator");
 const {validateAdmin} = require("./middleware/validator");
 
+//Server port ->
 const port = 3030;
 
-//Database connection / launch server->
+//Database connection / launch server ->
 const dbpass = config.database.password;
 const dbuser = config.database.user;
 const dburi = "mongodb://"+dbuser+":"+dbpass+"@localhost:27017/YinYogaMedical";
@@ -40,7 +41,7 @@ const sessionRouter = require("./routes/sessionRouter");
 app.use("/api/session", sessionRouter);
 app.use("/api/user", validateJwt, userRouter);
 
-//View routers / routes->
+//View routers / routes ->
 const sessionViewRouter = require("./routes/viewRoutes/sessionViewRouter");
 
 app.use(sessionViewRouter);

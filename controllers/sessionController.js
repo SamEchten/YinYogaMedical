@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const secret = require("../config").config.secret;
+const {handleErrors} = require("./errorHandler");
 const maxAge = 24 * 60 * 60;
 
 //Login_post
@@ -9,7 +10,6 @@ const maxAge = 24 * 60 * 60;
 //Error -> 400 Bad Request + error object
 module.exports.login_post = async (req, res) => {
     let { email, password } = req.body;
-
     try {
         let user = await User.login(email, password);
         
@@ -51,35 +51,6 @@ module.exports.signup_post = async (req, res) => {
     }
 }
 
-//handleErrors
-//Params:   err
-//Handles the error passed through by the login and signup methods
-//Returns an error object containing the error messages for the different fields
-const handleErrors = (err) => {
-    const errors = {fullName: null, email: null, password: null, phoneNumber: null, notes: null};
-
-    //Duplicate email ->
-    if(err.code == 11000) {
-        errors.email = "Er bestaat al een account met dit e-mailadres";
-        return errors;
-    }
-
-    //Password / phonenumber errors ->
-    if(err.message.includes("user validation failed")) {
-        Object.values(err.errors).forEach((error) => {
-            let properties = error.properties;
-            errors[properties.path] = properties.message;
-        })
-
-        return errors;
-    }
-
-    //Login errors ->
-    let error = JSON.parse(err.message);
-    errors[error.path] = error.message;
-    return errors;
-}
-
 //SendJwtCookie
 //Params:   res
 //          id
@@ -113,7 +84,6 @@ module.exports.login_get = (req, res) => {
 module.exports.signup_get = (req, res) => {
     res.send("signup page");
 }
-
 
 module.exports.logout = (req, res) => {
     res.clearCookie("jwt");

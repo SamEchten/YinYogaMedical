@@ -32,11 +32,9 @@ const userSchema = new mongoose.Schema({
     },
     isEmployee: {
         type: Boolean,
-        required: true
+        required: [true, "Uw niet aangegeven of de gebruiker een medewerker is"]
     },
-    subscription: {
-        type: Array
-    },
+    subscription: Object,
     familyMembers: {
         type: Array
     },

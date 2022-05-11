@@ -9,7 +9,6 @@ router.post("/signup", controller.signup_post);
 router.get("/logout", controller.logout);
 
 //TODO:
-//signout - return page / sign out user
 //reset-password - reset password
 //forgot-password - return page
 
