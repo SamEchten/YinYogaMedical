@@ -22,8 +22,13 @@ module.exports.handleErrors = (err) => {
     }
 
     //Other errors ->
-    let error = JSON.parse(err.message);
-    console.log(err.message)
-    errors[error.path] = error.message;
-    return errors;
+    try {  
+        let error = JSON.parse(err.message);
+        errors[error.path] = error.message;
+    } catch(err) {   
+        errors["error"] = "invalid JSON";
+    } finally {
+        return errors;
+    }
+    
 }
