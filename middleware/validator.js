@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config").config;
 const User = require("../models/User");
+const Validator = require('jsonschema').Validator;
+const val = new Validator();
 
 //validateJwt
 //Params:   req
@@ -68,8 +70,26 @@ const verifyJwt = (token) => {
     });
     return decodedToken;
 }
+ 
+const validateJson = async (req, res, next) => {
+    const origin = req.originalUrl.replace("/api", "");
+    const json = req.body;
+    const schema = require("../schemas" + origin + ".json");
+
+    try {
+        let result = val.validate(json, schema);
+        if(result.valid) {
+            next();
+        } else {
+            res.sendStatus(400);
+        }
+    } catch(err) {
+        res.sendStatus(400);
+    }
+}
 
 module.exports = {
     validateJwt,
-    validateAdmin
+    validateAdmin,
+    validateJson
 };

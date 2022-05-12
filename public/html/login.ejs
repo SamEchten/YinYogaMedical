@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <link rel="stylesheet" href="static/login.css">
+        <link rel="stylesheet" href="static/styles.css">
+        <link rel="stylesheet" href="./css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container-fluid main-wrapper">
+            <div class="row h-100">
+                <div class="col-md-6">
+                    <div class="row h-100 align-items-center">
+                        <div class="col-md-12">
+                            <div class="loginContent">
+                                <div class="loginHeader">
+                                    <h1 class="display-3">LOGIN</h1>
+                                    <hr>
+                                    <p class="lead">
+                                        Welkom terug!
+                                    </p>
+                                    <p class="lead">
+                                        Vul hieronder uw inloggegevens in.
+                                    </p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="blockquote lbs" for="exampleInputEmail1">E-mail adres</label>
+                                    <input type="email" class="form-control emailInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="E-mail">
+                                    <small id="emailError" class="form-text text-muted">Verkeerd E-mail!</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="blockquote lbs" for="exampleInputPassword1">Wachtwoord</label>
+                                    <input type="password" class="form-control wachtwoordInput" id="exampleInputPassword1" placeholder="Wachtwoord">
+                                    <small id="passwordError" class="form-text text-muted">Verkeerd wachtwoord!</small>
+                                </div>
+                                <button type="button" class="btn btn-primary loginButton">Login</button>
+                                <p class="loginFooterText pt-3">
+                                    Geen account? 
+                                    <span>
+                                        <a href="/signup">Registreer</a>
+                                    </span>
+                                </p> 
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="col-md-6 imageHolder">
+
+                </div>
+            </div>
+          </div>
+        <script src="./js/bootstrap.min.js"></script> 
+        <script src="static/login.js"></script> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    </body>
+</html>
