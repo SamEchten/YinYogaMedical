@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const {handleErrors} = require("./errorHandler");
+const bcrypt = require("bcryptjs");
 
 module.exports.get = async (req, res) => {
     const {id} = req.params;
@@ -10,16 +11,16 @@ module.exports.get = async (req, res) => {
             let user = await User.findOne({id});
             res.status(200).json(user);
         } catch(err) {
-            res.status(400).json(err);
+            res.sendStatus(400);
         }
-    }
-
-    //Get all users ->
-    try {
-        let users = await User.find();
-        res.status(200).json(users);
-    } catch(err) {
-        res.status(400).json(err);
+    } else {
+        //Get all users ->
+        try {
+            let users = await User.find();
+            res.status(200).json(users);
+        } catch(err) {
+            res.sendStatus(400);
+        }
     }
 }
 
@@ -39,22 +40,54 @@ module.exports.add = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     const id = req.params.id;
-    const {fullName, phoneNumber, notes, isEmployee} = req.body;
+    const body = req.body;
 
     if(id) {
         try {
-            if(await User.findOne({id})) {
-                //TODO:
-                //update user
-            } else {
-                res.status(404).send();
-            }
+            //Check if user with given id exists in db ->
+            User.findOne({id}, async (err, user) => {
+                if(user) {
+                    //Check if update request has isEmployee -> check if request was made by an admin
+                    if(body.hasOwnProperty("isEmployee")) {
+                        if(user.isEmployee) {
+                            //Update user ->
+                            await User.updateOne({id}, {$set: body});
+                        } else {
+                            //Request was not made by admin ->
+                            res.sendStatus(400);
+                        }
+                    }
+
+                    //Request body containes password -> hash password
+                    if(body.hasOwnProperty("password")) {
+                        let salt = await bcrypt.genSaltSync(10);
+                        body.password = await bcrypt.hashSync(body.password, salt);
+                    }
+
+                    //Update user ->
+                    await User.updateOne({id}, {$set: body});
+
+                    //Find updated user doc and send to client ->
+                    User.findOne({id}, (err, doc) => {
+                        if(err) {
+                            res.sendStatus(400);
+                        } else {
+                            res.status(200).json(doc);
+                        }
+                    });
+                } else {
+                    req.sendStatus(404);
+                }
+                if(err) {
+                    res.sendStatus(400);
+                }
+            });
         } catch(err) {
-            res.status(400).send();
+            res.sendStatus(400);
         }
     } else {
         //Id was not provided
-        res.status(400).send();
+        res.sendStatus(400);
     }
 }
 
@@ -62,20 +95,21 @@ module.exports.delete = async (req, res) => {
     const id = req.params.id;
     if(id) {
         try {
+            let user = await User.findOne({id});
             //Check if user exists ->
-            if(await User.findOne({id})) {
+            if(user) {
                 //Delete user ->
-                await User.deleteOne({id});
+                await user.remove();
                 res.status(200).send();
             } else {
                 //User does not exit ->
                 res.status(404).send();
             }
         } catch(err) {
-            res.status(400).send();
+            res.sendStatus(400);
         }
     } else {
         //Id was not provided ->
-        res.status(400).send();
+        res.sendStatus(400);
     }
 }
