@@ -46,8 +46,8 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
 const userRouter = require("./routes/userRouter");
 const sessionRouter = require("./routes/sessionRouter");
 
-app.use("/api/session", validateJson, sessionRouter);
-app.use("/api/user", validateJson, validateJwt, userRouter);
+app.use("/api/session", sessionRouter);
+app.use("/api/user", validateJwt, userRouter);
 
 //View routers / routes ->
 const sessionViewRouter = require("./routes/viewRoutes/sessionViewRouter");
