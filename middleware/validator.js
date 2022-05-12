@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config").config;
+const User = require("../models/User");
 
 //validateJwt
 //Params:   req
@@ -11,28 +12,61 @@ const validateJwt = (req, res, next) => {
     let token = req.cookies.jwt;
     //Token is provided ->
     if(token) {
-        jwt.verify(token, config.secret, (err, decodedToken) => {
-            if(err) {
-                //Token has an error ->
-                res.redirect("/login");
-            } else {
-                //Check if token has been expired ->
-                if(decodedToken.exp > decodedToken.iat) {
-                    next();
-                } else {
-                    //Token has expired ->
-                    res.redirect("/login");
-                }
-            }
-        });
+        const decodedToken = verifyJwt(token);
+        if(decodedToken != null) {
+            //Valid token ->
+            next();
+        } else {
+            res.redirect("/login");
+        }
     } else {
         //Token is not provided ->
         res.redirect("/login");
     }
 }
 
-const validateAdmin = (req, res, next) => {
-    
+//validateAdmin
+//Params:   req
+//          res
+//          next
+//Validates the jwt token from the cookie and checks if request was made by an admin, 
+//if token is not valid, not provided or request was not made by admin -> redirect to login page
+const validateAdmin = async (req, res, next) => {
+    const token = req.cookies.jwt;
+    if(token) {
+        const decodedToken = verifyJwt(token);
+        if(decodedToken != null) {
+            //Valid token ->
+            const id = decodedToken.id;
+            User.findOne({id}, (err, doc) => {
+                if(!err) {
+                    if(doc.isEmployee) {
+                        //Request was mode by admin ->
+                        next();
+                    }
+                } else {
+                    res.redirect("/login");
+                }
+            });
+        }
+    }
+}
+
+//verifyJwt
+//Params:   token
+//verifies the given token
+//If token is not valid -> returns null
+//If token is valid -> return decoded token
+const verifyJwt = (token) => {
+    let decodedToken;
+    jwt.verify(token, config.secret, (err, tok) => {
+        if(!err) {
+            if(tok.exp > tok.iat) {
+                decodedToken = tok;
+            }
+        }
+    });
+    return decodedToken;
 }
 
 module.exports = {
