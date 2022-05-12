@@ -5,6 +5,7 @@ const secret = require("../config").config.secret;
 const {handleErrors} = require("./errorHandler");
 const maxAge = 24 * 60 * 60;
 
+
 //Login_post
 //Endpoint to login a user
 //Succes -> 200 OK + user info object

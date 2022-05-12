@@ -23,6 +23,7 @@ module.exports.handleErrors = (err) => {
 
     //Other errors ->
     let error = JSON.parse(err.message);
+    console.log(err.message)
     errors[error.path] = error.message;
     return errors;
 }
