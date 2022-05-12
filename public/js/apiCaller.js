@@ -29,7 +29,6 @@ class  ApiCaller
             },
             body: JSON.stringify(data)
         };
-        console.log(data);
         try {
             let response = await fetch(url, options);
             return response.json();

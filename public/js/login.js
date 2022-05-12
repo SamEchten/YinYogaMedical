@@ -1,7 +1,7 @@
 $(".loginButton").on("click", async function()
 {
     const email = $(".emailInput").val();
-    const password = $(".passwordsInput").val();
+    const password = $(".passwordInput").val();
     
     const data = {email, password}
 
