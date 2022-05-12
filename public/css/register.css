@@ -1,7 +1,7 @@
 
 .imageHolder
 {
-    background-image: url("./login.jpg");
+    background-image: url("./pexels-cottonbro-4325455.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -10,12 +10,13 @@
 {
     height: 100vh;
 }
-.loginContent
+.registerContent
 {
-    padding: 50px
+    padding: 10px;
 }
-.loginButton
+.blockquote
 {
-    width: 100% !important;
+    /* margin: 0px !important; */
 }
+
 

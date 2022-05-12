@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Registreren</title>
+        <link rel="stylesheet" href="static/register.css">
+        <link rel="stylesheet" href="static/styles.css">
+        <link rel="stylesheet" href="./css/bootstrap.min.css">
+        
+    </head>
+    <body>
+        <div class="container-fluid main-wrapper">
+            <div class="row h-100">
+                <div class="col-md-4 imageHolder">
+                   
+                </div>
+                <div class="col-md-8 ">
+                    <div class="row h-100 align-items-center">
+                        <div class="col-md-12">
+                            <div class="registerContent">
+                                <div class="registerHeader">
+                                    <h1 class="display-3">REGISTREER</h1>
+                                    <hr>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="pb-3">
+                                            <label class="blockquote lbs" for="exampleInputEmail1">Volledige naam</label>
+                                            <input type="email" class="form-control nameInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Naam">
+                                            <small id="nameError" class="form-text text-muted">Naam bestaat al!</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        Geboortedatum
+                                    </div>  
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="pb-3">
+                                            <label class="blockquote lbs" for="exampleInputEmail1">E-mailadres</label>
+                                            <input type="email" class="form-control emailInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="E-mail">
+                                            <small id="emailError" class="form-text text-muted">Verkeerd E-mail!</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="pb-3">
+                                            <label class="blockquote lbs" for="exampleInputEmail1">Telefoon nummer</label>
+                                            <input type="email" class="form-control phoneInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="E-mail">
+                                            <small id="phoneError" class="form-text text-muted">verkeerd telefoon nummer!</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">   
+                                    <div class="col-md-6">
+                                        <div class="pb-3">
+                                            <label class="blockquote lbs" for="exampleInputPassword1">Wachtwoord</label>
+                                            <input type="password" class="form-control wachtwoordInput" id="exampleInputPassword1" placeholder="Wachtwoord">
+                                            <small id="passwordError" class="form-text text-muted">Verkeerd wachtwoord!</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="">
+                                            <label class="blockquote lbs" for="exampleInputPassword1">Verifieer wachtwoord</label>
+                                            <input type="password" class="form-control vWachtwoordInput" id="exampleInputPassword1" placeholder="Wachtwoord">
+                                            <small id="passwordError" class="form-text text-muted">Verkeerd wachtwoord!</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" placeholder="Heeft u klachten?" id="floatingTextarea2" style="height: 100px"></textarea>
+                                            <label for="floatingTextarea2">Notities</label>
+                                          </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary registerButton">Registreer</button>
+                                <p class="registerFooterText pt-3">
+                                    Al een account?
+                                    <span>
+                                        <a href="/login">Login</a>
+                                    </span>
+                                </p> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        <script src="./js/bootstrap.min.js"></script> 
+        <script src="static/login.js"></script> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    </body>
+</html>

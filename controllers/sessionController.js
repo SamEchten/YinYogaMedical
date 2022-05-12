@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const path = require("path");
 const secret = require("../config").config.secret;
 const {handleErrors} = require("./errorHandler");
 const maxAge = 24 * 60 * 60;
@@ -78,11 +79,11 @@ const createToken = (id, fullName, isEmployee) => {
 }
 
 module.exports.login_get = (req, res) => {
-    res.send("login page");
+    res.sendFile(path.join(__dirname, "../public/html/login.html"));
 }
 
 module.exports.signup_get = (req, res) => {
-    res.send("signup page");
+    res.sendFile(path.join(__dirname, "../public/html/register.html"));
 }
 
 module.exports.logout = (req, res) => {

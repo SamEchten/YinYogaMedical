@@ -51,8 +51,3 @@ const { application } = require("express");
 
 app.use(sessionViewRouter);
 app.get("/", (req, res) => res.render("home"));
-
-app.get("/home", (req, res) =>
-{
-    res.sendFile(path.join(__dirname, 'public/html/login.html'));
-});

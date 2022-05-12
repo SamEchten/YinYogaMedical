@@ -1,0 +1,35 @@
+
+.imageHolder
+{
+    background-image: url("./pexels-cottonbro-4325455.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.main-wrapper
+{
+    height: 100vh;
+}
+.loginContent
+{
+    padding: 50px;
+    width: 80%;
+    margin: auto;
+}
+.loginButton
+{
+ width: 100% !important;
+}
+.wachtwoordInput
+{
+
+}
+.form-group
+{
+    padding-bottom: 15px;
+}
+.emailInput
+{
+  padding-bottom: 20px;
+}
+
