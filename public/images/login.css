@@ -1,0 +1,21 @@
+
+.imageHolder
+{
+    background-image: url("./login.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.main-wrapper
+{
+    height: 100vh;
+}
+.loginContent
+{
+    padding: 50px
+}
+.loginButton
+{
+    width: 100% !important;
+}
+
