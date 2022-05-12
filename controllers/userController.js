@@ -72,7 +72,10 @@ module.exports.update = async (req, res) => {
                         if(err) {
                             res.sendStatus(400);
                         } else {
-                            res.status(200).json(doc);
+                            res.status(200).json({
+                                id: doc._id,
+                                fullName: doc.fullName
+                            });
                         }
                     });
                 } else {
