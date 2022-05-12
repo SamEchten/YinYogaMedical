@@ -47,6 +47,8 @@ module.exports.signup_post = async (req, res) => {
             "id": user._id, 
             "fullName": user.fullName
         });
+
+        res.redirect("/");
     } catch(err) {
         let errors = handleErrors(err);
         res.status(400).json(errors);
@@ -80,11 +82,11 @@ const createToken = (id, fullName, isEmployee) => {
 }
 
 module.exports.login_get = (req, res) => {
-    res.sendFile(path.join(__dirname, "../public/html/login.html"));
+    res.render(path.join(__dirname, "../public/html/login"));
 }
 
 module.exports.signup_get = (req, res) => {
-    res.sendFile(path.join(__dirname, "../public/html/register.html"));
+    res.render(path.join(__dirname, "../public/html/register"));
 }
 
 module.exports.logout = (req, res) => {

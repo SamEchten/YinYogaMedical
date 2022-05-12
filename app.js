@@ -8,9 +8,13 @@ const config = require("./config").config;
 //Validator ->
 const {validateJwt} = require("./middleware/validator");
 const {validateAdmin} = require("./middleware/validator");
+const {validateJson} = require("./middleware/validator");
 
 //Server port ->
 const port = 3030;
+
+//View engine
+app.set('view engine', 'ejs');
 
 //Database connection / launch server ->
 const dbpass = config.database.password;
@@ -42,12 +46,11 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
 const userRouter = require("./routes/userRouter");
 const sessionRouter = require("./routes/sessionRouter");
 
-app.use("/api/session", sessionRouter);
-app.use("/api/user", validateJwt, userRouter);
+app.use("/api/session", validateJson, sessionRouter);
+app.use("/api/user", validateJson, validateJwt, userRouter);
 
 //View routers / routes ->
 const sessionViewRouter = require("./routes/viewRoutes/sessionViewRouter");
-const { application } = require("express");
 
 app.use(sessionViewRouter);
 app.get("/", (req, res) => res.render("home"));
