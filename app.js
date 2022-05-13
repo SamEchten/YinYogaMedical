@@ -11,7 +11,7 @@ const {validateAdmin} = require("./middleware/validator");
 const {validateJson} = require("./middleware/validator");
 
 //Server port ->
-const port = 3030;
+const port = 80;
 
 //View engine
 app.set('view engine', 'ejs');
