@@ -1,17 +1,18 @@
 $(".loginButton").on("click", async function()
 {
-    const email = $(".emailInput").val();
-    const password = $(".passwordInput").val();
-    
-    const data = {email, password}
+    const data = 
+    {
+        email: $(".emailInput").val(),
+        password: $(".passwordInput").val()
+    }
 
     try
     {
-        const call = await ApiCaller.loginUser(data);
-        if(call.status == 200) {
-            console.log(call);
+        const res = await ApiCaller.loginUser(data);
+        if(res.status == 200) {
+            console.log(res);
         } else {
-            console.log(call);
+            console.log(res);
         }
     }catch(err)
     {

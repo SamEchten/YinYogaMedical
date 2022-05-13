@@ -1,21 +1,22 @@
 $(".registerButton").on("click", async function()
 {
-    const fullName = $(".nameInput").val();
-    const email = $(".emailInput").val();
-    const phoneNumber = $(".phoneInput").val();
-    const password = $(".passwordInput").val();
-    const notes = $(".notesInput").val();
-
-    const data = {fullName, email, phoneNumber, password, notes}
+    const data = 
+    {
+        fullName: $(".nameInput").val(),
+        email: $(".emailInput").val(),
+        phoneNumber: $(".phoneInput").val(),
+        password: $(".passwordInput").val(),
+        notes: $(".notesInput").val()
+    }
 
     
     try
     {
-        const call = await ApiCaller.registerUser(data);
-        if(call.status == 200) {
-            console.log(call);
+        const res = await ApiCaller.registerUser(data);
+        if(res.status == 200) {
+            console.log(res);
         } else {
-            console.log(call);
+            console.log(res);
         }
     }catch(err)
     {

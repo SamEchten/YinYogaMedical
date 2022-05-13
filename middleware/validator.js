@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config").config;
 const User = require("../models/User");
-const Validator = require('jsonschema').Validator;
-const val = new Validator();
 
 //validateJwt
 //Params:   req
