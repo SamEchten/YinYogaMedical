@@ -53,4 +53,7 @@ app.use("/api/user", validateJwt, userRouter);
 const sessionViewRouter = require("./routes/viewRoutes/sessionViewRouter");
 
 app.use(sessionViewRouter);
+
+app.use(validateJwt);
 app.get("/", (req, res) => res.render("home"));
+app.get("*", (req, res) => res.redirect("/"));
