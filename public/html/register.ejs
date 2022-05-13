@@ -25,11 +25,10 @@
                                     <hr>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 pb-3">
                                         <div class="pb-3">
                                             <label class="blockquote lbs" for="exampleInputEmail1">Volledige naam</label>
                                             <input type="email" class="form-control nameInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Naam">
-                                            <small id="nameError" class="form-text text-muted">Naam bestaat al!</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -37,39 +36,37 @@
                                     </div>  
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 pb-3">
                                         <div class="pb-3">
                                             <label class="blockquote lbs" for="exampleInputEmail1">E-mailadres</label>
                                             <input type="email" class="form-control emailInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="E-mail">
-                                            <small id="emailError" class="form-text text-muted">Verkeerd E-mail!</small>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 pb-3">
                                         <div class="pb-3">
                                             <label class="blockquote lbs" for="exampleInputEmail1">Telefoonnummer</label>
                                             <input type="text" class="form-control phoneInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Telefoonnummer">
-                                            <small id="phoneError" class="form-text text-muted">verkeerd telefoon nummer!</small>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">   
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 pb-3">
                                         <div class="pb-3">
                                             <label class="blockquote lbs" for="exampleInputPassword1">Wachtwoord</label>
                                             <input type="password" class="form-control passwordInput" id="exampleInputPassword1" placeholder="Wachtwoord">
-                                            <small id="passwordError" class="form-text text-muted">Verkeerd wachtwoord!</small>
+                                            <small class="text-muted">Wachtwoord moet minimaal 6 karakters bevatten.</small>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 pb-3">
                                         <div class="">
                                             <label class="blockquote lbs" for="exampleInputPassword2">Verifieer wachtwoord</label>
-                                            <input type="password" class="form-control vWachtwoordInput" id="exampleInputPassword2" placeholder="Wachtwoord">
-                                            <small class="form-text text-muted">Verkeerd wachtwoord!</small>
+                                            <input type="password" class="form-control vPasswordInput" id="exampleInputPassword2" placeholder="Wachtwoord">
+                                            <small class="text-muted">Wachtwoord moet minimaal 6 karakters bevatten.</small>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 pb-3">
                                         <div class="form-floating">
                                             <textarea class="form-control notesInput" placeholder="Heeft u klachten?" id="floatingTextarea2" style="height: 100px"></textarea>
                                             <label for="floatingTextarea2">Notities</label>
@@ -83,6 +80,7 @@
                                         <a href="/login">Login</a>
                                     </span>
                                 </p> 
+                                <div class="alert alert-warning errorBox" role="alert"></div>
                             </div>
                         </div>
                     </div>
@@ -93,6 +91,7 @@
         <script src="./js/bootstrap.min.js"></script> 
         <script src="static/apiCaller.js"></script>
         <script src="static/register.js"></script> 
+        <script src="static/error.js"></script>
         
     </body>
 </html>

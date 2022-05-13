@@ -30,15 +30,12 @@
                                     <div class="form-group">
                                         <label class="blockquote lbs" for="exampleInputEmail1">E-mail adres</label>
                                         <input type="email" class="form-control emailInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="E-mail">
-                                        <small id="emailError" class="form-text text-muted">Verkeerd E-mail!</small>
                                     </div>
                                     
                                     <div class="form-group">
                                         <label class="blockquote lbs" for="exampleInputPassword1">Wachtwoord</label>
                                         <input type="password" class="form-control passwordInput" id="exampleInputPassword1" placeholder="Wachtwoord">
-                                        <small id="passwordError" class="form-text text-muted">Verkeerd wachtwoord!</small>
                                     </div>
-                                    
                                         <button type="submit" class="btn btn-primary loginButton">Login</button>
                                 </form>
                                 <p class="loginFooterText pt-3">
@@ -47,6 +44,8 @@
                                         <a href="/signup">Registreer</a>
                                     </span>
                                 </p> 
+                                <div class="alert alert-warning close errorBox" role="alert">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -61,5 +60,7 @@
         <script src="./js/bootstrap.min.js"></script> 
         <script src="static/apiCaller.js"></script>
         <script src="static/login.js"></script> 
+        <script src="static/error.js"></script>
+        
     </body>
 </html>
