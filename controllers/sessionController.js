@@ -48,7 +48,6 @@ module.exports.signup_post = async (req, res) => {
             "fullName": user.fullName
         });
 
-        res.redirect("/");
     } catch(err) {
         let errors = handleErrors(err);
         res.status(400).json(errors);
