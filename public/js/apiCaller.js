@@ -5,7 +5,7 @@ class  ApiCaller
     static registerUser = async(data) => {
         let url = "/api/session/signup/";
         let options = {
-            method: 'POST', //PUT, DELETE, POST
+            method: 'POST',
             headers:{
             'Content-Type':'application/json'
             },
@@ -23,7 +23,7 @@ class  ApiCaller
     static loginUser = async(data) => {
         let url = "/api/session/login/";
         let options = {
-            method: 'POST', //PUT, DELETE, POST
+            method: 'POST',
             headers:{
             'Content-Type':'application/json'
             },

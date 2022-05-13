@@ -14,8 +14,8 @@ $(".loginButton").on("click", async function()
         } else {
             console.log(res);
         }
-    }catch(err)
+    } catch(err)
     {
-
+        
     }
 });
