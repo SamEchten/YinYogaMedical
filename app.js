@@ -35,12 +35,13 @@ app.use(cookieParser());
 // Serving css and js files -> 
 app.use("/static", express.static(path.join(__dirname, "public/css")));
 app.use("/static", express.static(path.join(__dirname, "public/js")));
-app.use("/static", express.static(path.join(__dirname, "public/images")))
+app.use("/static", express.static(path.join(__dirname, "public/images")));
 
 // Serving bootstrap files ->
-app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')))
-app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
-app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
+app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
+app.use('/bicons', express.static(path.join(__dirname, 'node_modules/bootstrap-icons/font')));
+app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
+app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 
 //Api routers / routes ->
 const userRouter = require("./routes/userRouter");

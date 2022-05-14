@@ -37,3 +37,15 @@ $(".registerButton").on("click", async function()
     }
 });
 
+$(".passIcon").on("click", function()
+{
+    let type = $(".passwordInput").attr("type");
+    if(type == "password")
+    {
+        $(".pass").attr("type", "text");
+    } else
+    {
+        $(".pass").attr("type", "password");
+    }
+});
+

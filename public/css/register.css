@@ -18,5 +18,11 @@
 {
     /* margin: 0px !important; */
 }
+.passIcon
+{
+    float: right;
+    margin-top: -31px;
+    margin-right: 12px;
+}
 
 
