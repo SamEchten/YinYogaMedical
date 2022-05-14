@@ -9,19 +9,30 @@ $(".loginButton").on("click", async function()
     try
     {
         const res = await ApiCaller.loginUser(data);
+    
         if(res.status == 200) 
         {
-
+            console.log("logged in")
+            $(".imageHolder").slideUp(700);
+            $(".loginContent").slideUp(700, function()
+            {
+                // Go to home/lesrooster
+                location.href = "/home";
+            });
+        
         } else 
         {
-            for(errorMessage in res)
+            res.json().then(function(result)
             {
-                if(res[errorMessage] != null)
+                for(errorMessage in result)
                 {
-                    errorText(res[errorMessage])
-                    return;
-                } 
-            }
+                    if(result[errorMessage] != null)
+                    {
+                        errorText(result[errorMessage])
+                        return;
+                    } 
+                }
+            });  
         }
     } catch(err)
     {

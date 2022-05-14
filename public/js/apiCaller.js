@@ -1,3 +1,4 @@
+
 class  ApiCaller
 {
     //static functions
@@ -31,7 +32,7 @@ class  ApiCaller
         };
         try {
             let response = await fetch(url, options);
-            return response.json();
+            return response;
         } catch(err) {
             //error
         }
