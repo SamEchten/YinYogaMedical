@@ -1,6 +1,5 @@
-$(".registerButton").on("click", async function()
-{
-    const data = 
+$(".registerButton").on("click", async function () {
+    const data =
     {
         fullName: $(".nameInput").val(),
         email: $(".emailInput").val(),
@@ -8,49 +7,38 @@ $(".registerButton").on("click", async function()
         password: $(".passwordInput").val(),
         notes: $(".notesInput").val()
     }
-    
-    try
-    {
-        if(data.password != $(".vPasswordInput").val())
-        {
+
+    try {
+        if (data.password != $(".vPasswordInput").val()) {
             errorText("Wachtwoorden komen niet over een.")
-        }else
-        {
+        } else {
             const res = await ApiCaller.registerUser(data);
             console.log(res.status)
-            if(res.status == 201) {
+            if (res.status == 201) {
                 // User goes to the home page and is logged in ->
                 location.href = "/home";
-            } else 
-            {
+            } else {
                 // Handling promise object to get the JSON object ->
-                res.json().then(function(result)
-                {
-                    for(errorMessage in result)
-                    {
-                        if(result[errorMessage] != null)
-                        {
+                res.json().then(function (result) {
+                    for (errorMessage in result) {
+                        if (result[errorMessage] != null) {
                             errorText(result[errorMessage])
                             return;
-                        } 
+                        }
                     }
-                });  
+                });
             }
         }
-    } catch(err)
-    {
+    } catch (err) {
 
     }
 });
 
-$(".passIcon").on("click", function()
-{
+$(".passIcon").on("click", function () {
     let type = $(".passwordInput").attr("type");
-    if(type == "password")
-    {
+    if (type == "password") {
         $(".pass").attr("type", "text");
-    } else
-    {
+    } else {
         $(".pass").attr("type", "password");
     }
 });
