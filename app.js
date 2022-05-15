@@ -57,4 +57,4 @@ app.use(sessionViewRouter);
 
 app.use(validateJwt);
 app.get("/", (req, res) => res.render("home"));
-app.get("*", (req, res) => res.redirect("/"));
+app.get("/*", (req, res) => res.redirect("/"));
