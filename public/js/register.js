@@ -17,18 +17,24 @@ $(".registerButton").on("click", async function()
         }else
         {
             const res = await ApiCaller.registerUser(data);
-            if(res.status == 200) {
-                console.log(res);
+            console.log(res.status)
+            if(res.status == 201) {
+                // User goes to the home page and is logged in ->
+                location.href = "/home";
             } else 
             {
-                for(errorMessage in res)
+                // Handling promise object to get the JSON object ->
+                res.json().then(function(result)
                 {
-                    if(res[errorMessage] != null)
+                    for(errorMessage in result)
                     {
-                        errorText(res[errorMessage])
-                        return;
-                    } 
-                }
+                        if(result[errorMessage] != null)
+                        {
+                            errorText(result[errorMessage])
+                            return;
+                        } 
+                    }
+                });  
             }
         }
     } catch(err)
