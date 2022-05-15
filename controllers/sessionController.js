@@ -14,7 +14,7 @@ module.exports.login_post = async (req, res) => {
     let { email, password } = req.body;
     try {
         let user = await User.login(email, password);
-        
+
         //Send jwt token to client ->
         sendJwtCookie(res, user._id, user.fullName, user.isEmployee);
 
@@ -26,7 +26,7 @@ module.exports.login_post = async (req, res) => {
     } catch(err) {
         let errors = handleErrors(err);
         res.status(400).json(errors);
-    } 
+    }
 }
 
 //Signup_post
@@ -44,7 +44,7 @@ module.exports.signup_post = async (req, res) => {
 
         //Send user info back to client
         res.status(201).json({
-            "id": user._id, 
+            "id": user._id,
             "fullName": user.fullName
         });
     } catch(err) {
