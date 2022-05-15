@@ -55,3 +55,4 @@ const sessionViewRouter = require("./routes/viewRoutes/sessionViewRouter");
 
 app.use(sessionViewRouter);
 app.get("/", (req, res) => res.render("home"));
+app.get("/*", (req, res) => res.redirect("/"));
