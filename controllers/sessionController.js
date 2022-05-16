@@ -28,7 +28,7 @@ module.exports.get = async (req, res) => {
 }
 
 module.exports.add = async (req, res) => {
-    const { title, location, date, duration, participants, teacher, description, maxAmountOfParticipants, weekly } = req.body;
+    const { title, location, date, duration, participants, teacher, description, maxAmountOfParticipants, weekly, private } = req.body;
 
     try {
         const session = await Session.create({
@@ -40,9 +40,10 @@ module.exports.add = async (req, res) => {
             teacher,
             description,
             maxAmountOfParticipants,
-            weekly
+            weekly,
+            private
         });
-        res.status(201).json(session._id);
+        res.status(201).json({ id: session.id });
     } catch (err) {
         let errors = handleSessionErrors(err);
         res.json(errors);
@@ -51,11 +52,13 @@ module.exports.add = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     const { id } = req.params;
+    const body = req.body;
 
     try {
-        const session = Session.findOne({ id });
+        const session = Session.findOne({ id }, async());
         if (session) {
-
+            await Session.updateOne({ id }, { $set: body });
+            res.status(200).json({ id: session.id });
         } else {
             res.status(404).json({ error: "Geen sessie gevonden met dit Id" })
         }

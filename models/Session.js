@@ -34,6 +34,10 @@ const sessionSchema = mongoose.Schema({
     weekly: {
         type: Boolean,
         required: [true, "Wekelijks is verplicht"]
+    },
+    private: {
+        type: Boolean,
+        default: false
     }
 });
 
