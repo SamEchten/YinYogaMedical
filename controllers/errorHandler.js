@@ -31,3 +31,24 @@ module.exports.handleUserErrors = (err) => {
         return errors;
     }
 }
+
+module.exports.handleSessionErrors = (err) => {
+    const errors = {
+        title: null,
+        location: null,
+        date: null,
+        duration: null,
+        participants: null,
+        teacher: null,
+        maxAmountOfParticipants: null
+    };
+
+    if (err.message.includes("session validation failed")) {
+        Object.values(err.errors).forEach((error) => {
+            let properties = error.properties;
+            errors[properties.path] = properties.message;
+        })
+
+        return errors;
+    }
+}
