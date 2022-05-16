@@ -50,7 +50,18 @@ module.exports.add = async (req, res) => {
 }
 
 module.exports.update = async (req, res) => {
+    const { id } = req.params;
 
+    try {
+        const session = Session.findOne({ id });
+        if (session) {
+
+        } else {
+            res.status(404).json({ error: "Geen sessie gevonden met dit Id" })
+        }
+    } catch (err) {
+        res.status(400).json({ error: "Er is iets fout gegaan" });
+    }
 }
 
 module.exports.delete = async (req, res) => {

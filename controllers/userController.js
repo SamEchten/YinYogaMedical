@@ -52,6 +52,7 @@ module.exports.update = async (req, res) => {
                         if (user.isEmployee) {
                             //Update user ->
                             await User.updateOne({ id }, { $set: body });
+                            res.status(200).json({ id: user.id });
                         } else {
                             //Request was not made by admin ->
                             res.sendStatus(400);
