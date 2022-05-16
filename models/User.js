@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 const {isEmail} = require("validator");
 const bcrypt = require("bcryptjs");
 
+const subscriptionSchema = mongoose.Schema({
+    id: String,
+    expireDate: Date
+});
+
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -33,7 +38,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: [true, "Uw niet aangegeven of de gebruiker een medewerker is"]
     },
-    subscription: Object,
+    subscription: {
+        type: subscriptionSchema,
+        default: {}
+    },
     familyMembers: {
         type: Array
     },

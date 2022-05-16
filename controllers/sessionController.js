@@ -17,6 +17,14 @@ module.exports.delete = () => {
 
 }
 
+module.exports.cancel = () => {
+
+}
+
 module.exports.view = () => {
+
+}
+
+module.exports.adminview = () => {
 
 }

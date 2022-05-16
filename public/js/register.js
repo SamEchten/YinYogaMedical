@@ -42,4 +42,3 @@ $(".passIcon").on("click", function () {
         $(".pass").attr("type", "password");
     }
 });
-
