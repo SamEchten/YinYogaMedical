@@ -1,11 +1,16 @@
 .lbs
 {
-    border-left: 2px solid #0d6efd;
+    border-left: 2px solid #46c8c8;
     padding-left: 7px;
 }
 .errorBox
 {
     display: none;
     cursor: pointer;
+}
+.yinStyle
+{
+    background-color:  #46c8c8 !important;
+    border-color: #46c8c8 !important;
 }
 
