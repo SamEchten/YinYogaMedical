@@ -4,7 +4,7 @@ class  ApiCaller
     //static functions
     // Creates a new user and logs them in ->
     static registerUser = async(data) => {
-        let url = "/api/session/signup/";
+        let url = "/api/auth/signup/";
         let options = {
             method: 'POST',
             headers:{
@@ -22,7 +22,7 @@ class  ApiCaller
 
     // Logs in a user ->
     static loginUser = async(data) => {
-        let url = "/api/session/login/";
+        let url = "/api/auth/login/";
         let options = {
             method: 'POST',
             headers:{

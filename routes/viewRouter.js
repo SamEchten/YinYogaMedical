@@ -9,6 +9,5 @@ router.get("/signup", authController.signup_get);
 router.get("/logout", authController.logout);
 
 //Session ->
-//router.get("/session", sessionController);
 
 module.exports = router;

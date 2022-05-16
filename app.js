@@ -43,19 +43,16 @@ app.use('/bicons', express.static(path.join(__dirname, 'node_modules/bootstrap-i
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 
-//Api routers / routes ->
+//Routers / routes ->
+const viewRouter = require("./routes/viewRouter");
 const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
 const sessionRouter = require("./routes/sessionRouter");
 
-app.use("/api/session", authRouter);
+app.use(viewRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/user", validateJwt, userRouter);
 app.use("/api/session", validateJwt, validateAdmin, sessionRouter);
 
-//View routers / routes ->
-const viewRouter = require("./routes/viewRouter");
-app.use(viewRouter);
-
-app.use(validateJwt);
-app.get("/", (req, res) => res.render("home"));
+app.get("/", validateJwt, (req, res) => res.render("home"));
 app.get("/*", (req, res) => res.redirect("/"));
