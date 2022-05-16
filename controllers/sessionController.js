@@ -3,7 +3,7 @@ const path = require("path");
 const { handleSessionErrors } = require("./errorHandler");
 
 module.exports.get = async (req, res) => {
-    const { id } = req.params.id;
+    const { id } = req.params;
     if (id) {
         //Get single session
         try {
@@ -54,6 +54,22 @@ module.exports.update = async (req, res) => {
 }
 
 module.exports.delete = async (req, res) => {
+    const { id } = req.params.id;
+
+    try {
+        const session = await Session.findOne({ id });
+        if (session) {
+            session.remove();
+            res.sendStatus(200);
+        } else {
+            res.status(404).json({ error: "Geen sessie gevonden met dit Id" })
+        }
+    } catch (err) {
+        res.status(400).json({ error: "Er is iets fout gegaan" });
+    }
+}
+
+module.exports.signup = async (req, res) => {
 
 }
 
