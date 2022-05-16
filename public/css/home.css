@@ -1,0 +1,17 @@
+.main-wrapper
+{
+    height: calc(100vh - 58px);
+}
+.lesrooster
+{
+    background-color: grey;
+}
+.producten
+{
+    background-color: rgb(78, 78, 78);
+}
+.vidPod
+{
+    background-color: rgb(58, 58, 58);
+}
+

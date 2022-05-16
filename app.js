@@ -54,5 +54,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", validateJwt, userRouter);
 app.use("/api/session", sessionRouter);
 
-app.get("/", validateJwt, (req, res) => res.render("home"));
+// Serving HTML pages to the client ->
+app.get("/home", validateJwt, (req, res) => res.render(path.join(__dirname, "./public/html/home")));
+app.get("/lesrooster", validateJwt, (req, res) => res.render(path.join(__dirname, "./public/html/lesrooster")));
 app.get("/*", (req, res) => res.redirect("/"));
