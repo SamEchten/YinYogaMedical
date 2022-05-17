@@ -9,4 +9,7 @@ router.get("/signup", authController.signup_get);
 router.get("/logout", authController.logout);
 //Session ->
 
+// Home ->
+router.get("/lesrooster", sessionController.view);
+
 module.exports = router;

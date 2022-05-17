@@ -22,13 +22,14 @@
 {
     padding-right: 40px !important;
     padding-left: 40px !important;
+    font-family: Arial, Helvetica, sans-serif;
 }
 .currentNavItem
 {
-    border-bottom: 2px solid rgb(70, 70, 70);
+    border-bottom: 2px solid rgb(72, 196, 245);
 
 }
 .currentNavItem:hover
 {
-    border-bottom: 2px solid rgb(69, 181, 255);
+    border-bottom: 2px solid rgb(0, 153, 255);
 }

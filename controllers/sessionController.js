@@ -92,7 +92,7 @@ module.exports.cancel = async (req, res) => {
 }
 
 module.exports.view = (req, res) => {
-
+    res.render(path.join(__dirname, "../public/html/lesrooster"));
 }
 
 module.exports.adminview = (req, res) => {
