@@ -8,8 +8,9 @@ router.get("/login", authController.login_get);
 router.get("/signup", authController.signup_get);
 router.get("/logout", authController.logout);
 //Session ->
+router.get("/agenda", sessionController.view);
 
 // Home ->
-router.get("/lesrooster", sessionController.view);
+
 
 module.exports = router;

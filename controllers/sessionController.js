@@ -140,7 +140,7 @@ module.exports.signout = async (req, res) => {
 }
 
 module.exports.view = (req, res) => {
-    res.render(path.join(__dirname, "../public/html/lesrooster"));
+    res.render(path.join(__dirname, "../public/html/agenda"));
 }
 
 module.exports.adminview = (req, res) => {
