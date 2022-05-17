@@ -42,11 +42,11 @@ h2 {
 {
     padding-right: 40px !important;
     padding-left: 40px !important;
+    font-family: Arial, Helvetica, sans-serif;
 }
 .currentNavItem
 {
     border-bottom: 2px solid #D5CA9B;
-
 }
 .currentNavItem:hover
 {
