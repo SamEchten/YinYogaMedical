@@ -1,7 +1,7 @@
 /* Left border style : accent */
 .lbs
 {
-    border-left: 2px solid #46c8c8;
+    border-left: 2px solid #D5CA9B;
     padding-left: 7px;
 }
 /* Global error message style */
@@ -10,12 +10,32 @@
     display: none;
     cursor: pointer;
 }
+/* Global title styling */
+h1 {
+    font-family: 'Lato';
+    text-transform: uppercase;
+    color: #707070 !important;
+}
+/* Global subtitle styling */
+h2 {
+    font-family: 'Lato';
+    text-transform: uppercase;
+    color: #707070 !important;
+}
 /* Global button styling */
 .yinStyle
 {
-    background-color:  #46c8c8 !important;
-    border-color: #46c8c8 !important;
+    background-color:  #D5CA9B !important;
+    border-color: #D5CA9B !important;
 }
+/* Global white box styling */
+.contentcontainer {
+    background-color: #ffffffd0;
+    border-radius: 30px;
+    min-height: 75vh;
+    padding: 50px;
+    margin: 25px 30px 30px 30px;
+} 
 
 /* Global navbar classes */
 .nav-item
@@ -25,10 +45,10 @@
 }
 .currentNavItem
 {
-    border-bottom: 2px solid rgb(70, 70, 70);
+    border-bottom: 2px solid #D5CA9B;
 
 }
 .currentNavItem:hover
 {
-    border-bottom: 2px solid rgb(69, 181, 255);
+    border-bottom: 2px solid #d5ca9b48;
 }
