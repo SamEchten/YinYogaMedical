@@ -100,9 +100,14 @@ module.exports.signup = async (req, res) => {
             Session.findOne({ _id: sessionId }, async (err, session) => {
                 //Check if session with given id exists ->
                 if (session) {
+                    let comingWithLength = 0;
+                    if (comingWith != null) {
+                        comingWithLength = comingWith.length;
+                    }
+
                     //Check if session is not full ->
                     const sessionAmount = await Session.getAmountOfParticipants(sessionId);
-                    const amountOfParticipants = session.participants.length + comingWith.length;
+                    const amountOfParticipants = session.participants.length + comingWithLength;
                     const maxAmountOfParticipants = session.maxAmountOfParticipants;
 
                     if (sessionAmount != maxAmountOfParticipants) {
