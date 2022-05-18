@@ -13,8 +13,8 @@ $(".loginButton").on("click", async function()
         if(res.status == 200) 
         {
             console.log("logged in")
-            $(".imageHolder").slideUp(700);
-            $(".loginContent").slideUp(700, function()
+            $(".imageHolder").slideUp(400);
+            $(".loginContent").slideUp(400, function()
             {
                 // Go to home/lesrooster
                 location.href = "/home";
