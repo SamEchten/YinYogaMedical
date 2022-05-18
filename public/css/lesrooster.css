@@ -2,6 +2,10 @@
     font-family: Lato;
     src: url(./font_lato);
 }
+@font-face {
+    font-family: OpenSans;
+    src: url(./open_sans);
+}
 
 .main-wrapper
 {
@@ -13,12 +17,41 @@ body {
     background-color: white;
     background-repeat: no-repeat;
     background-size: cover;
+    font-family: OpenSans;
+    color: #707070 !important;
 }
 
 .title {
     margin: 50px;
 }
 
-.subtitle {
-    
+.changeweek {
+    font-size: 18pt;
+    padding-left: 20px;
+}
+
+.back {
+    background-image: url(./back.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.lesson {
+    font-size: 16pt;
+}
+
+.lessontime {
+    margin-left: 60px;
+    padding-right: 40px;
+    border-right: 2px solid #707070;
+}
+
+.lessontitle {
+    margin-left: 40px;
+}
+
+.week {
+    height: 30px;
+    margin: 0px 20px 0px 20px;
 }
