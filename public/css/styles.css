@@ -1,3 +1,8 @@
+@font-face {
+    font-family: Lato;
+    src: url(./font_lato);
+}
+
 /* Left border style : accent */
 .lbs
 {
@@ -12,13 +17,13 @@
 }
 /* Global title styling */
 h1 {
-    font-family: 'Lato';
+    font-family: 'Lato', 'Segoe UI';
     text-transform: uppercase;
     color: #707070 !important;
 }
 /* Global subtitle styling */
 h2 {
-    font-family: 'Lato';
+    font-family: 'Lato', 'Segoe UI';
     text-transform: uppercase;
     color: #707070 !important;
 }
