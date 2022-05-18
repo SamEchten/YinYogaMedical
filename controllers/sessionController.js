@@ -81,7 +81,7 @@ module.exports.delete = async (req, res) => {
             session.remove();
             //Send email to participants
             //Set back hours of participants
-            res.sendStatus(200).json({ message: "Sessie is verwijderd" });
+            res.status(200).json({ message: "Sessie is verwijderd" });
         } else {
             res.status(404).json({ error: "Geen sessie gevonden met dit Id" })
         }
