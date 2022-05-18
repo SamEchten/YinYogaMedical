@@ -33,3 +33,8 @@ body {
     padding: 20px;
     overflow: auto;
 }
+
+.innerSubtitle
+{
+    float: left;
+}
