@@ -1,35 +1,30 @@
-
-.imageHolder
-{
+.imageHolder {
     background-image: url("./pexels-cottonbro-4325455.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
-.main-wrapper
-{
+
+.main-wrapper {
     height: 100vh;
 }
-.loginContent
-{
+
+.loginContent {
     padding: 50px;
     width: 80%;
     margin: auto;
 }
-.loginButton
-{
- width: 100% !important;
-}
-.wachtwoordInput
-{
 
+.loginButton {
+    width: 100% !important;
 }
-.form-group
-{
+
+.wachtwoordInput {}
+
+.form-group {
     padding-bottom: 15px;
 }
-.emailInput
-{
-  padding-bottom: 20px;
-}
 
+.emailInput {
+    padding-bottom: 20px;
+}
