@@ -1,0 +1,24 @@
+@font-face {
+    font-family: Lato;
+    src: url(./font_lato);
+}
+
+body {
+    background-image: url(../bg.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.main-wrapper {
+    height: calc(100vh -58px);
+}
+
+p {
+    font-family: 'Open Sans';
+}
+
+.options {
+    background-color: black;
+    color: white;
+}
