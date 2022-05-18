@@ -120,5 +120,5 @@ module.exports.delete = async (req, res) => {
 }
 
 module.exports.viewEnrollments = (req, res) => {
-    res.render(path.join(__dirname, "../public/html/profile/enrollments"));
+    res.render(path.join(__dirname, "../views/profile/enrollments"));
 }
