@@ -93,6 +93,7 @@ module.exports.delete = async (req, res) => {
 module.exports.signup = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
+    const comingWith = req.body.comingWith;
 
     if (sessionId) {
         try {
@@ -100,28 +101,37 @@ module.exports.signup = async (req, res) => {
                 //Check if session with given id exists ->
                 if (session) {
                     //Check if session is not full ->
-                    const amountOfParticipants = session.participants.length;
+                    const sessionAmount = await Session.getAmountOfParticipants(sessionId);
+                    const amountOfParticipants = session.participants.length + comingWith.length;
                     const maxAmountOfParticipants = session.maxAmountOfParticipants;
 
-                    if (amountOfParticipants < maxAmountOfParticipants) {
-                        User.findOne({ _id: userId }, async (err, user) => {
-                            //Check if user with given id exists ->
-                            if (user) {
-                                //Check if user is already signedup for this session ->
-                                if (!session.participants.some(e => e.userId == userId)) {
-                                    //Add user to participants / save document ->
-                                    session.participants.push({ userId });
-                                    session.save();
-                                    res.status(200).json({ message: "U bent succesvol aangemeld" });
+                    if (sessionAmount != maxAmountOfParticipants) {
+                        if (sessionAmount + amountOfParticipants <= maxAmountOfParticipants) {
+                            User.findOne({ _id: userId }, async (err, user) => {
+                                //Check if user with given id exists ->
+                                if (user) {
+                                    //Check if user is already signedup for this session ->
+                                    if (!session.participants.some(e => e.userId == userId)) {
+                                        //Add user to participants / save document ->
+                                        session.participants.push({ userId, comingWith });
+                                        session.save();
+                                        res.status(200).json({ message: "U bent succesvol aangemeld" });
+                                    } else {
+                                        res.status(400).json({ error: "U bent al aangemeld voor deze les" });
+                                    }
                                 } else {
-                                    res.status(400).json({ error: "U bent al aangemeld voor deze les" });
+                                    res.status(404).json({ error: "Geen gebruiker gevonden met dit id" });
                                 }
-                            } else {
-                                res.status(404).json({ error: "Geen gebruiker gevonden met dit id" });
-                            }
-                        });
+                            });
+                        } else {
+                            const spacesLeft = maxAmountOfParticipants - sessionAmount;
+                            const errorString = spacesLeft == 1 ?
+                                "Er is helaas nog maar 1 plek vrij" :
+                                "Er zijn helaas nog maar " + spacesLeft + " plekke vrij";
+                            res.status(400).json({ error: errorString });
+                        }
                     } else {
-                        res.status(400).json({ error: "Deze sessie is al vol" });
+                        res.status(400).json({ error: "Deze sessie is helaas al vol" });
                     }
                 } else {
                     res.status(404).json({ error: "Geen sessie gevonden met dit Id" });

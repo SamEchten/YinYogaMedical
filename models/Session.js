@@ -41,5 +41,18 @@ const sessionSchema = mongoose.Schema({
     }
 });
 
+sessionSchema.statics.getAmountOfParticipants = async function (id) {
+    const session = await Session.findOne({ id });
+    const participants = session.participants;
+    let amountOfParticipants = 0;
+
+    for (userIndex in participants) {
+        const user = participants[userIndex];
+        amountOfParticipants += user.comingWith.length + 1;
+    }
+
+    return amountOfParticipants;
+}
+
 const Session = mongoose.model('session', sessionSchema);
 module.exports = Session;
