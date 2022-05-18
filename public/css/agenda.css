@@ -32,3 +32,12 @@ body {
     padding: 20px;
     overflow: auto;
 }
+
+.sweetalert-subscribe {
+    width: 40vw !important;
+}
+
+.sweetalert-subscribe input[type=number]{
+    margin-bottom: 50px !important;
+    width: 100px !important;
+}

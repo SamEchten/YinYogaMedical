@@ -43,6 +43,9 @@ app.use('/bicons', express.static(path.join(__dirname, 'node_modules/bootstrap-i
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 
+
+app.use('/sweetalert', express.static(path.join(__dirname, 'node_modules/sweetalert2/dist/sweetalert2.all.min.js')));
+
 //Routers / routes ->
 const viewRouter = require("./routes/viewRouter");
 const userRouter = require("./routes/userRouter");
