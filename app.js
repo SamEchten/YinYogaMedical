@@ -53,7 +53,3 @@ app.use(viewRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/user", validateJwt, userRouter);
 app.use("/api/session", sessionRouter);
-
-// Serving HTML pages to the client ->
-app.get("/home", validateJwt, (req, res) => res.render(path.join(__dirname, "./public/html/home")));
-app.get("/*", (req, res) => res.redirect("/"));
