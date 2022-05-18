@@ -7,35 +7,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enrollments</title>
     <link rel="icon" type="image/png" href="./static/favicon.png" />
-    <link rel="stylesheet" href="static/home.css">
-    <link rel="stylesheet" href="static/styles.css">
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="./bicons/bootstrap-icons.css">
+    <link rel="stylesheet" href="../static/profile/enrollments.css">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bicons/bootstrap-icons.css">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item text-center active">
-                    <a class="nav-link currentNavItem" href="#">Home</a>
-                </li>
-                <li class="nav-item text-center">
-                    <a class="nav-link" href="/lesrooster">Lesrooster</a>
-                </li>
-                <li class="nav-item text-center">
-                    <a class="nav-link" href="#">Producten</a>
-                </li>
-                <li class="nav-item text-center">
-                    <a class="nav-link" href="#">Media</a>
-                </li>
-                <li class="nav-item text-center">
-                    <a class="nav-link" href="#">Profiel</a>
-                </li>
-            </ul>
+    <div class="container-fluid main-wrapper">
+        <div class="row">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item text-center">
+                            <a class="nav-link" href="/home">Home</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link" href="lesrooster">Lesrooster</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link" href="#">Producten</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link" href="#">Media</a>
+                        </li>
+                        <li class="nav-item text-center active">
+                            <a class="nav-link currentNavItem" href="/profile/enrollments">Profiel</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-    </nav>
+        <div class="row">
+            <div class="col-md-2 offset-2">
+                <div class="row">
+                    <h1>Profiel</h1>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 options">
+                        <div class="row justify-content-center" id="profile">
+                            <p class="text-center">Mijn profiel</p>
+                        </div>
+                        <div class="row justify-content-center" id="products">
+                            <p class="text-center">Mijn producten</p>
+                        </div>
+                        <div class="row justify-content-center" id="videos">
+                            <p class="text-center">Mijn video's</p>
+                        </div>
+                        <div class="row justify-content-center" id="podcasts">
+                            <p class="text-center">Mijn podcasts</p>
+                        </div>
+                        <div class="row justify-content-center" id="enrollments">
+                            <p class="text-center">Lesinschrijvingen</p>
+                        </div>
+                        <div class="row justify-content-center" id="settings">
+                            <p class="text-center">Instellingen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
