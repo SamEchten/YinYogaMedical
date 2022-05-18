@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const path = require("path");
 const { validateJwt } = require("../middleware/validator");
 const authController = require("../controllers/authController");
 const sessionController = require("../controllers/sessionController");
@@ -19,7 +20,7 @@ router.get("/profile/enrollments", userController.viewEnrollments);
 
 // Home ->
 router.get("/home", validateJwt, (req, res) => {
-    res.render(path.join(__dirname, "./public/html/home"))
+    res.render(path.join(__dirname, "../views/home"));
 });
 
 //Redirect non existing routes to home

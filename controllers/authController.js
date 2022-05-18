@@ -80,11 +80,11 @@ const createToken = (id, fullName, isEmployee) => {
 }
 
 module.exports.login_get = (req, res) => {
-    res.render(path.join(__dirname, "../public/html/login"));
+    res.render(path.join(__dirname, "../views/login"));
 }
 
 module.exports.signup_get = (req, res) => {
-    res.render(path.join(__dirname, "../public/html/register"));
+    res.render(path.join(__dirname, "../views/register"));
 }
 
 module.exports.logout = (req, res) => {
