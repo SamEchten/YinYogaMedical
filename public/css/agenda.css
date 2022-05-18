@@ -1,7 +1,4 @@
-@font-face {
-    font-family: Lato;
-    src: url(./font_lato);
-}
+
 
 .main-wrapper
 {
@@ -9,9 +6,10 @@
 }
 
 body {
-    /* background-image: url(./background.png); */
+    background-image: url("./background.png"); 
     background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: fixed ;
 }
 
 .headerRow
@@ -22,6 +20,9 @@ body {
 .contentRow
 {
     height: 90%;
+    background-color: white;
+    margin-left: 40px !important;
+    margin-right: 40px !important;
     overflow: auto;
 }
 .schedule {
