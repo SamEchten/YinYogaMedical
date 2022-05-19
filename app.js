@@ -51,7 +51,7 @@ const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
 const sessionRouter = require("./routes/sessionRouter");
 
-app.use(viewRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/user", validateJwt, userRouter);
 app.use("/api/session", sessionRouter);
+app.use(viewRouter);

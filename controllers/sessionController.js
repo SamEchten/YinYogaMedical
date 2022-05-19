@@ -8,17 +8,17 @@ const userController = require("./userController");
 //      do show if req was made by admin or participants
 module.exports.get = async (req, res) => {
     const { id } = req.params;
+    console.log(id);
     if (id) {
         //Get single session
         try {
-            const session = await Session.findOne({ id });
+            const session = await Session.findOne({ _id: id });
+            console.log(session);
             if (session) {
                 res.status(200).json(session);
-            } else {
-                res.status(404).json({ error: "Geen sessie gevonden met dit Id" })
             }
         } catch (err) {
-            res.status(400).json({ error: "Er iets fout gegaan" });
+            res.status(400).json({ error: "Geen sessie gevonden met dit Id" });
         }
     } else {
         //Get all sessions
@@ -29,6 +29,12 @@ module.exports.get = async (req, res) => {
             res.status(400).json({ error: "Er is iets fout gegaan" })
         }
     }
+}
+
+module.exports.getByUserId = async (req, res) => {
+    const { id } = req.body;
+    console.log(id);
+
 }
 
 module.exports.add = async (req, res) => {
@@ -97,56 +103,14 @@ module.exports.signup = async (req, res) => {
 
     if (sessionId) {
         try {
-            Session.findOne({ _id: sessionId }, async (err, session) => {
-                //Check if session with given id exists ->
-                if (session) {
-                    let comingWithLength = 0;
-                    if (comingWith != null) {
-                        comingWithLength = comingWith.length;
-                    }
-
-                    //Check if session is not full ->
-                    const sessionAmount = await Session.getAmountOfParticipants(sessionId);
-                    const amountOfParticipants = session.participants.length + comingWithLength;
-                    const maxAmountOfParticipants = session.maxAmountOfParticipants;
-
-                    if (sessionAmount != maxAmountOfParticipants) {
-                        if (sessionAmount + amountOfParticipants <= maxAmountOfParticipants) {
-                            User.findOne({ _id: userId }, async (err, user) => {
-                                //Check if user with given id exists ->
-                                if (user) {
-                                    //Check if user is already signedup for this session ->
-                                    if (!session.participants.some(e => e.userId == userId)) {
-                                        //Add user to participants / save document ->
-                                        session.participants.push({ userId, comingWith });
-                                        session.save();
-                                        res.status(200).json({ message: "U bent succesvol aangemeld" });
-                                    } else {
-                                        res.status(400).json({ error: "U bent al aangemeld voor deze les" });
-                                    }
-                                } else {
-                                    res.status(404).json({ error: "Geen gebruiker gevonden met dit id" });
-                                }
-                            });
-                        } else {
-                            const spacesLeft = maxAmountOfParticipants - sessionAmount;
-                            const errorString = spacesLeft == 1 ?
-                                "Er is helaas nog maar 1 plek vrij" :
-                                "Er zijn helaas nog maar " + spacesLeft + " plekke vrij";
-                            res.status(400).json({ error: errorString });
-                        }
-                    } else {
-                        res.status(400).json({ error: "Deze sessie is helaas al vol" });
-                    }
-                } else {
-                    res.status(404).json({ error: "Geen sessie gevonden met dit Id" });
-                }
-            });
+            const session = await Session.findOne({ id: sessionId });
+            await session.addParticipants(sessionId, { userId, comingWith });
+            res.status(200).json({ message: "U bent succesvol aangemeld" });
         } catch (err) {
-            res.status(400).json({ error: "Er is iets fout gegaan" });
+            res.status(400).json({ message: err.message });
         }
     } else {
-        res.status(400).json({ error: "Er is geen sessionId opgestuurd" });
+        res.status(400).json({ message: "Er is geen sessionId gegegeven" });
     }
 }
 

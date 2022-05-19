@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const User = require("./User");
 
 const sessionSchema = mongoose.Schema({
     title: {
@@ -48,11 +49,69 @@ sessionSchema.statics.getAmountOfParticipants = async function (id) {
 
     for (userIndex in participants) {
         const user = participants[userIndex];
-        amountOfParticipants += user.comingWith.length + 1;
+        if (user.comingWith != null) {
+            amountOfParticipants += user.comingWith.length + 1;
+        } else {
+            amountOfParticipants += 1;
+        }
     }
 
     return amountOfParticipants;
 }
+
+sessionSchema.methods.addParticipants = async function (id, info) {
+    const { userId, comingWith } = info;
+    const session = this;
+
+    if (session) {
+        let comingWithLength = 0;
+        if (comingWith != null) {
+            comingWithLength = comingWith.length;
+        }
+
+        const sessionAmount = await Session.getAmountOfParticipants(id);
+        const amountOfParticipants = session.participants.length + comingWithLength;
+        const maxAmountOfParticipants = session.maxAmountOfParticipants;
+
+        if (sessionAmount != maxAmountOfParticipants) {
+            if (sessionAmount + amountOfParticipants <= maxAmountOfParticipants) {
+                let succes = false;
+                let userFound = false;
+                User.findOne({ _id: userId }, async (err, user) => {
+                    //Check if user with given id exists ->
+                    if (user) {
+                        userFound = true;
+                        //Check if user is already signedup for this session ->
+                        if (!session.participants.some(e => e.userId == userId)) {
+                            //Add user to participants / save document ->
+                            session.participants.push({ userId, comingWith });
+                            await session.save();
+                            succes = true;
+                        }
+                    }
+                });
+
+                if (!userFound) {
+                    throw Error("Geen gebruiker gevonden met dit id");
+                }
+
+                if (!succes) {
+                    throw Error("U bent al aangemeld voor deze les");
+                }
+
+
+            } else {
+                const spacesLeft = maxAmountOfParticipants - sessionAmount;
+                const errorString = spacesLeft == 1 ?
+                    "Er is helaas nog maar 1 plek vrij" :
+                    "Er zijn helaas nog maar " + spacesLeft + " plekken vrij";
+                throw Error(errorString);
+            }
+        } else {
+            throw Error("Deze sessie is helaas al vol");
+        }
+    }
+};
 
 const Session = mongoose.model('session', sessionSchema);
 module.exports = Session;
