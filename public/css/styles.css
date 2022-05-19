@@ -8,6 +8,10 @@
     border-left: 3px solid #D5CA9B;
     padding-left: 7px;
 }
+.rbs
+{
+    border-right: 2px solid #D5CA9B;
+}
 
 /* Global error message style */
 .errorBox {

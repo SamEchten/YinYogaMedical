@@ -16,7 +16,19 @@ body {
 {
     height: 10%;
 }
+.agendaItem
+{
+    background-color: #d5ca9b45;
+    margin: 4px;
+    border-radius: 0px 26px 0px 23px;
+    transition: 0.2s;
+    cursor: pointer;
 
+}
+.agendaItem:hover
+{
+    margin-left: 1px;
+}
 .contentRow
 {
     height: 90%;
@@ -33,6 +45,7 @@ body {
     padding: 20px;
     overflow: auto;
 }
+
 
 .sweetalert-subscribe {
     width: 40vw !important;
