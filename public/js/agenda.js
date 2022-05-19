@@ -1,4 +1,3 @@
-
 $('#subscribe').on("click", function(){
   Swal.fire({
     html: 
@@ -15,4 +14,14 @@ $('#subscribe').on("click", function(){
     confirmButtonColor: '#D5CA9B',
     cancelButtonText: 'Cancel',
   })
-})
+});
+
+// Render lesrooster from apiCaller and format it on date ->
+$(async function() {
+    const res = await (await ApiCaller.getAgenda()).json();
+    for(sessions in res)
+    {
+      console.log(res[sessions]);
+
+    }
+}); 
