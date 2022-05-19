@@ -28,7 +28,7 @@ function dateFormat(data)
     newDate = day + "/" + month + "/" + year;
     
     json.date = newDate;
-    json.time = time;
+    json.time = time.toString().slice(0, -3);
 
     return json;
 
