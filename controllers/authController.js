@@ -61,11 +61,16 @@ module.exports.signup_post = async (req, res) => {
 //Creates a token and sends it to the client via the response
 //Cookie is valid for 1 day and is httpOnly
 const sendJwtCookie = (res, id, fullName, isEmployee) => {
-    let token = createToken(id, fullName, isEmployee);
+    let userId = id.toString();
+    let token = createToken(userId, fullName, isEmployee);
     res.cookie("jwt", token, {
         expiresIn: maxAge * 1000,
         httpOnly: true
     });
+
+    res.cookie("userId", userId, {
+        expiresIn: maxAge * 1000
+    })
 }
 
 //createToken

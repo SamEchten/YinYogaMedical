@@ -6,7 +6,7 @@ const { validateJwt } = require("../middleware/validator");
 //Get all sessions ->
 router.get("/", controller.get);
 //Get single session ->
-router.get("/:id", validateJwt, controller.get);
+router.get("/:id", controller.get);
 //Get all session of user, userId is given ->
 router.get("/byUser/:id", validateJwt, controller.getByUserId);
 //Add new session ->
