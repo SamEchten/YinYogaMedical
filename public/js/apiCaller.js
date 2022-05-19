@@ -38,10 +38,25 @@ class  ApiCaller
         }
     }
 
-    static getAgenda = async() => {
+    static getAllSessions = async() => {
         let url = "/api/session/";
         let options = {
-            method: 'get',
+            method: 'GET',
+            headers:{
+            'Content-Type':'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch(err) {
+            //error
+        }
+    }
+    static getSingleSession = async(id) => {
+        let url = "/api/session/" + id;
+        let options = {
+            method: 'GET',
             headers:{
             'Content-Type':'application/json'
             }
