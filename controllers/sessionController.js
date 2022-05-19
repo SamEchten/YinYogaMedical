@@ -8,17 +8,20 @@ const userController = require("./userController");
 //      do show if req was made by admin or participants
 module.exports.get = async (req, res) => {
     const { id } = req.params;
-    const { userId } = req.body;
-    console.log(userId);
+    const userId = req.cookies.userId;
     if (id) {
         //Get single session
         try {
             const session = await Session.findOne({ _id: id });
             if (session) {
-                res.status(200).json(session);
+                const sessionInfo = await getSingleSessionInfo(session, userId);
+                res.status(200).json(sessionInfo);
+            } else {
+                res.status(404).json({ message: "Geen sessie gevonden met dit id" })
             }
+
         } catch (err) {
-            res.status(400).json({ error: "Geen sessie gevonden met dit Id" });
+            res.status(404).json({ error: "Geen sessie gevonden met dit id" });
         }
     } else {
         //Get all sessions
@@ -28,6 +31,38 @@ module.exports.get = async (req, res) => {
         } catch (err) {
             res.status(400).json({ message: "Er is iets fout gegaan", error: err.message });
         }
+    }
+}
+
+const getSingleSessionInfo = async (session, userId) => {
+    if (session) {
+        if (await isAdmin(userId)) {
+            return session;
+        } else {
+            return {
+                id: session._id,
+                title: session.title,
+                location: session.location,
+                date: session.date,
+                duration: session.duration,
+                teacher: session.teacher,
+                description: session.description,
+                maxAmountOfParticipants: session.maxAmountOfParticipants,
+                amountOfParticipants: await Session.getAmountOfParticipants
+            }
+        }
+    }
+}
+
+const isAdmin = async (userId) => {
+    const user = await User.findOne({ _id: userId });
+    if (user) {
+        if (user.isEmployee) {
+            return true;
+        }
+        return false;
+    } else {
+        return false;
     }
 }
 
@@ -70,7 +105,13 @@ const getAllSessions = async (userId) => {
 }
 
 const getSessionInfo = async (session, userId) => {
-    const sessionInfo = {
+    if (userId != null) {
+        if (session.private && !userParticipates(userId, session.participants)) {
+            return null;
+        }
+    }
+
+    return {
         id: session._id,
         title: session.title,
         location: session.location,
@@ -81,13 +122,6 @@ const getSessionInfo = async (session, userId) => {
         teacher: session.teacher,
         description: session.description
     };
-
-    if (userId != null) {
-        if (session.private && !userParticipates(userId, session.participants)) {
-            return null;
-        }
-    }
-    return sessionInfo;
 }
 
 const userParticipates = (userId, participants) => {
