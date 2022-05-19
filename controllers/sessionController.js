@@ -48,7 +48,7 @@ const getSingleSessionInfo = async (session, userId) => {
                 teacher: session.teacher,
                 description: session.description,
                 maxAmountOfParticipants: session.maxAmountOfParticipants,
-                amountOfParticipants: await Session.getAmountOfParticipants
+                amountOfParticipants: await Session.getAmountOfParticipants(session._id)
             }
         }
     }
