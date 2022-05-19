@@ -3,7 +3,6 @@ const User = require("../models/User");
 const path = require("path");
 const { handleSessionErrors } = require("./errorHandler");
 const userController = require("./userController");
-const { startOfWeek, endOfWeek, getWeek } = require("date-fns");
 
 //TODO: only show non private session
 //      do show if req was made by admin or participants
