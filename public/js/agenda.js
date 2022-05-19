@@ -52,9 +52,7 @@ function sessionDetails(data)
       <p class="lead">Docent: ${data.teacher}<p>
       <p class="lead">Datum: <b>${dateFormat(data.date).date}<b><p>`,
       confirmButtonColor: '#D5CA9B'
-    }
-    
-  )
+    });
 }
 
 function loadSessionItem(id, title, teacher, date, day)
