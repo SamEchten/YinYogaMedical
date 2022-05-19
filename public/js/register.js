@@ -34,6 +34,7 @@ $(".registerButton").on("click", async function () {
     }
 });
 
+// Show password or not ->
 $(".passIcon").on("click", function () {
     let type = $(".passwordInput").attr("type");
     if (type == "password") {

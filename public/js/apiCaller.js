@@ -37,5 +37,21 @@ class  ApiCaller
             //error
         }
     }
+
+    static getAgenda = async() => {
+        let url = "/api/session/";
+        let options = {
+            method: 'get',
+            headers:{
+            'Content-Type':'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch(err) {
+            //error
+        }
+    }
     
 }
