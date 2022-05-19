@@ -1,10 +1,13 @@
+
 let schedule;
+let weekNumb = getCurrentWeekNumber() -1;
 
 // Render lesrooster from apiCaller and format it on date ->
 $(async function() {
+  $(".week").html(weekNumb);
   const res = await (await ApiCaller.getAllSessions()).json();
   schedule = res;
-  loadAgenda(20);
+  loadAgenda(weekNumb);
 }); 
 
 $('#subscribe').on("click", function(){
@@ -28,7 +31,8 @@ $('#subscribe').on("click", function(){
 // Loading agenda data per week ->
 function loadAgenda(weekNumber)
 {
-    let week = schedule[weekNumber]
+    clearAgenda();
+    let week = schedule[weekNumber];
     for(day in week)
     {
       let dayData = week[day];
@@ -36,11 +40,50 @@ function loadAgenda(weekNumber)
       {
         let sessionData = dayData[session];
         let {id, title, teacher, date} = sessionData;
-        loadSessionItem(id, title, teacher, dateFormat(date).time, day);
+        loadSessionItem(id, title, teacher, dateFormat(date).time, dateFormat(date).date, day);
       }
     }
     
 }
+// Clear agenda ->
+function clearAgenda()
+{
+  for(days in getAllDaysOfWeek())
+  {
+    let day = getAllDaysOfWeek()[days];
+
+    $("#" + day).empty();
+  }
+}
+
+function getCurrentWeekNumber()
+{
+  currentDate = new Date();
+    startDate = new Date(currentDate.getFullYear(), 0, 1);
+    var days = Math.floor((currentDate - startDate) /
+        (24 * 60 * 60 * 1000));
+          
+    var weekNumber = Math.ceil((currentDate.getDay() + 1 + days) / 7);
+  return weekNumber;
+}
+
+// gets all day of the week and returns it in a array ->
+function getAllDaysOfWeek(data)
+{
+  let days = [];
+  for(week in schedule)
+  {
+    for(day in schedule[week])
+    {
+      if(!days.includes(day))
+      {
+        days.push(day);
+      }
+    }
+  }
+  return days;
+}
+
 // Show all details per session ->
 function sessionDetails(data)
 { 
@@ -55,12 +98,12 @@ function sessionDetails(data)
     });
 }
 
-function loadSessionItem(id, title, teacher, date, day)
+function loadSessionItem(id, title, teacher, time, date, day)
 {
     let itemLayout = `
     <div id="${id}"class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
-        <h4 id="time" class="text-left lead rbs"><i class="bi bi-clock pe-3"></i>${date}</h4>
+        <h4 id="time" class="text-left lead rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
       </div>
       <div class="col-md-2">
         <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
@@ -92,5 +135,20 @@ function addEventHandlersSession(id)
     }
   });
 }
+
+// loading prev and next week 
+$(".prevWeek").on("click", function()
+{
+  weekNumb--;
+  $(".week").html(weekNumb);
+  loadAgenda(weekNumb);
+});
+
+$(".nextWeek").on("click", function()
+{
+  weekNumb++;
+  $(".week").html(weekNumb);
+  loadAgenda(weekNumb);
+});
 
 
