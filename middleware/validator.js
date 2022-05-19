@@ -11,10 +11,11 @@ const User = require("../models/User");
 const validateJwt = (req, res, next) => {
     let token = req.cookies.jwt;
     //Token is provided ->
-    if(token) {
+    if (token) {
         const decodedToken = verifyJwt(token);
-        if(decodedToken != null) {
+        if (decodedToken != null) {
             //Valid token ->
+            req.body.userId = decodedToken.id;
             next();
         } else {
             res.redirect("/login");
@@ -33,14 +34,14 @@ const validateJwt = (req, res, next) => {
 //if token is not valid, not provided or request was not made by admin -> redirect to login page
 const validateAdmin = async (req, res, next) => {
     const token = req.cookies.jwt;
-    if(token) {
+    if (token) {
         const decodedToken = verifyJwt(token);
-        if(decodedToken != null) {
+        if (decodedToken != null) {
             //Valid token ->
             const id = decodedToken.id;
-            User.findOne({id}, (err, doc) => {
-                if(!err) {
-                    if(doc.isEmployee) {
+            User.findOne({ id }, (err, doc) => {
+                if (!err) {
+                    if (doc.isEmployee) {
                         //Request was mode by admin ->
                         next();
                     }
@@ -60,15 +61,15 @@ const validateAdmin = async (req, res, next) => {
 const verifyJwt = (token) => {
     let decodedToken;
     jwt.verify(token, config.secret, (err, tok) => {
-        if(!err) {
-            if(tok.exp > tok.iat) {
+        if (!err) {
+            if (tok.exp > tok.iat) {
                 decodedToken = tok;
             }
         }
     });
     return decodedToken;
 }
- 
+
 const validateJson = async (req, res, next) => {
     const origin = req.originalUrl.replace("/api", "");
     const json = req.body;
@@ -76,12 +77,12 @@ const validateJson = async (req, res, next) => {
 
     try {
         let result = val.validate(json, schema);
-        if(result.valid) {
+        if (result.valid) {
             next();
         } else {
             res.sendStatus(400);
         }
-    } catch(err) {
+    } catch (err) {
         res.sendStatus(400);
     }
 }

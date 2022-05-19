@@ -8,11 +8,11 @@ const userController = require("./userController");
 //      do show if req was made by admin or participants
 module.exports.get = async (req, res) => {
     const { id } = req.params;
+    const { userId } = req.body;
     if (id) {
         //Get single session
         try {
             const session = await Session.findOne({ _id: id });
-            console.log(session);
             if (session) {
                 res.status(200).json(session);
             }
@@ -22,16 +22,16 @@ module.exports.get = async (req, res) => {
     } else {
         //Get all sessions
         try {
-            const allSession = await getAllSessions();
+            const allSession = await getAllSessions(userId);
             res.status(200).json(allSession);
         } catch (err) {
-            res.status(400).json({ error: "Er is iets fout gegaan" });
+            res.status(400).json({ message: "Er is iets fout gegaan", error: err.message });
         }
     }
 }
 
 //Gets all sessions sorted by week and day
-const getAllSessions = async () => {
+const getAllSessions = async (userId) => {
     const daysOfWeek = ["zondag", "maandag", "dinsdag", "woendag", "donderdag", "vrijdag", "zaterdag"];
     const firstDayOfWeek = getFirstDayOfWeek();
     const allSessions = {};
@@ -43,28 +43,52 @@ const getAllSessions = async () => {
     }).sort({ datefield: 1 });
 
     let weekInfo = {
-        zondag: [],
-        maandag: [],
-        dinsdag: [],
-        woendag: [],
-        donderdag: [],
-        vrijdag: [],
-        zaterdag: []
+        zondag: [], maandag: [], dinsdag: [], woendag: [],
+        donderdag: [], vrijdag: [], zaterdag: []
     };
 
     for (index in sessions) {
-        const session = sessions[index];
-        const dayNr = session.date.getDay();
-        const weekNr = session.date.getWeekNumber();
-        const day = daysOfWeek[dayNr];
+        const session = await getSessionInfo(sessions[index], userId);
+        if (session != null) {
+            const dayNr = session.date.getDay();
+            const weekNr = session.date.getWeekNumber();
+            const day = daysOfWeek[dayNr];
 
-        if (allSessions[weekNr] != null) {
-            weekInfo = allSessions[weekNr];
+            if (allSessions[weekNr] != null) {
+                weekInfo = allSessions[weekNr];
+            }
+            weekInfo[day].push(session);
+            allSessions[weekNr] = weekInfo;
         }
-        weekInfo[day].push(session);
-        allSessions[weekNr] = weekInfo;
     }
     return allSessions;
+}
+
+const getSessionInfo = async (session, userId) => {
+    const sessionInfo = {
+        id: session._id,
+        title: session.title,
+        location: session.location,
+        date: session.date,
+        duration: session.duration,
+        amountOfParticipants: await Session.getAmountOfParticipants(session._id),
+        maxAmountOfParticipants: session.maxAmountOfParticipants,
+        teacher: session.teacher,
+        description: session.description
+    };
+
+    if (session.private && !userParticipates(userId, session.participants)) {
+        return null;
+    }
+
+    return sessionInfo;
+}
+
+const userParticipates = (userId, participants) => {
+    if (participants.some(e => e.userId == userId)) {
+        return true;
+    }
+    return false;
 }
 
 Date.prototype.getWeekNumber = function () {
