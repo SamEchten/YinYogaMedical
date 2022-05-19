@@ -9,6 +9,7 @@ const userController = require("./userController");
 module.exports.get = async (req, res) => {
     const { id } = req.params;
     const { userId } = req.body;
+    console.log(userId);
     if (id) {
         //Get single session
         try {
@@ -40,7 +41,7 @@ const getAllSessions = async (userId) => {
         date: {
             $gte: firstDayOfWeek
         }
-    }).sort({ datefield: 1 });
+    }).sort({ date: 1 });
 
     let weekInfo = {
         zondag: [], maandag: [], dinsdag: [], woendag: [],
@@ -59,6 +60,10 @@ const getAllSessions = async (userId) => {
             }
             weekInfo[day].push(session);
             allSessions[weekNr] = weekInfo;
+            weekInfo = {
+                zondag: [], maandag: [], dinsdag: [], woendag: [],
+                donderdag: [], vrijdag: [], zaterdag: []
+            }
         }
     }
     return allSessions;
@@ -77,10 +82,11 @@ const getSessionInfo = async (session, userId) => {
         description: session.description
     };
 
-    if (session.private && !userParticipates(userId, session.participants)) {
-        return null;
+    if (userId != null) {
+        if (session.private && !userParticipates(userId, session.participants)) {
+            return null;
+        }
     }
-
     return sessionInfo;
 }
 
@@ -160,7 +166,7 @@ module.exports.delete = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const session = await Session.findOne({ id });
+        const session = await Session.findOne({ _id: id });
         if (session) {
             session.remove();
             //Send email to participants
@@ -181,8 +187,12 @@ module.exports.signup = async (req, res) => {
 
     if (sessionId) {
         try {
-            const session = await Session.findOne({ id: sessionId });
-            await session.addParticipants(sessionId, { userId, comingWith });
+            const session = await Session.findOne({ _id: sessionId });
+            if (session) {
+                await session.addParticipants(sessionId, { userId, comingWith });
+            } else {
+                res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
+            }
             res.status(200).json({ message: "U bent succesvol aangemeld" });
         } catch (err) {
             res.status(400).json({ message: err.message });

@@ -75,31 +75,20 @@ sessionSchema.methods.addParticipants = async function (id, info) {
 
         if (sessionAmount != maxAmountOfParticipants) {
             if (sessionAmount + amountOfParticipants <= maxAmountOfParticipants) {
-                let succes = false;
-                let userFound = false;
-                User.findOne({ _id: userId }, async (err, user) => {
-                    //Check if user with given id exists ->
-                    if (user) {
-                        userFound = true;
-                        //Check if user is already signedup for this session ->
-                        if (!session.participants.some(e => e.userId == userId)) {
-                            //Add user to participants / save document ->
-                            session.participants.push({ userId, comingWith });
-                            await session.save();
-                            succes = true;
-                        }
+                const user = await User.find({ _id: userId });
+                if (user) {
+                    userFound = true;
+                    //Check if user is already signedup for this session ->
+                    if (!session.participants.some(e => e.userId == userId)) {
+                        //Add user to participants / save document ->
+                        session.participants.push({ userId, comingWith });
+                        await session.save();
+                    } else {
+                        throw Error("U bent al aangemeld voor deze les");
                     }
-                });
-
-                if (!userFound) {
+                } else {
                     throw Error("Geen gebruiker gevonden met dit id");
                 }
-
-                if (!succes) {
-                    throw Error("U bent al aangemeld voor deze les");
-                }
-
-
             } else {
                 const spacesLeft = maxAmountOfParticipants - sessionAmount;
                 const errorString = spacesLeft == 1 ?
