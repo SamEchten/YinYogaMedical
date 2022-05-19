@@ -53,5 +53,5 @@ const sessionRouter = require("./routes/sessionRouter");
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", validateJwt, userRouter);
-app.use("/api/session", sessionRouter);
+app.use("/api/session", validateJwt, sessionRouter);
 app.use(viewRouter);
