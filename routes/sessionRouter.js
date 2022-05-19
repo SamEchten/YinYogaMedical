@@ -19,4 +19,9 @@ router.put("/:id", controller.update);
 //Deletes a session ->
 router.delete("/:id", controller.delete);
 
+//Statistics routes ->
+//Get sessions ordered by how populair a session is->
+
+//Get sessions ordered by most populair day -> 
+
 module.exports = router;

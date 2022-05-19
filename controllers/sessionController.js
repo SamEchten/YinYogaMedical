@@ -3,12 +3,12 @@ const User = require("../models/User");
 const path = require("path");
 const { handleSessionErrors } = require("./errorHandler");
 const userController = require("./userController");
+const { startOfWeek, endOfWeek, getWeek } = require("date-fns");
 
 //TODO: only show non private session
 //      do show if req was made by admin or participants
 module.exports.get = async (req, res) => {
     const { id } = req.params;
-    console.log(id);
     if (id) {
         //Get single session
         try {
@@ -23,12 +23,67 @@ module.exports.get = async (req, res) => {
     } else {
         //Get all sessions
         try {
-            const sessions = await Session.find();
-            res.status(200).json(sessions);
+            const allSession = await getAllSessions();
+            res.status(200).json(allSession);
         } catch (err) {
-            res.status(400).json({ error: "Er is iets fout gegaan" })
+            res.status(400).json({ error: "Er is iets fout gegaan" });
         }
     }
+}
+
+//Gets all sessions sorted by week and day
+const getAllSessions = async () => {
+    const daysOfWeek = ["zondag", "maandag", "dinsdag", "woendag", "donderdag", "vrijdag", "zaterdag"];
+    const firstDayOfWeek = getFirstDayOfWeek();
+    const allSessions = {};
+
+    const sessions = await Session.find({
+        date: {
+            $gte: firstDayOfWeek
+        }
+    }).sort({ datefield: 1 });
+
+    let weekInfo = {
+        zondag: [],
+        maandag: [],
+        dinsdag: [],
+        woendag: [],
+        donderdag: [],
+        vrijdag: [],
+        zaterdag: []
+    };
+
+    for (index in sessions) {
+        const session = sessions[index];
+        const dayNr = session.date.getDay();
+        const weekNr = session.date.getWeekNumber();
+        const day = daysOfWeek[dayNr];
+
+        if (allSessions[weekNr] != null) {
+            weekInfo = allSessions[weekNr];
+        }
+        weekInfo[day].push(session);
+        allSessions[weekNr] = weekInfo;
+    }
+    return allSessions;
+}
+
+Date.prototype.getWeekNumber = function () {
+    var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    var dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+};
+
+const getFirstDayOfWeek = () => {
+    const date = new Date();
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+
+    let result = new Date(date.setDate(diff));
+    result = result.toISOString().split("T")[0] + "T00:00:00.000Z";
+    return result;
 }
 
 module.exports.getByUserId = async (req, res) => {
