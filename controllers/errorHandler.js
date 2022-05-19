@@ -33,22 +33,27 @@ module.exports.handleUserErrors = (err) => {
 }
 
 module.exports.handleSessionErrors = (err) => {
-    const errors = {
-        title: null,
-        location: null,
-        date: null,
-        duration: null,
-        participants: null,
-        teacher: null,
-        maxAmountOfParticipants: null
-    };
+    try {
+        const errors = {
+            title: null,
+            location: null,
+            date: null,
+            duration: null,
+            participants: null,
+            teacher: null,
+            maxAmountOfParticipants: null
+        };
 
-    if (err.message.includes("session validation failed")) {
-        Object.values(err.errors).forEach((error) => {
-            let properties = error.properties;
-            errors[properties.path] = properties.message;
-        })
+        if (err.message.includes("session validation failed")) {
+            Object.values(err.errors).forEach((error) => {
+                let properties = error.properties;
+                errors[properties.path] = properties.message;
+            })
 
-        return errors;
+            return errors;
+        }
+    } catch (err) {
+        return { message: "Er is iets fout gegaan", error: err.message }
     }
+
 }
