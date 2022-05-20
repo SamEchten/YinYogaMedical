@@ -51,10 +51,8 @@ function clearAgenda(day)
 
 }
 // Clear all days
-function fullClear()
-{
-  for(day in daysOfWeek)
-  {
+function fullClear() {
+  for(day in daysOfWeek) {
     console.log(day)
     $("#" + daysOfWeek[day]).empty();
     $("#" + daysOfWeek[day]).append("<h4 class='lead p-3'>Geen lessen</h4>")
@@ -100,13 +98,13 @@ function sessionDetails(data) {
 function loadSessionItem(id, title, teacher, time, date, day) {
   let itemLayout = `
     <div id="${id}"class="row ps-4 p-2 agendaItem align-items-center">
-      <div class="col-md-2">
+      <div class="col-md-2 aa">
         <h4 id="time" class="text-left lead rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-2 aa">
         <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-2 aa">
         <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
       </div>
       <div class="col-md-6 text-end">

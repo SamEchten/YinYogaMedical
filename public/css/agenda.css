@@ -1,5 +1,4 @@
 
-
 .main-wrapper
 {
     height: calc(100vh - 58px);
@@ -22,13 +21,17 @@ body {
     border-radius: 5px;
     transition: 0.2s;
     cursor: pointer;
+    animation-name: headerTest;
+    animation-duration: 0.5s;
 
 }
+
 .agendaItem:hover
 {
     margin-left: 0.5px;
     background-color: #e9e9e9;
 }
+
 .contentRow
 {
     height: 90%;
@@ -39,10 +42,12 @@ body {
     border-radius: 10px 10px 0px 0px;
     border: 1px solid #eeeeee;
 }
+
 .contentRow::-webkit-scrollbar
 {
     display: none;
 }
+
 .schedule {
     border: 1px solid black;
     border-radius: 1px 1px 1px 1px;
@@ -52,6 +57,10 @@ body {
     overflow: auto;
 }
 
+.headerText {
+    border-left: 2px solid black;
+    padding: 10px;
+}
 
 .sweetalert-subscribe {
     width: 40vw !important;
@@ -93,3 +102,10 @@ body {
 .sweetalert-makeLesson h2 {
     margin-bottom: 30px !important;
 }
+
+/* KEYFRAMES ANIMATION */
+
+@keyframes headerTest {
+    0%   {width: 0%;}
+    100% {width: 100%;}
+  }
