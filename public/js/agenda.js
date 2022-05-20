@@ -52,6 +52,7 @@ function changed(){
 function loadAgenda(weekNumber)
 {
   let week = schedule[weekNumber];
+  console.log(week)
   if(week != undefined)
   {
     //clearAgenda(daysOfWeek);
@@ -75,16 +76,25 @@ function loadAgenda(weekNumber)
     }
   } else
   {
-    clearAgenda(daysOfWeek);
-    $("#" + day).append("<h4 class='lead p-3'>Geen lessen</h4>")
+    fullClear();
   } 
 }
-// Clear agenda ->
-function clearAgenda(daysOfWeek)
+// Clear one day
+function clearAgenda(day)
 {
 
   $("#" + day).empty();
   
+}
+// Clear all days
+function fullClear()
+{
+  for(day in daysOfWeek)
+  {
+    console.log(day)
+    $("#" + daysOfWeek[day]).empty();
+    $("#" + daysOfWeek[day]).append("<h4 class='lead p-3'>Geen lessen</h4>")
+  }
 }
 
 function getCurrentWeekNumber()
