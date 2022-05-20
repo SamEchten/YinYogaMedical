@@ -11,12 +11,12 @@ let transporter = mailer.createTransport({
     }
 });
 
-const sendMail = async (receiver, subject, html) => {
+const sendMail = async (receiver, html) => {
     let mailConfirmation;
     let mailOptions = {
         from: '"Natascha Puper " <yinyogamedical.server@gmail.com>',
         to: receiver,
-        subject: subject,
+        subject: "Het Eigen Wijze Lichaam",
         html: html
     };
 
@@ -24,16 +24,41 @@ const sendMail = async (receiver, subject, html) => {
         if (error) {
             throw Error({ message: "Mail kon niet worden verzonden", error: error.message });
         } else {
-            mailConfirmation = true;
+            mailConfirmation = info;
         }
     });
+
+    return mailConfirmation;
 }
 
-module.exports.sessionSignOutMail = async (receiver, session) => {
-    let subject = "Uitschrijven les";
-    let html = "<h1>U heeft uitgeschreven voor de les: " + session.title + "</h1>";
+module.exports.sessionSignOutMail = async (user, session) => {
+    let html = `
+        <h1>Hallo ${user.fullName}</h1>
+        <p>U heeft uitgeschreven voor de les: ${session.title}</p>
+        <p>Met vriendelijke groet, </p>
+        <p>Het Eigen Wijze Lichaam</p>
+    `;
     try {
-        if (sendMail(receiver, subject, html)) {
+        if (sendMail(receiver, html)) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (err) {
+        return false;
+    }
+}
+
+module.exports.signUpMail = async (user) => {
+    let receiver = user.email;
+    let html = `
+        <h1>Welkom ${user.fullName}</h1>
+        <p>U heeft zich aangemeld voor het platform van Het Eigen Wijze Lichaam</p>
+        <p>Met vriendelijke groet, </p>
+        <p>Het Eigen Wijze Lichaam</p>
+    `;
+    try {
+        if (sendMail(receiver, html)) {
             return true;
         } else {
             return false;

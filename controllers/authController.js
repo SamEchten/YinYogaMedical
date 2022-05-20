@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 const secret = require("../config").config.secret;
 const { handleUserErrors } = require("./errorHandler");
+const { signUpMail } = require("../controllers/mailController");
 const maxAge = 24 * 60 * 60;
 
 //Login_post
@@ -41,11 +42,19 @@ module.exports.signup_post = async (req, res) => {
         //Send jwt cookie to client
         sendJwtCookie(res, user._id, user.fullName, user.isEmployee);
 
+        //Send mail to user
+        signUpMail({
+            fullName: user.fullName,
+            email: user.email
+        });
+
         //Send user info back to client
         res.status(201).json({
             "id": user._id,
             "fullName": user.fullName
         });
+
+
 
     } catch (err) {
         let errors = handleUserErrors(err);
