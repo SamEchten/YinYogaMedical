@@ -1,54 +1,54 @@
 
 let schedule;
+let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber() - 1;
 
 // Render lesrooster from apiCaller and format it on date ->
 $(async function () {
-  $(".week").html(weekNumb);
+  setWeekData(weekNumb);
   const res = await (await ApiCaller.getAllSessions()).json();
   schedule = res;
   loadAgenda(weekNumb);
 });
 
-$('#subscribe').on("click", function () {
-  Swal.fire({
-    html:
-      `<h2>Inschrijven</h2>
-    <p>U wilt u inschrijven voor (les).</p>
-    <p><b> Hoeveel personen wilt u inschrijven?</b></p>
-    <input id="swal-input1" class="swal2-input" align="left" type="number" min="0">
-    <p><b>Vul hieronder de naam en het e-mailadres van deze personen in.</b></p>
-    <p><input id="swal-input2" class="swal2-input" type="text" placeholder="Naam">
-    <input id="swal-input2" class="swal2-input" type="text" placeholder="E-mailadres"></p>`,
-    customClass: 'sweetalert-subscribe',
-    showCancelButton: true,
-    confirmButtonText: 'Schrijf mij in',
-    confirmButtonColor: '#D5CA9B',
-    cancelButtonText: 'Cancel',
-  });
-});
+
+function checkIncomingSchedule() {
+
+  if (schedule == undefined) {
+    return true;
+  }
+  return false;
+}
 
 // Loading agenda data per week ->
 function loadAgenda(weekNumber) {
-  clearAgenda();
   let week = schedule[weekNumber];
-  for (day in week) {
-    let dayData = week[day];
-    for (session in dayData) {
-      let sessionData = dayData[session];
-      let { id, title, teacher, date } = sessionData;
-      loadSessionItem(id, title, teacher, dateFormat(date).time, dateFormat(date).date, day);
+  if (week != undefined) {
+    //clearAgenda(daysOfWeek);
+    for (day in week) {
+      if (week[day].length > 0) {
+        let dayData = week[day];
+        clearAgenda(day)
+        for (session in dayData) {
+          let sessionData = dayData[session];
+          let { id, title, teacher, date } = sessionData;
+          loadSessionItem(id, title, teacher, dateFormat(date).time, dateFormat(date).date, day);
+        }
+      } else {
+        clearAgenda(day);
+        $("#" + day).append("<h4 class='lead p-3'>Geen lessen</h4>")
+      }
     }
+  } else {
+    clearAgenda(daysOfWeek);
+    $("#" + day).append("<h4 class='lead p-3'>Geen lessen</h4>")
   }
-
 }
 // Clear agenda ->
-function clearAgenda() {
-  for (days in getAllDaysOfWeek()) {
-    let day = getAllDaysOfWeek()[days];
+function clearAgenda(daysOfWeek) {
 
-    $("#" + day).empty();
-  }
+  $("#" + day).empty();
+
 }
 
 function getCurrentWeekNumber() {
@@ -123,14 +123,60 @@ function addEventHandlersSession(id) {
 // loading prev and next week 
 $(".prevWeek").on("click", function () {
   weekNumb--;
-  $(".week").html(weekNumb);
+  setWeekData(weekNumb);
   loadAgenda(weekNumb);
 });
 
 $(".nextWeek").on("click", function () {
   weekNumb++;
-  $(".week").html(weekNumb);
+  setWeekData(weekNumb);
   loadAgenda(weekNumb);
 });
+
+$('#subscribe').on("click", function () {
+  Swal.fire({
+    html:
+      `<h2>Inschrijven</h2>
+    <p>U wilt u inschrijven voor (les).</p>
+    <p><b> Hoeveel personen wilt u inschrijven?</b></p>
+    <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
+    <p><b id="extraPeopleTitle"></b></p>
+    <p id="inputfields"></p>`,
+    customClass: 'sweetalert-subscribe',
+    showCancelButton: true,
+    confirmButtonText: 'Schrijf mij in',
+    confirmButtonColor: '#D5CA9B',
+    cancelButtonText: 'Cancel',
+  });
+});
+
+// Loads inputfields.
+function nrOfPeopleChanged() {
+  let val = document.getElementById('nrOfPeople').value;
+  let title = document.getElementById('extraPeopleTitle');
+  let temporary = '';
+  if (val > 1) {
+    for (let i = 0; i < val - 1; i++) {
+      temporary +=
+        "<input id='name" + val + "' class='swal2-input' type='text' placeholder='Naam'>" +
+        "<input id='emailaddress" + val + "' class='swal2-input' type='text' placeholder='E-mailadres'>";
+    }
+    title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
+    document.getElementById('inputfields').innerHTML = temporary;
+  }
+  else {
+    title.innerHTML = '';
+    document.getElementById('inputfields').innerHTML = '';
+  }
+}
+
+function setWeekData(week) {
+  let fDay = getfirstAndlastDatesOfTheWeek(2022, week).firstDay;
+  let lDay = getfirstAndlastDatesOfTheWeek(2022, week).lastDay;
+
+  $(".week").html(fDay + " - " + lDay)
+}
+
+
 
 

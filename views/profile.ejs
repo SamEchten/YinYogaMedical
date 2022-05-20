@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enrollments</title>
     <link rel="icon" type="image/png" href="./static/favicon.png" />
-    <link rel="stylesheet" href="../static/profile/enrollments.css">
+    <link rel="stylesheet" href="../static/profile.css">
     <link rel="stylesheet" href="../static/styles.css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../bicons/bootstrap-icons.css">
@@ -44,34 +44,40 @@
         </div>
         <div class="row">
             <div class="col-md-2 offset-2">
-                <div class="row">
+                <div class="row pt-5">
                     <h1>Profiel</h1>
                 </div>
                 <div class="row">
                     <div class="col-md-12 options">
-                        <div class="row justify-content-center" id="profile">
-                            <p class="text-center">Mijn profiel</p>
-                        </div>
-                        <div class="row justify-content-center" id="products">
-                            <p class="text-center">Mijn producten</p>
-                        </div>
-                        <div class="row justify-content-center" id="videos">
-                            <p class="text-center">Mijn video's</p>
-                        </div>
-                        <div class="row justify-content-center" id="podcasts">
-                            <p class="text-center">Mijn podcasts</p>
-                        </div>
-                        <div class="row justify-content-center" id="enrollments">
-                            <p class="text-center">Lesinschrijvingen</p>
-                        </div>
-                        <div class="row justify-content-center" id="settings">
-                            <p class="text-center">Instellingen</p>
-                        </div>
+                        <ul>
+                            <li id="profiel" class="setting">Mijn profiel</li>
+                            <li id="product" class="setting">Mijn producten</li>
+                            <li id="video" class="setting">Mijn video's</li>
+                            <li id="podcast" class="setting">Mijn podcasts</li>
+                            <li id="les" class="setting">Lesinschrijvingen</li>
+                            <li id="instellingen" class="setting">Instellingen</li>
+                        </ul>
                     </div>
                 </div>
             </div>
+            <div class="col-md-6 offset-2">
+                <div class="row">
+                    <div class="col-md-12 settingsContent">
+
+                    </div>
+                </div>
+                <h6 id="1" style="display: block">Test 1</h6>
+                <h6 id="2">Test 2</h6>
+                <h6 id="3">Test 3</h6>
+                <h6 id="4">Test 4</h6>
+                <h6 id="5">Test 5</h6>
+            </div>
         </div>
-    </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="/static/profile.js"></script>
+
+
 </body>
 
 </html>

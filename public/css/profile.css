@@ -19,6 +19,24 @@ p {
 }
 
 .options {
-    background-color: black;
-    color: white;
+    background-color: #FFFFFF;
+    color: #000000;
+    border-radius: 4%;
+}
+
+h6 {
+    display: none;
+}
+
+select {
+    background-color: #FFFFFF;
+    color: #000000;
+    border-radius: 4%;
+    overflow: hidden;
+    border: none;
+}
+
+option:focus-within {
+    border: none !important;
+    color: red !important;
 }
