@@ -5,5 +5,5 @@ module.exports.viewProfile = (req, res) => {
 }
 
 module.exports.viewMyProfile = (req, res) => {
-    res.render(path.join(__dirname, "../view/profile/myProfile"));
+    res.render(path.join(__dirname, "../views/profile/myProfile"));
 }
