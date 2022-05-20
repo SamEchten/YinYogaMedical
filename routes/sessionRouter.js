@@ -3,6 +3,9 @@ const router = express.Router();
 const controller = require("../controllers/sessionController");
 const { validateJwt } = require("../middleware/validator");
 
+//TODO:
+//Add adminValidation to: add, update, delete
+
 //Get all sessions ->
 router.get("/", controller.get);
 //Get single session ->

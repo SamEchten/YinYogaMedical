@@ -19,7 +19,6 @@ module.exports.get = async (req, res) => {
             } else {
                 res.status(404).json({ message: "Geen sessie gevonden met dit id" })
             }
-
         } catch (err) {
             res.status(404).json({ error: "Geen sessie gevonden met dit id" });
         }
@@ -68,7 +67,7 @@ const isAdmin = async (userId) => {
 
 //Gets all sessions sorted by week and day
 const getAllSessions = async (userId) => {
-    const daysOfWeek = ["zondag", "maandag", "dinsdag", "woendag", "donderdag", "vrijdag", "zaterdag"];
+    const daysOfWeek = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
     const firstDayOfWeek = getFirstDayOfWeek();
     const allSessions = {};
 
@@ -79,7 +78,7 @@ const getAllSessions = async (userId) => {
     }).sort({ date: 1 });
 
     let weekInfo = {
-        zondag: [], maandag: [], dinsdag: [], woendag: [],
+        zondag: [], maandag: [], dinsdag: [], woensdag: [],
         donderdag: [], vrijdag: [], zaterdag: []
     };
 
@@ -96,7 +95,7 @@ const getAllSessions = async (userId) => {
             weekInfo[day].push(session);
             allSessions[weekNr] = weekInfo;
             weekInfo = {
-                zondag: [], maandag: [], dinsdag: [], woendag: [],
+                zondag: [], maandag: [], dinsdag: [], woensdag: [],
                 donderdag: [], vrijdag: [], zaterdag: []
             }
         }
@@ -241,7 +240,7 @@ module.exports.signout = async (req, res) => {
 }
 
 module.exports.view = (req, res) => {
-    res.render(path.join(__dirname, "../views/agenda"));
+    res.render(path.join(__dirname, "../views/agenda"), { isAdmin: false });
 }
 
 module.exports.adminview = (req, res) => {

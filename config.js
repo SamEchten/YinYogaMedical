@@ -3,5 +3,9 @@ module.exports.config = {
     database: {
         password: "EH4cSD4JSCbuDei4",
         user: "admin"
+    },
+    email: {
+        user: "yinyogamedical.server@gmail.com",
+        password: "YinYogaMedicalServer"
     }
 }

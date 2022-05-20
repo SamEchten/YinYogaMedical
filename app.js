@@ -4,6 +4,8 @@ const path = require("path");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-Parser");
 const config = require("./config").config;
+const https = require("https");
+const fs = require("fs");
 
 //Validator ->
 const { validateJwt } = require("./middleware/validator");
@@ -13,6 +15,12 @@ const { validateJson } = require("./middleware/validator");
 //Server port ->
 const port = 3030;
 
+//Optinos for https connection
+const httpsOptions = {
+    key: fs.readFileSync("./security/cert.key"),
+    cert: fs.readFileSync("./security/cert.pem")
+};
+
 //View engine
 app.set('view engine', 'ejs');
 
@@ -21,11 +29,14 @@ const dbpass = config.database.password;
 const dbuser = config.database.user;
 const dburi = "mongodb://" + dbuser + ":" + dbpass + "@localhost:27017/YinYogaMedical";
 
+
+const server = https.createServer(httpsOptions, app);
+
 mongoose.connect(dburi, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
     console.log("Database connected");
-    app.listen(port, () => {
-        console.log("App is running");
-    });
+    server.listen(port, () => {
+        console.log("Server is running");
+    })
 });
 
 //Middleware ->

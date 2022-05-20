@@ -1,19 +1,19 @@
 
 let schedule;
-let weekNumb = getCurrentWeekNumber() -1;
+let weekNumb = getCurrentWeekNumber() - 1;
 
 // Render lesrooster from apiCaller and format it on date ->
-$(async function() {
+$(async function () {
   $(".week").html(weekNumb);
   const res = await (await ApiCaller.getAllSessions()).json();
   schedule = res;
   loadAgenda(weekNumb);
-}); 
+});
 
-$('#subscribe').on("click", function(){
+$('#subscribe').on("click", function () {
   Swal.fire({
-    html: 
-    `<h2>Inschrijven</h2>
+    html:
+      `<h2>Inschrijven</h2>
     <p>U wilt u inschrijven voor (les).</p>
     <p><b> Hoeveel personen wilt u inschrijven?</b></p>
     <input id="swal-input1" class="swal2-input" align="left" type="number" min="0">
@@ -29,54 +29,44 @@ $('#subscribe').on("click", function(){
 });
 
 // Loading agenda data per week ->
-function loadAgenda(weekNumber)
-{
-    clearAgenda();
-    let week = schedule[weekNumber];
-    for(day in week)
-    {
-      let dayData = week[day];
-      for(session in dayData)
-      {
-        let sessionData = dayData[session];
-        let {id, title, teacher, date} = sessionData;
-        loadSessionItem(id, title, teacher, dateFormat(date).time, dateFormat(date).date, day);
-      }
+function loadAgenda(weekNumber) {
+  clearAgenda();
+  let week = schedule[weekNumber];
+  for (day in week) {
+    let dayData = week[day];
+    for (session in dayData) {
+      let sessionData = dayData[session];
+      let { id, title, teacher, date } = sessionData;
+      loadSessionItem(id, title, teacher, dateFormat(date).time, dateFormat(date).date, day);
     }
-    
+  }
+
 }
 // Clear agenda ->
-function clearAgenda()
-{
-  for(days in getAllDaysOfWeek())
-  {
+function clearAgenda() {
+  for (days in getAllDaysOfWeek()) {
     let day = getAllDaysOfWeek()[days];
 
     $("#" + day).empty();
   }
 }
 
-function getCurrentWeekNumber()
-{
+function getCurrentWeekNumber() {
   currentDate = new Date();
-    startDate = new Date(currentDate.getFullYear(), 0, 1);
-    var days = Math.floor((currentDate - startDate) /
-        (24 * 60 * 60 * 1000));
-          
-    var weekNumber = Math.ceil((currentDate.getDay() + 1 + days) / 7);
+  startDate = new Date(currentDate.getFullYear(), 0, 1);
+  var days = Math.floor((currentDate - startDate) /
+    (24 * 60 * 60 * 1000));
+
+  var weekNumber = Math.ceil((currentDate.getDay() + 1 + days) / 7);
   return weekNumber;
 }
 
 // gets all day of the week and returns it in a array ->
-function getAllDaysOfWeek(data)
-{
+function getAllDaysOfWeek(data) {
   let days = [];
-  for(week in schedule)
-  {
-    for(day in schedule[week])
-    {
-      if(!days.includes(day))
-      {
+  for (week in schedule) {
+    for (day in schedule[week]) {
+      if (!days.includes(day)) {
         days.push(day);
       }
     }
@@ -85,8 +75,7 @@ function getAllDaysOfWeek(data)
 }
 
 // Show all details per session ->
-function sessionDetails(data)
-{ 
+function sessionDetails(data) {
   Swal.fire(
     {
       html: `<h1 class="lead"> ${data.title}<h1>
@@ -98,9 +87,8 @@ function sessionDetails(data)
     });
 }
 
-function loadSessionItem(id, title, teacher, time, date, day)
-{
-    let itemLayout = `
+function loadSessionItem(id, title, teacher, time, date, day) {
+  let itemLayout = `
     <div id="${id}"class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
         <h4 id="time" class="text-left lead rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
@@ -116,36 +104,30 @@ function loadSessionItem(id, title, teacher, time, date, day)
       </div>
     </div>`
 
-    $(itemLayout).appendTo("#" + day);
-    addEventHandlersSession(id);
+  $(itemLayout).appendTo("#" + day);
+  addEventHandlersSession(id);
 }
 
-function addEventHandlersSession(id)
-{
-  $("#" + id).on("click", async function()
-  {
-    try
-    {
+function addEventHandlersSession(id) {
+  $("#" + id).on("click", async function () {
+    try {
       const res = await ApiCaller.getSingleSession(id);
       const json = await res.json();
       sessionDetails(json);
-    }catch(err)
-    {
+    } catch (err) {
       console.log(err)
     }
   });
 }
 
 // loading prev and next week 
-$(".prevWeek").on("click", function()
-{
+$(".prevWeek").on("click", function () {
   weekNumb--;
   $(".week").html(weekNumb);
   loadAgenda(weekNumb);
 });
 
-$(".nextWeek").on("click", function()
-{
+$(".nextWeek").on("click", function () {
   weekNumb++;
   $(".week").html(weekNumb);
   loadAgenda(weekNumb);

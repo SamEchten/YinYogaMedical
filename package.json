@@ -6,10 +6,13 @@
         "cookie-parser": "^1.4.6",
         "ejs": "^3.1.8",
         "express": "^4.18.1",
+        "fs": "0.0.1-security",
+        "https": "^1.0.0",
         "jquery": "^3.6.0",
         "jsonschema": "^1.4.0",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.3.3",
+        "nodemailer": "^6.7.5",
         "sweetalert": "^2.1.2",
         "sweetalert2": "^11.4.14",
         "validator": "^13.7.0"
