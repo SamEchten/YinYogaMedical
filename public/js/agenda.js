@@ -153,8 +153,14 @@ $(".addLesson").on("click", function()
     <p><b>Beschrijving:</b></p>
     <input id="lessondescription" class="swal2-input" type="text">
     <p><b>Yogadocent:</b></p>
+    <p><input id="lessondocent" type="radio" value="Natascha Puper">
+    Natascha Puper</p>
     <p><b>Dag:</b></p>
-    <input id="lessonday" class="swal2-input" type="text">`,
+    <input id="lessonday" class="swal2-input" type="date">
+    <p><b>Starttijd:</b></p>
+    <input id="lessontime" class="swal2-input" type="time">
+    <p><b>Duur:</b></p>
+    <input id="lessonduration" class="swal2-input" type="number" step="0.5" min="0.5" max="8">`,
     customClass: 'sweetalert-makeLesson',
     showCancelButton: true,
     confirmButtonText: 'Voeg les toe',

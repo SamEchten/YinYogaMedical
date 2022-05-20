@@ -81,9 +81,13 @@ body {
     padding: 20px !important;
 }
 
-.sweetalert-makeLesson  input[type=text]{
+.sweetalert-makeLesson input{
     margin-top: 0px !important;
     margin-bottom: 20px !important;
+}
+
+.sweetalert-makeLesson input[type=number], input[type=date], input[type=time]{
+    width: 200px !important;
 }
 
 .sweetalert-makeLesson h2 {
