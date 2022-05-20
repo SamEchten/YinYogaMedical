@@ -16,7 +16,7 @@ router.get("/agenda", sessionController.view);
 
 //profile ->
 //TODO: add jwt validation
-router.get("/profile/enrollments", userController.viewEnrollments);
+router.get("/profile/", userController.viewProfile);
 
 // Home ->
 router.get("/home", validateJwt, (req, res) => {

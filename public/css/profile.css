@@ -1,10 +1,10 @@
 @font-face {
     font-family: Lato;
-    src: url(./font_lato);
+    src: url(font_lato);
 }
 
 body {
-    background-image: url(../bg.svg);
+    background-image: url(./bg.svg);
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
@@ -18,25 +18,36 @@ p {
     font-family: 'Open Sans';
 }
 
+li {
+    font-size: 1.25rem;
+    font-family: 'Open Sans';
+    list-style: none;
+}
+
 .options {
     background-color: #FFFFFF;
     color: #000000;
     border-radius: 4%;
+    height: 75vh;
 }
 
 h6 {
     display: none;
 }
 
-select {
-    background-color: #FFFFFF;
-    color: #000000;
-    border-radius: 4%;
-    overflow: hidden;
-    border: none;
-}
-
 option:focus-within {
     border: none !important;
     color: red !important;
+}
+
+.settingsContent {
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 2%;
+    height: 75vh;
+}
+
+.notes {
+    overflow-y: scroll;
+    height: 14vh;
 }
