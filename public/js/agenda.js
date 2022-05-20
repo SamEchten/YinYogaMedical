@@ -143,7 +143,27 @@ $(".nextWeek").on("click", function () {
   loadAgenda(weekNumb);
 });
 
-$('#subscribe').on("click", function () {
+$(".addLesson").on("click", function()
+{
+  Swal.fire({
+    html: 
+    `<h2>Voeg nieuwe les toe</h2>
+    <p><b>Lesnaam:</b></p>
+    <input id="lessonname" class="swal2-input" type="text">
+    <p><b>Beschrijving:</b></p>
+    <input id="lessondescription" class="swal2-input" type="text">
+    <p><b>Yogadocent:</b></p>
+    <p><b>Dag:</b></p>
+    <input id="lessonday" class="swal2-input" type="text">`,
+    customClass: 'sweetalert-makeLesson',
+    showCancelButton: true,
+    confirmButtonText: 'Voeg les toe',
+    confirmButtonColor: '#D5CA9B',
+    cancelButtonText: 'Cancel',
+  });
+});
+
+$('#subscribe').on("click", function(){
   Swal.fire({
     html:
       `<h2>Inschrijven</h2>
