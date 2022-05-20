@@ -22,6 +22,32 @@ function checkIncomingSchedule()
   return false;
 }
 
+function changed(){
+  let val = document.getElementById('nrOfPeople').value;
+  let title = document.getElementById('extraPeopleTitle');
+  let temporary = '';
+  if(val > 1){
+    for(let i = 0; i < val-1; i++){
+      temporary +=
+      "<input id='name"+val+"' class='swal2-input' type='text' placeholder='Naam'>"+
+      "<input id='emailaddress"+val+"' class='swal2-input' type='text' placeholder='E-mailadres'>";
+    }  
+    title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
+    document.getElementById('inputfields').innerHTML = temporary;
+    }
+  else
+  {
+    title.innerHTML = '';
+    document.getElementById('inputfields').innerHTML = '';
+  }
+}
+
+// $('#nrOfPeople').on("click", function(){
+//   console.log('test')
+  // $('#inputfields').append("<input id='swal-input2' class='swal2-input' type='text' placeholder='Naam'>"+
+  // "<input id='swal-input2' class='swal2-input' type='text' placeholder='E-mailadres'>")
+// })
+
 // Loading agenda data per week ->
 function loadAgenda(weekNumber)
 {
