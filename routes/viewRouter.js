@@ -5,6 +5,7 @@ const { validateJwt } = require("../middleware/validator");
 const authController = require("../controllers/authController");
 const sessionController = require("../controllers/sessionController");
 const userController = require("../controllers/userController");
+const profileController = require("../controllers/profileController");
 
 //Auth ->
 router.get("/login", authController.login_get);
@@ -16,7 +17,9 @@ router.get("/agenda", sessionController.view);
 
 //profile ->
 //TODO: add jwt validation
-router.get("/profile/", userController.viewProfile);
+router.get("/profile/", profileController.viewProfile);
+router.get("/profile/myProfile", profileController.viewMyProfile);
+
 
 // Home ->
 router.get("/home", validateJwt, (req, res) => {
