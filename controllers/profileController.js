@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports.viewProfile = (req, res) => {
     res.render(path.join(__dirname, "../views/profile"));
 }
