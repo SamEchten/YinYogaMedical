@@ -7,6 +7,6 @@ $(".setting").on("click", function () {
     if (this.id == "profiel")
     {
         console.log('works');
-        $(".settingsContent").load("./profile/myProfile.ejs");
+        $(".settingsContent").load("profile/myProfile");
     }
 })
