@@ -1,59 +1,64 @@
 
 let schedule;
+let daysOfWeek =["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag","zondag"];
 let weekNumb = getCurrentWeekNumber() -1;
 
 // Render lesrooster from apiCaller and format it on date ->
 $(async function() {
-  $(".week").html(weekNumb);
+  setWeekData(weekNumb);
   const res = await (await ApiCaller.getAllSessions()).json();
   schedule = res;
   loadAgenda(weekNumb);
 }); 
 
-$('#subscribe').on("click", function(){
-  Swal.fire({
-    html: 
-    `<h2>Inschrijven</h2>
-    <p>U wilt u inschrijven voor (les).</p>
-    <p><b> Hoeveel personen wilt u inschrijven?</b></p>
-    <input id="swal-input1" class="swal2-input" align="left" type="number" min="0">
-    <p><b>Vul hieronder de naam en het e-mailadres van deze personen in.</b></p>
-    <p><input id="swal-input2" class="swal2-input" type="text" placeholder="Naam">
-    <input id="swal-input2" class="swal2-input" type="text" placeholder="E-mailadres"></p>`,
-    customClass: 'sweetalert-subscribe',
-    showCancelButton: true,
-    confirmButtonText: 'Schrijf mij in',
-    confirmButtonColor: '#D5CA9B',
-    cancelButtonText: 'Cancel',
-  });
-});
+
+function checkIncomingSchedule()
+{
+  
+  if(schedule == undefined)
+  {
+    return true;
+  }
+  return false;
+}
 
 // Loading agenda data per week ->
 function loadAgenda(weekNumber)
 {
-    clearAgenda();
-    let week = schedule[weekNumber];
+  let week = schedule[weekNumber];
+  if(week != undefined)
+  {
+    //clearAgenda(daysOfWeek);
     for(day in week)
     {
-      let dayData = week[day];
-      for(session in dayData)
+      if(week[day].length > 0)
       {
-        let sessionData = dayData[session];
-        let {id, title, teacher, date} = sessionData;
-        loadSessionItem(id, title, teacher, dateFormat(date).time, dateFormat(date).date, day);
+        let dayData = week[day];
+        clearAgenda(day)
+        for(session in dayData)
+        {
+          let sessionData = dayData[session];
+          let {id, title, teacher, date} = sessionData;
+          loadSessionItem(id, title, teacher, dateFormat(date).time, dateFormat(date).date, day);
+        }
+      } else 
+      {
+        clearAgenda(day);
+        $("#" + day).append("<h4 class='lead p-3'>Geen lessen</h4>")
       }
     }
-    
+  } else
+  {
+    clearAgenda(daysOfWeek);
+    $("#" + day).append("<h4 class='lead p-3'>Geen lessen</h4>")
+  } 
 }
 // Clear agenda ->
-function clearAgenda()
+function clearAgenda(daysOfWeek)
 {
-  for(days in getAllDaysOfWeek())
-  {
-    let day = getAllDaysOfWeek()[days];
 
-    $("#" + day).empty();
-  }
+  $("#" + day).empty();
+  
 }
 
 function getCurrentWeekNumber()
@@ -140,15 +145,43 @@ function addEventHandlersSession(id)
 $(".prevWeek").on("click", function()
 {
   weekNumb--;
-  $(".week").html(weekNumb);
+  setWeekData(weekNumb);
   loadAgenda(weekNumb);
 });
 
 $(".nextWeek").on("click", function()
 {
   weekNumb++;
-  $(".week").html(weekNumb);
+  setWeekData(weekNumb);
   loadAgenda(weekNumb);
 });
+
+$('#subscribe').on("click", function(){
+  Swal.fire({
+    html: 
+    `<h2>Inschrijven</h2>
+    <p>U wilt u inschrijven voor (les).</p>
+    <p><b> Hoeveel personen wilt u inschrijven?</b></p>
+    <input id="swal-input1" class="swal2-input" align="left" type="number" min="0">
+    <p><b>Vul hieronder de naam en het e-mailadres van deze personen in.</b></p>
+    <p><input id="swal-input2" class="swal2-input" type="text" placeholder="Naam">
+    <input id="swal-input2" class="swal2-input" type="text" placeholder="E-mailadres"></p>`,
+    customClass: 'sweetalert-subscribe',
+    showCancelButton: true,
+    confirmButtonText: 'Schrijf mij in',
+    confirmButtonColor: '#D5CA9B',
+    cancelButtonText: 'Cancel',
+  });
+});
+
+function setWeekData(week)
+{
+  let fDay = getfirstAndlastDatesOfTheWeek(2022, week).firstDay;
+  let lDay = getfirstAndlastDatesOfTheWeek(2022, week).lastDay;
+
+  $(".week").html(fDay +" - " + lDay)
+}
+
+
 
 

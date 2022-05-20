@@ -61,3 +61,12 @@ body {
     margin-bottom: 50px !important;
     width: 100px !important;
 }
+
+.prevWeek
+{
+    font-size: 20px;
+}
+.nextWeek
+{
+    font-size: 20px;
+}

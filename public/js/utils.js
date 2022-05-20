@@ -32,4 +32,20 @@ function dateFormat(data)
 
     return json;
 
+};
+
+
+function getfirstAndlastDatesOfTheWeek(year, week)
+{
+    firstDay = new Date(year, 0, 1).getDay();
+    var d = new Date("Jan 01, " + year + " 01:00:00");
+    var w = d.getTime() - (3600000 * 24 * (firstDay - 1)) + 604800000 * (week)
+    var firstDay = new Date(w);
+    var lastDay = new Date(w + 518400000)
+
+    return {
+        firstDay: firstDay.toLocaleDateString("en-GB"),
+        lastDay: lastDay.toLocaleDateString("en-GB")
+    }
 }
+    
