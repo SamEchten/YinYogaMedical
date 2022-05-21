@@ -23,6 +23,7 @@ body {
     cursor: pointer;
     animation-name: headerTest;
     animation-duration: 0.5s;
+    box-shadow: 0px 1px 5px -3px #272727;
 
 }
 

@@ -32,6 +32,9 @@ h2 {
     text-transform: uppercase;
     color: #707070 !important;
 }
+h4 {
+    margin: 0px !important;
+}
 
 /* Global button styling */
 .yinStyle {
