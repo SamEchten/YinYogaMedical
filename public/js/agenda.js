@@ -80,40 +80,43 @@ function sessionDetails(data) {
     {
       html: `<h2>${data.title}<h2>
       <hr>
-      <p><b>Locatie:</b></p>
-      <p>${data.location}</p>
-      <p><b>Beschrijving:</b></p>
-      <p>Beschrijving<p>
-      <p><b>Docent:</b></p>
-      <p>${data.teacher}<p>
-      <p><b>Datum:</b></p> 
-      <p>${dateFormat(data.date).date}</p>`,
+      <div class="test">
+        <h1 class="lead"><b>Locatie:</b></h1>
+        <p>${data.location}</p>
+        <h1 class="lead"><b>Beschrijving:</b></h1>
+        <p>${data.description}<p>
+        <h1 class="lead"><b>Docent:</b></h1>
+        <p>${data.teacher}<p>
+        <h1 class="lead"><b>Datum:</b></h1> 
+        <p>${dateFormat(data.date).date}</p>
+      </div>
+        `,
       customClass: 'sweetalert-seeLesson',
       confirmButtonColor: '#D5CA9B',
       confirmButtonText: 'OK'
     });
 
-  Swal.fire(
-    {
-      html: `<h1 class="lead"> ${data.title}<h1>
-      <hr>
-      <p class="lead">Locatie: ${data.location}<p>
-      <p class="lead">Docent: ${data.teacher}<p>
-      <p class="lead">Datum: <b>${dateFormat(data.date).date}<b><p>`,
-      confirmButtonColor: '#D5CA9B'
-    });
+  // Swal.fire(
+  //   {
+  //     html: `<h1 class="lead"> ${data.title}<h1>
+  //     <hr>
+  //     <p class="lead">Locatie: ${data.location}<p>
+  //     <p class="lead">Docent: ${data.teacher}<p>
+  //     <p class="lead">Datum: <b>${dateFormat(data.date).date}<b><p>`,
+  //     confirmButtonColor: '#D5CA9B'
+  //   });
 }
 
 function loadSessionItem(id, title, teacher, time, date, day) {
   let itemLayout = `
     <div id="${id}"class="row ps-4 p-2 agendaItem align-items-center">
-      <div class="col-md-2 aa">
+      <div class="col-md-2">
         <h4 id="time" class="text-left lead rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
       </div>
-      <div class="col-md-2 aa">
+      <div class="col-md-2">
         <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
       </div>
-      <div class="col-md-2 aa">
+      <div class="col-md-2">
         <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
       </div>
       <div class="col-md-6 text-end">
@@ -137,7 +140,7 @@ function addEventHandlersSession(id) {
   });
 }
 
-// loading prev and next week 
+// loading prev and next week ->
 $(".prevWeek").on("click", function () {
   weekNumb--;
   setWeekData(weekNumb);
@@ -146,6 +149,14 @@ $(".prevWeek").on("click", function () {
 
 $(".nextWeek").on("click", function () {
   weekNumb++;
+  setWeekData(weekNumb);
+  loadAgenda(weekNumb);
+});
+
+// Go to current week ->
+$(".week").on("click", function ()  {
+  weekNumb = getCurrentWeekNumber() - 1;
+  console.log(weekNumb)
   setWeekData(weekNumb);
   loadAgenda(weekNumb);
 });
@@ -176,7 +187,7 @@ $(".addLesson").on("click", function()
   });
 });
 
-$('#subscribe').on("click", function(){
+$('#subscribe').on("click", function() {
   Swal.fire({
     html:
       `<h2>Inschrijven</h2>

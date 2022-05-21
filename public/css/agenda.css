@@ -58,8 +58,8 @@ body {
 }
 
 .headerText {
-    border-left: 2px solid black;
     padding: 10px;
+    font-weight: 600 !important;
 }
 
 .sweetalert-subscribe {
@@ -70,7 +70,9 @@ body {
     margin-bottom: 50px !important;
     width: 100px !important;
 }
-
+.week {
+    cursor: pointer;
+}
 .prevWeek
 {
     font-size: 20px;
@@ -92,7 +94,7 @@ body {
 }
 
 .headerSchedule {
-    background: #d5ca9b;
+    background: #ffea8f;
 }
 
 .addLesson {
