@@ -95,12 +95,31 @@ body {
     margin-bottom: 20px !important;
 }
 
+.sweetalert-makeLesson input[type=text], textarea {
+    width: 320px !important;
+}
+
+.sweetalert-makeLesson textarea {
+    height: 80px !important;
+    resize: none !important;
+}
+
 .sweetalert-makeLesson input[type=number], input[type=date], input[type=time]{
     width: 200px !important;
 }
 
 .sweetalert-makeLesson h2 {
     margin-bottom: 30px !important;
+}
+
+.sweetalert-seeLesson {
+    width: 40vw !important;
+    padding: 20px !important;
+}
+
+.sweetalert-seeLesson p {
+    font-size: 14pt !important;
+    text-transform: initial !important;
 }
 
 /* KEYFRAMES ANIMATION */

@@ -84,6 +84,24 @@ function getAllDaysOfWeek(data) {
 
 // Show all details per session ->
 function sessionDetails(data) {
+  
+  Swal.fire(
+    {
+      html: `<h2>${data.title}<h2>
+      <hr>
+      <p><b>Locatie:</b></p>
+      <p>${data.location}</p>
+      <p><b>Beschrijving:</b></p>
+      <p>Beschrijving<p>
+      <p><b>Docent:</b></p>
+      <p>${data.teacher}<p>
+      <p><b>Datum:</b></p> 
+      <p>${dateFormat(data.date).date}</p>`,
+      customClass: 'sweetalert-seeLesson',
+      confirmButtonColor: '#D5CA9B',
+      confirmButtonText: 'OK'
+    });
+
   Swal.fire(
     {
       html: `<h1 class="lead"> ${data.title}<h1>
@@ -149,9 +167,9 @@ $(".addLesson").on("click", function()
     <p><b>Lesnaam:</b></p>
     <input id="lessonname" class="swal2-input" type="text">
     <p><b>Beschrijving:</b></p>
-    <input id="lessondescription" class="swal2-input" type="text">
+    <textarea id="lessondescription" class="swal2-input"></textarea>
     <p><b>Yogadocent:</b></p>
-    <p><input id="lessondocent" type="radio" value="Natascha Puper">
+    <p><input id="lessondocent" type="radio" checked="true" value="Natascha Puper">
     Natascha Puper</p>
     <p><b>Dag:</b></p>
     <input id="lessonday" class="swal2-input" type="date">
