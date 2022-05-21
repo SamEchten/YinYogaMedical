@@ -11,15 +11,6 @@ $(async function () {
   loadAgenda(weekNumb);
 });
 
-
-function checkIncomingSchedule() {
-
-  if (schedule == undefined) {
-    return true;
-  }
-  return false;
-}
-
 // Loading agenda data per week ->
 function loadAgenda(weekNumber) {
   let week = schedule[weekNumber];

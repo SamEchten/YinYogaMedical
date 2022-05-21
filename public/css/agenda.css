@@ -74,10 +74,25 @@ body {
 .prevWeek
 {
     font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 .nextWeek
 {
     font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nextWeek:hover {
+    margin-left: 3px;    
+}
+.prevWeek:hover {
+    margin-right: 3px;    
+}
+
+.headerSchedule {
+    background: #d5ca9b;
 }
 
 .addLesson {
@@ -125,6 +140,22 @@ body {
 /* KEYFRAMES ANIMATION */
 
 @keyframes headerTest {
-    0%   {width: 0%;}
-    100% {width: 100%;}
+    0%   {position: relative; left: -100%; opacity: 0;}
+    100% {position: relative; left:  0%; opacity: 1;}
   }
+
+  /* MEDIA QUERIES */
+@media only screen and (max-width: 600px) {
+    .week {
+    font-size: 15px !important;
+    }
+    .contentRow {
+        height: 100%;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+}
+
+    
+
+  
