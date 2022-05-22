@@ -1,6 +1,5 @@
-
 let schedule;
-let userRole = "user";
+let userRole = "admin";
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber() - 1;
 
@@ -36,6 +35,7 @@ function loadAgenda(weekNumber) {
     fullClear();
   } 
   showOrhideElements();
+  clickEvents();
 }
 // Loads agenda items and sets the week dates on top of the agenda ->
 function loadAndSetFullAgenda() {
@@ -94,24 +94,23 @@ function sessionDetails(data) {
     });
 }
 
-
 function loadSessionItem(id, title, teacher, time, date, day) {
   let itemLayout = `
-    <div id="${id}"class="row ps-4 p-2 agendaItem align-items-center">
+    <div class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
         <h4 id="time" class="text-left lead rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
       </div>
-      <div class="col-md-2">
+      <div id="${id}" class="col-md-2">
         <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
       </div>
       <div class="col-md-2">
         <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
       </div>
       <div class="col-md-2 text-end">
-        <i class="bi bi-pencil hiding"></i>
+        <i class="bi bi-pencil hiding editSession"></i>
       </div>
       <div class="col-md-2 text-start ">
-        <i class="bi bi-trash3 hiding"></i>
+        <i class="bi bi-trash3 hiding removeSession"></i>
       </div>
       <div class="col-md-2 text-end">
         <button type="submit" class="btn btn-primary yinStyle" id="subscribe">Inschrijven</button>
@@ -131,6 +130,18 @@ function addEventHandlersSession(id) {
     } catch (err) {
       console.log(err)
     }
+  });
+}
+
+// Add eventlisteners for button that render in after dom has loaded ->
+function clickEvents() { 
+  // Edit a session ->
+  $(".editSession").on("click", function() {
+    console.log("EDIT SESSION");
+  });
+  // Remove a session ->
+  $(".removeSession").on("click", function() {
+    console.log("REMOVE SESSION");
   });
 }
 
