@@ -1,5 +1,6 @@
 
 let schedule;
+let userRole = "user";
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber() - 1;
 
@@ -13,6 +14,7 @@ $(async function () {
 
 // Loading agenda data per week ->
 function loadAgenda(weekNumber) {
+  showOrhideElements();
   let week = schedule[weekNumber];
   if (week != undefined) {
     for (day in week) {
@@ -33,14 +35,19 @@ function loadAgenda(weekNumber) {
   {
     fullClear();
   } 
+  showOrhideElements();
 }
+// Loads agenda items and sets the week dates on top of the agenda ->
+function loadAndSetFullAgenda() {
+  setWeekData(weekNumb);
+  loadAgenda(weekNumb);
+}
+
 // Clear one day
-function clearAgenda(day)
-{
-
+function clearAgenda(day) {
   $("#" + day).empty();
-
 }
+
 // Clear all days
 function fullClear() {
   for(day in daysOfWeek) {
@@ -48,16 +55,6 @@ function fullClear() {
     $("#" + daysOfWeek[day]).empty();
     $("#" + daysOfWeek[day]).append("<h4 class='lead p-3'>Geen lessen</h4>")
   }
-}
-
-function getCurrentWeekNumber() {
-  currentDate = new Date();
-  startDate = new Date(currentDate.getFullYear(), 0, 1);
-  var days = Math.floor((currentDate - startDate) /
-    (24 * 60 * 60 * 1000));
-
-  var weekNumber = Math.ceil((currentDate.getDay() + 1 + days) / 7);
-  return weekNumber;
 }
 
 // gets all day of the week and returns it in a array ->
@@ -95,17 +92,8 @@ function sessionDetails(data) {
       confirmButtonColor: '#D5CA9B',
       confirmButtonText: 'OK'
     });
-
-  // Swal.fire(
-  //   {
-  //     html: `<h1 class="lead"> ${data.title}<h1>
-  //     <hr>
-  //     <p class="lead">Locatie: ${data.location}<p>
-  //     <p class="lead">Docent: ${data.teacher}<p>
-  //     <p class="lead">Datum: <b>${dateFormat(data.date).date}<b><p>`,
-  //     confirmButtonColor: '#D5CA9B'
-  //   });
 }
+
 
 function loadSessionItem(id, title, teacher, time, date, day) {
   let itemLayout = `
@@ -119,7 +107,13 @@ function loadSessionItem(id, title, teacher, time, date, day) {
       <div class="col-md-2">
         <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
       </div>
-      <div class="col-md-6 text-end">
+      <div class="col-md-2 text-end">
+        <i class="bi bi-pencil hiding"></i>
+      </div>
+      <div class="col-md-2 text-start ">
+        <i class="bi bi-trash3 hiding"></i>
+      </div>
+      <div class="col-md-2 text-end">
         <button type="submit" class="btn btn-primary yinStyle" id="subscribe">Inschrijven</button>
       </div>
     </div>`
@@ -143,22 +137,28 @@ function addEventHandlersSession(id) {
 // loading prev and next week ->
 $(".prevWeek").on("click", function () {
   weekNumb--;
-  setWeekData(weekNumb);
-  loadAgenda(weekNumb);
+  if(weekNumb < 1) {
+    weekNumb = 52;
+    loadAndSetFullAgenda();
+  } else {
+    loadAndSetFullAgenda();
+  }
 });
 
 $(".nextWeek").on("click", function () {
   weekNumb++;
-  setWeekData(weekNumb);
-  loadAgenda(weekNumb);
+  if(weekNumb > 52) {
+    weekNumb = 1;
+    loadAndSetFullAgenda();
+  } else {
+    loadAndSetFullAgenda();
+  }
 });
 
 // Go to current week ->
 $(".week").on("click", function ()  {
   weekNumb = getCurrentWeekNumber() - 1;
-  console.log(weekNumb)
-  setWeekData(weekNumb);
-  loadAgenda(weekNumb);
+  loadAndSetFullAgenda();
 });
 
 $(".addLesson").on("click", function()

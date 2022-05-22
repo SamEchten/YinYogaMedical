@@ -34,7 +34,18 @@ function dateFormat(data)
 
 };
 
+// returns the current week, in most cases the week is 1 week off so -1. ->
+function getCurrentWeekNumber() {
+    currentDate = new Date();
+    startDate = new Date(currentDate.getFullYear(), 0, 1);
+    var days = Math.floor((currentDate - startDate) /
+      (24 * 60 * 60 * 1000));
+  
+    var weekNumber = Math.ceil((currentDate.getDay() + 1 + days) / 7);
+    return weekNumber;
+}
 
+// returns the first(01-1-2022) and last(07-1-2022) date from a specific week ->
 function getfirstAndlastDatesOfTheWeek(year, week)
 {
     firstDay = new Date(year, 0, 1).getDay();
@@ -47,5 +58,23 @@ function getfirstAndlastDatesOfTheWeek(year, week)
         firstDay: firstDay.toLocaleDateString("en-GB"),
         lastDay: lastDay.toLocaleDateString("en-GB")
     }
+}
+
+// Checks client role  ->
+function roleCheck()
+{
+  if(userRole == "admin")
+  {
+    return true
+  }
+  return  false
+}
+
+// Hide elements for none admins else show them ->
+function showOrhideElements() {
+  if(roleCheck())
+  {
+    $(".hiding").css("display","block");
+  }
 }
     
