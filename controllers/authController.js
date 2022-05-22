@@ -16,7 +16,7 @@ module.exports.login_post = async (req, res) => {
         let user = await User.login(email, password);
 
         //Send jwt token to client ->
-        sendJwtCookie(res, user._id, user.fullName, user.isEmployee);
+        sendJwtCookie(res, user._id, user.fullName, user.email, user.isEmployee);
 
         //Send user info to client ->
         res.status(200).json({
@@ -40,7 +40,7 @@ module.exports.signup_post = async (req, res) => {
         const user = await User.create({ fullName, email, password, phoneNumber, notes, isEmployee: true });
 
         //Send jwt cookie to client
-        sendJwtCookie(res, user._id, user.fullName, user.isEmployee);
+        sendJwtCookie(res, user._id, user.fullName, user.email, user.isEmployee);
 
         //Send mail to user
         signUpMail({
@@ -77,7 +77,7 @@ const sendJwtCookie = (res, id, fullName, isEmployee) => {
         httpOnly: true
     });
 
-    res.cookie("userId", userId, {
+    res.cookie("user", JSON.stringify({ userId, fullName, email, isEmployee }), {
         expiresIn: maxAge * 1000
     })
 }
