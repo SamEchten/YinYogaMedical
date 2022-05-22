@@ -1,5 +1,5 @@
 let schedule;
-let userRole = "admin";
+let userRole = "user";
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber() - 1;
 
@@ -172,8 +172,7 @@ $(".week").on("click", function ()  {
   loadAndSetFullAgenda();
 });
 
-$(".addLesson").on("click", function()
-{
+$(".addLesson").on("click", function() {
   Swal.fire({
     html: 
     `<h2>Voeg nieuwe les toe</h2>
