@@ -32,6 +32,9 @@ h2 {
     text-transform: uppercase;
     color: #707070 !important;
 }
+h4 {
+    margin: 0px !important;
+}
 
 /* Global button styling */
 .yinStyle {
@@ -62,3 +65,10 @@ h2 {
 .currentNavItem:hover {
     border-bottom: 2px solid #d5ca9b48;
 }
+
+/* MEDIA QUERIES */
+@media only screen and (max-width: 600px) {
+    .rbs {
+        border: 0px;
+    }
+  }

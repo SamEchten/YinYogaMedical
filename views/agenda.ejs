@@ -37,36 +37,34 @@
         <li class="nav-item text-center">
           <a class="nav-link" href="#">Profiel</a>
         </li>
-        <li class="nav-item text-center">
-          <button type="submit" class="btn btn-primary yinStyle" id="subscribe">Boek les</button>
-        </li>
       </ul>
     </div>
   </nav>
   <div class="main-wrapper container-fluid">
     <div class="row h-100">
       <div class="col-md h-100">
-        <div class="row headerRow">
-          <div class="col-md-10">
-            <h1 class="title">Lesrooster</h1>
+        <div class="row headerRow align-items-center">
+          <div class="col-md-12">
+            <h1 class="lead text-start m-0 headerText">Lesrooster</h1>
           </div>
         </div>
         <div class="row contentRow">
           <div class="col-md agendaCol">
-            <div class="row">
-              <div class="col-md-4 text-end">
-                <i class="bi bi-arrow-left prevWeek "></i>
+            <div class="row align-items-center headerSchedule">
+              <div class="col text-start">
               </div>
-              <div class="col-md-4">
-                <p class="lead week text-center">
-
+              <div class="col text-end">
+                <i class="bi bi-chevron-left prevWeek "></i>
+              </div>
+              <div class="col">
+                <p class="lead week text-center m-0">
                 </p>
               </div>
-              <div class="col-md-3 text-start">
-                <i class="bi bi-arrow-right nextWeek"></i>
+              <div class="col text-start">
+                <i class="bi bi-chevron-right nextWeek"></i>
               </div>
-              <div class="col-md-1 text-end">
-                <i class="bi bi-plus addLesson"></i>
+              <div class="col text-end">
+                <i class="bi bi-plus-circle addLesson"></i>
               </div>
             </div>          
             <div class="row agendaItemDay">
@@ -128,10 +126,8 @@
                 <h2 class="lbs zondag lead">Zondag</h2>
                 <hr>
                 <div id="zondag">
-                  <<<<<<< HEAD=======<h4 class="lead p-3">Geen lessen</h4>
-                    >>>>>>> 2c803c0c82f133db73e825f3327a5c4521d5fd61
+                  <h4 class="lead p-3">Geen lessen</h4>
                 </div>
-
               </div>
             </div>
           </div>
@@ -145,9 +141,9 @@
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="./js/bootstrap.min.js"></script>
   <script src="sweetalert"></script>
+  <script src="static/utils.js"></script>
   <script src="static/agenda.js"></script>
   <script src="static/apiCaller.js"></script>
-  <script src="static/utils.js"></script>
 </body>
 
 </html>

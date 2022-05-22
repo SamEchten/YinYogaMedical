@@ -1,5 +1,5 @@
-
 let schedule;
+let userRole = "admin";
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber() - 1;
 
@@ -11,17 +11,9 @@ $(async function () {
   loadAgenda(weekNumb);
 });
 
-
-function checkIncomingSchedule() {
-
-  if (schedule == undefined) {
-    return true;
-  }
-  return false;
-}
-
 // Loading agenda data per week ->
 function loadAgenda(weekNumber) {
+  showOrhideElements();
   let week = schedule[weekNumber];
   if (week != undefined) {
     for (day in week) {
@@ -42,33 +34,27 @@ function loadAgenda(weekNumber) {
   {
     fullClear();
   } 
+  showOrhideElements();
+  clickEvents();
 }
+// Loads agenda items and sets the week dates on top of the agenda ->
+function loadAndSetFullAgenda() {
+  setWeekData(weekNumb);
+  loadAgenda(weekNumb);
+}
+
 // Clear one day
-function clearAgenda(day)
-{
-
+function clearAgenda(day) {
   $("#" + day).empty();
-
 }
+
 // Clear all days
-function fullClear()
-{
-  for(day in daysOfWeek)
-  {
+function fullClear() {
+  for(day in daysOfWeek) {
     console.log(day)
     $("#" + daysOfWeek[day]).empty();
     $("#" + daysOfWeek[day]).append("<h4 class='lead p-3'>Geen lessen</h4>")
   }
-}
-
-function getCurrentWeekNumber() {
-  currentDate = new Date();
-  startDate = new Date(currentDate.getFullYear(), 0, 1);
-  var days = Math.floor((currentDate - startDate) /
-    (24 * 60 * 60 * 1000));
-
-  var weekNumber = Math.ceil((currentDate.getDay() + 1 + days) / 7);
-  return weekNumber;
 }
 
 // gets all day of the week and returns it in a array ->
@@ -86,30 +72,47 @@ function getAllDaysOfWeek(data) {
 
 // Show all details per session ->
 function sessionDetails(data) {
+  
   Swal.fire(
     {
-      html: `<h1 class="lead"> ${data.title}<h1>
+      html: `<h2>${data.title}<h2>
       <hr>
-      <p class="lead">Locatie: ${data.location}<p>
-      <p class="lead">Docent: ${data.teacher}<p>
-      <p class="lead">Datum: <b>${dateFormat(data.date).date}<b><p>`,
-      confirmButtonColor: '#D5CA9B'
+      <div class="test">
+        <h1 class="lead"><b>Locatie:</b></h1>
+        <p>${data.location}</p>
+        <h1 class="lead"><b>Beschrijving:</b></h1>
+        <p>${data.description}<p>
+        <h1 class="lead"><b>Docent:</b></h1>
+        <p>${data.teacher}<p>
+        <h1 class="lead"><b>Datum:</b></h1> 
+        <p>${dateFormat(data.date).date}</p>
+      </div>
+        `,
+      customClass: 'sweetalert-seeLesson',
+      confirmButtonColor: '#D5CA9B',
+      confirmButtonText: 'OK'
     });
 }
 
 function loadSessionItem(id, title, teacher, time, date, day) {
   let itemLayout = `
-    <div id="${id}"class="row ps-4 p-2 agendaItem align-items-center">
+    <div class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
         <h4 id="time" class="text-left lead rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
       </div>
-      <div class="col-md-2">
+      <div id="${id}" class="col-md-2">
         <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
       </div>
       <div class="col-md-2">
         <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
       </div>
-      <div class="col-md-6 text-end">
+      <div class="col-md-2 text-end">
+        <i class="bi bi-pencil hiding editSession"></i>
+      </div>
+      <div class="col-md-2 text-start ">
+        <i class="bi bi-trash3 hiding removeSession"></i>
+      </div>
+      <div class="col-md-2 text-end">
         <button type="submit" class="btn btn-primary yinStyle" id="subscribe">Inschrijven</button>
       </div>
     </div>`
@@ -130,17 +133,43 @@ function addEventHandlersSession(id) {
   });
 }
 
-// loading prev and next week 
+// Add eventlisteners for button that render in after dom has loaded ->
+function clickEvents() { 
+  // Edit a session ->
+  $(".editSession").on("click", function() {
+    console.log("EDIT SESSION");
+  });
+  // Remove a session ->
+  $(".removeSession").on("click", function() {
+    console.log("REMOVE SESSION");
+  });
+}
+
+// loading prev and next week ->
 $(".prevWeek").on("click", function () {
   weekNumb--;
-  setWeekData(weekNumb);
-  loadAgenda(weekNumb);
+  if(weekNumb < 1) {
+    weekNumb = 52;
+    loadAndSetFullAgenda();
+  } else {
+    loadAndSetFullAgenda();
+  }
 });
 
 $(".nextWeek").on("click", function () {
   weekNumb++;
-  setWeekData(weekNumb);
-  loadAgenda(weekNumb);
+  if(weekNumb > 52) {
+    weekNumb = 1;
+    loadAndSetFullAgenda();
+  } else {
+    loadAndSetFullAgenda();
+  }
+});
+
+// Go to current week ->
+$(".week").on("click", function ()  {
+  weekNumb = getCurrentWeekNumber() - 1;
+  loadAndSetFullAgenda();
 });
 
 $(".addLesson").on("click", function()
@@ -151,9 +180,9 @@ $(".addLesson").on("click", function()
     <p><b>Lesnaam:</b></p>
     <input id="lessonname" class="swal2-input" type="text">
     <p><b>Beschrijving:</b></p>
-    <input id="lessondescription" class="swal2-input" type="text">
+    <textarea id="lessondescription" class="swal2-input"></textarea>
     <p><b>Yogadocent:</b></p>
-    <p><input id="lessondocent" type="radio" value="Natascha Puper">
+    <p><input id="lessondocent" type="radio" checked="true" value="Natascha Puper">
     Natascha Puper</p>
     <p><b>Dag:</b></p>
     <input id="lessonday" class="swal2-input" type="date">
@@ -169,7 +198,7 @@ $(".addLesson").on("click", function()
   });
 });
 
-$('#subscribe').on("click", function(){
+$('#subscribe').on("click", function() {
   Swal.fire({
     html:
       `<h2>Inschrijven</h2>
