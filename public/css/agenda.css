@@ -99,7 +99,9 @@ body {
 }
 
 .headerSchedule {
+
     background: #ffea8f;
+    border-radius: 10px 10px 0px 0px;
 }
 
 .addLesson {
