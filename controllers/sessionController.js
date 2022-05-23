@@ -236,6 +236,44 @@ module.exports.signup = async (req, res) => {
 }
 
 module.exports.signout = async (req, res) => {
+    const sessionId = req.params.id;
+    const userId = req.body.userId;
+
+    if (sessionId)
+    {
+        try {
+            let session = await Session.findOne({sessionId});
+
+            if (session) {
+                for (index in session.participants) {
+                    let participant = session.participants[index];
+                    if (participant.userId == userId) {
+                        if(rek.cookies.userId == participant.userId || rek.cookies.isAdmin == true)
+                        {
+                            session.participants.splice(index, 1);
+                            session.save();
+                            res.status(200).json({message: "Succesvol uitgeschreven"});
+                        }
+                        else
+                        {
+                            res.status(400).json({ message: "U bent niet gemachtigd deze persoon uit te schrijven" });
+                        }
+                    }
+                }
+            } else
+            {
+                res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
+            }
+        }
+        catch (err)
+        {
+            res.status(400).json({ message: err.message });
+        }
+    }
+    else
+    {
+        res.status(400).json({ message: "Er is geen sessionId gegegeven" });
+    }
 
 }
 
