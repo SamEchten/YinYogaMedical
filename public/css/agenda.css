@@ -58,19 +58,22 @@ body {
     overflow: auto;
 }
 
+.alertscreen {
+    align-items: flex-start;
+    width: 250px;
+}
+
 .headerText {
     padding: 10px;
     font-weight: 600 !important;
 }
 
-.sweetalert-subscribe {
-    width: 40vw !important;
+.width {
+    width: 100%;
+    margin-bottom: 10px;
 }
 
-.sweetalert-subscribe input[type=number]{
-    margin-bottom: 50px !important;
-    width: 100px !important;
-}
+
 .week {
     cursor: pointer;
 }
@@ -104,40 +107,85 @@ body {
     cursor: pointer;
 }
 
+/* Sweetalert for subscribing to a lesson */
+
+.sweetalert-subscribe h2, p{
+    margin-bottom: 20px;
+    text-align: start;
+}
+
+.sweetalert-subscribe input{
+    margin-left: 5px;
+}
+
+.sweetalert-subscribe input[type=number]{
+    width: 100px !important;
+    margin-bottom: 50px !important;
+}
+
+.sweetalert-subscribe input[type=text] {
+    width: 100%;
+    margin: 5px;
+}
+
+/* Sweetalert for making lesson */
+
 .sweetalert-makeLesson {
-    width: 40vw !important;
     padding: 20px !important;
+}
+
+@media only screen and (min-width:769px) {
+    .sweetalert-makeLesson{
+        width: 60vw !important;
+    }
 }
 
 .sweetalert-makeLesson input{
     margin-top: 0px !important;
     margin-bottom: 20px !important;
+    margin-left: 5px !important;
 }
 
 .sweetalert-makeLesson input[type=text], textarea {
-    width: 320px !important;
+    width: 90% !important;
 }
 
 .sweetalert-makeLesson textarea {
     height: 80px !important;
+    margin-left: 5px !important;
     resize: none !important;
 }
 
 .sweetalert-makeLesson input[type=number], input[type=date], input[type=time]{
     width: 200px !important;
+    margin-left: 5px !important;
 }
 
 .sweetalert-makeLesson h2 {
     margin-bottom: 30px !important;
+    text-align: start !important;
+    text-transform: uppercase !important;
 }
 
-.sweetalert-seeLesson {
-    width: 40vw !important;
-    padding: 20px !important;
+.sweetalert-makeLesson h3 {
+    text-align: start !important;
 }
 
-.sweetalert-seeLesson p {
+/* Sweetalert for info about a lesson */
+
+.alerttitle {
+    margin-bottom: 20px !important;
+    text-align: start !important;
+}
+
+.sweetalert-seelesson h3 {
+    text-align: start !important;
+    text-transform: uppercase !important;
+}
+
+.sweetalert-seelesson p {
     font-size: 14pt !important;
+    text-align: start !important;
     text-transform: initial !important;
 }
 
