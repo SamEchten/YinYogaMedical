@@ -183,7 +183,7 @@ module.exports.add = async (req, res) => {
         res.status(201).json({ id: session.id });
     } catch (err) {
         let errors = handleSessionErrors(err);
-        res.json(errors);
+        res.status(400).json(errors);
     }
 }
 

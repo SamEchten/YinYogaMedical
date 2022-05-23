@@ -9,7 +9,6 @@ $(".loginButton").on("click", async function()
     try
     {
         const res = await ApiCaller.loginUser(data);
-    
         if(res.status == 200) 
         {
             console.log("logged in")
