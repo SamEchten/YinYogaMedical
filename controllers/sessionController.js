@@ -215,10 +215,10 @@ module.exports.delete = async (req, res) => {
             //Set back hours of participants
             res.status(200).json({ message: "Sessie is verwijderd" });
         } else {
-            res.status(404).json({ error: "Geen sessie gevonden met dit Id" })
+            res.status(404).json({ message: "Geen sessie gevonden met dit Id" })
         }
     } catch (err) {
-        res.status(400).json({ error: "Er is iets fout gegaan" });
+        res.status(400).json({ message: "Er is iets fout gegaan" });
     }
 }
 
@@ -248,39 +248,33 @@ module.exports.signout = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
 
-    if (sessionId)
-    {
+    if (sessionId) {
         try {
-            let session = await Session.findOne({sessionId});
+            let session = await Session.findOne({ sessionId });
 
             if (session) {
                 for (index in session.participants) {
                     let participant = session.participants[index];
                     if (participant.userId == userId) {
-                        if(rek.cookies.userId == participant.userId || rek.cookies.isAdmin == true)
-                        {
+                        if (rek.cookies.userId == participant.userId || rek.cookies.isAdmin == true) {
                             session.participants.splice(index, 1);
                             session.save();
-                            res.status(200).json({message: "Succesvol uitgeschreven"});
+                            res.status(200).json({ message: "Succesvol uitgeschreven" });
                         }
-                        else
-                        {
+                        else {
                             res.status(400).json({ message: "U bent niet gemachtigd deze persoon uit te schrijven" });
                         }
                     }
                 }
-            } else
-            {
+            } else {
                 res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
             }
         }
-        catch (err)
-        {
+        catch (err) {
             res.status(400).json({ message: err.message });
         }
     }
-    else
-    {
+    else {
         res.status(400).json({ message: "Er is geen sessionId gegegeven" });
     }
 
