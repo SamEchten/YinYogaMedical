@@ -37,8 +37,8 @@ body {
 {
     height: 90%;
     background-color: white;
-    margin-left: 40px !important;
-    margin-right: 40px !important;
+    margin-left: 5px !important;
+    margin-right: 5px !important;
     overflow: auto;
     border-radius: 10px 10px 0px 0px;
     border: 1px solid #eeeeee;
@@ -74,14 +74,15 @@ body {
 .week {
     cursor: pointer;
 }
-.prevWeek
-{
+.hiding {
+    display: none;
+}
+.prevWeek {
     font-size: 20px;
     cursor: pointer;
     transition: 0.3s;
 }
-.nextWeek
-{
+.nextWeek {
     font-size: 20px;
     cursor: pointer;
     transition: 0.3s;
