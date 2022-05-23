@@ -5,12 +5,15 @@ const { handleSessionErrors } = require("./errorHandler");
 const userController = require("./userController");
 
 //TODO: only show non private session
-//      do show if req was made by admin or participants
+//do show if req was made by admin or participants
 module.exports.get = async (req, res) => {
     const { id } = req.params;
-    const userId = req.cookies.userId;
+    let userId;
+    if (req.cookies.user) {
+        userId = JSON.parse(req.cookies.user).userId;
+    }
+    //Get single session
     if (id) {
-        //Get single session
         try {
             const session = await Session.findOne({ _id: id });
             if (session) {
@@ -23,10 +26,10 @@ module.exports.get = async (req, res) => {
             res.status(404).json({ error: "Geen sessie gevonden met dit id" });
         }
     } else {
-        //Get all sessions
         try {
-            const allSession = await getAllSessions(userId);
-            res.status(200).json(allSession);
+            const allSessions = await getAllSessions(userId);
+            const sortedSessions = await sortSessions(allSessions, userId);
+            res.status(200).json(sortedSessions);
         } catch (err) {
             res.status(400).json({ message: "Er is iets fout gegaan", error: err.message });
         }
@@ -66,10 +69,8 @@ const isAdmin = async (userId) => {
 }
 
 //Gets all sessions sorted by week and day
-const getAllSessions = async (userId) => {
-    const daysOfWeek = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
+const getAllSessions = async () => {
     const firstDayOfWeek = getFirstDayOfWeek();
-    const allSessions = {};
 
     const sessions = await Session.find({
         date: {
@@ -77,13 +78,20 @@ const getAllSessions = async (userId) => {
         }
     }).sort({ date: 1 });
 
+    return sessions;
+}
+
+
+const sortSessions = async (sessions, userId) => {
+    const daysOfWeek = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
+    let allSessions = {};
     let weekInfo = {
         zondag: [], maandag: [], dinsdag: [], woensdag: [],
         donderdag: [], vrijdag: [], zaterdag: []
     };
 
     for (index in sessions) {
-        const session = await getSessionInfo(sessions[index], userId);
+        let session = await getSessionInfo(sessions[index], userId);
         if (session != null) {
             const dayNr = session.date.getDay();
             const weekNr = session.date.getWeekNumber();
@@ -100,17 +108,12 @@ const getAllSessions = async (userId) => {
             }
         }
     }
+
     return allSessions;
 }
 
 const getSessionInfo = async (session, userId) => {
-    if (userId != null) {
-        if (session.private && !userParticipates(userId, session.participants)) {
-            return null;
-        }
-    }
-
-    return {
+    let sessionInfo = {
         id: session._id,
         title: session.title,
         location: session.location,
@@ -120,7 +123,19 @@ const getSessionInfo = async (session, userId) => {
         maxAmountOfParticipants: session.maxAmountOfParticipants,
         teacher: session.teacher,
         description: session.description
-    };
+    }
+
+    if (userId != null) {
+        if (session.private && !userParticipates(userId, session.participants)) {
+            return null;
+        }
+
+        if (userParticipates(userId, session.participants)) {
+            sessionInfo["participates"] = true;
+        }
+    }
+
+    return sessionInfo;
 }
 
 const userParticipates = (userId, participants) => {
@@ -146,12 +161,6 @@ const getFirstDayOfWeek = () => {
     let result = new Date(date.setDate(diff));
     result = result.toISOString().split("T")[0] + "T00:00:00.000Z";
     return result;
-}
-
-module.exports.getByUserId = async (req, res) => {
-    const { id } = req.body;
-    console.log(id);
-
 }
 
 module.exports.add = async (req, res) => {
@@ -223,10 +232,10 @@ module.exports.signup = async (req, res) => {
             const session = await Session.findOne({ _id: sessionId });
             if (session) {
                 await session.addParticipants(sessionId, { userId, comingWith });
+                res.status(200).json({ message: "U bent succesvol aangemeld" });
             } else {
                 res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
             }
-            res.status(200).json({ message: "U bent succesvol aangemeld" });
         } catch (err) {
             res.status(400).json({ message: err.message });
         }
@@ -236,6 +245,45 @@ module.exports.signup = async (req, res) => {
 }
 
 module.exports.signout = async (req, res) => {
+    const sessionId = req.params.id;
+    const userId = req.body.userId;
+
+    if (sessionId)
+    {
+        try {
+            let session = await Session.findOne({sessionId});
+
+            if (session) {
+                for (index in session.participants) {
+                    let participant = session.participants[index];
+                    if (participant.userId == userId) {
+                        if(req.cookies.userId == participant.userId || req.cookies.isEmployee == true)
+                        {
+                            session.participants.splice(index, 1);
+                            session.save();
+                            res.status(200).json({message: "Succesvol uitgeschreven"});
+                        }
+                        else
+                        {
+                            res.status(400).json({ message: "U bent niet gemachtigd deze persoon uit te schrijven" });
+                        }
+                    }
+                }
+                res.status(400).json({ message: "Dit userID is niet gevonden" });
+            } else
+            {
+                res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
+            }
+        }
+        catch (err)
+        {
+            res.status(400).json({ message: err.message });
+        }
+    }
+    else
+    {
+        res.status(400).json({ message: "Er is geen sessionId gegegeven" });
+    }
 
 }
 
