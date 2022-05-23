@@ -257,7 +257,7 @@ module.exports.signout = async (req, res) => {
                 for (index in session.participants) {
                     let participant = session.participants[index];
                     if (participant.userId == userId) {
-                        if(rek.cookies.userId == participant.userId || rek.cookies.isAdmin == true)
+                        if(req.cookies.userId == participant.userId || req.cookies.isEmployee == true)
                         {
                             session.participants.splice(index, 1);
                             session.save();
@@ -269,6 +269,7 @@ module.exports.signout = async (req, res) => {
                         }
                     }
                 }
+                res.status(400).json({ message: "Dit userID is niet gevonden" });
             } else
             {
                 res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
