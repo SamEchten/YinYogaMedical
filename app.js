@@ -17,7 +17,7 @@ const { validateJson } = require("./middleware/validator");
 // mollieModule.createPayment("1.00", "test payment", "https://google.com");
 
 //Server port ->
-const port = 3030;
+const port = 80;
 
 //Optinos for https connection
 const httpsOptions = {

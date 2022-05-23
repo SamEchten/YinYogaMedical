@@ -42,7 +42,7 @@ const validateAdmin = async (req, res, next) => {
             User.findOne({ id }, (err, doc) => {
                 if (!err) {
                     if (doc.isEmployee) {
-                        //Request was mode by admin ->
+                        //Request was made by admin ->
                         next();
                     }
                 } else {

@@ -25,8 +25,10 @@ router.put("/:id", controller.update);
 //Delete product
 router.delete("/:id", controller.delete);
 //Buy product
-router.post("/:id", controller.createPayment);
+router.post("/purchase/:id", controller.purchase);
 //Succes page after payments is succesfull
 router.get("/succes/:id", controller.succes);
+//Webhook for mollie to send payment info to
+router.post("/webhook", controller.webHook);
 
 module.exports = router;
