@@ -28,7 +28,9 @@ li {
     background-color: #FFFFFF;
     color: #000000;
     border-radius: 4%;
-    height: 75vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: inherit
 }
 
 h6 {
@@ -44,12 +46,12 @@ option:focus-within {
     background-color: #ffffff;
     color: #000000;
     border-radius: 2%;
-    height: 75vh;
+    overflow-y: auto;
 }
 
 .notes {
-    overflow-y: scroll;
-    height: 14vh;
+    height: 7vh;
+    overflow-y: auto;
 }
 
 .descriptionText {
@@ -60,4 +62,9 @@ option:focus-within {
 .video1 {
     background-image: url(./video1.jpg);
     height: 20vh;
+}
+
+.pf {
+    height: 100%;
+    width: 75%;
 }
