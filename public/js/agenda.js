@@ -1,7 +1,7 @@
 let schedule;
 let userRole = "admin";
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber() - 1;
+let weekNumb = getCurrentWeekNumber();
 
 // Render lesrooster from apiCaller and format it on date ->
 $(async function () {
@@ -10,9 +10,14 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
 });
+async function setApiDataAgenda() {
+  
+}
 
 // Loading agenda data per week ->
-function loadAgenda(weekNumber) {
+async function loadAgenda(weekNumber) {
+  const res = await (await ApiCaller.getAllSessions()).json();
+  schedule = res;
   showOrhideElements();
   let week = schedule[weekNumber];
   if (week != undefined) {
@@ -118,11 +123,11 @@ function sessionDetails(data) {
 
 function loadSessionItem(id, title, teacher, time, date, day) {
   let itemLayout = `
-    <div class="row ps-4 p-2 agendaItem align-items-center">
+    <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
         <h4 id="time" class="text-left lead rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
       </div>
-      <div id="${id}" class="col-md-2">
+      <div class="col-md-2 sessionDetails">
         <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
       </div>
       <div class="col-md-2">
@@ -132,7 +137,7 @@ function loadSessionItem(id, title, teacher, time, date, day) {
         <i class="bi bi-pencil hiding editSession"></i>
       </div>
       <div class="col-md-2 text-start ">
-        <i class="bi bi-trash3 hiding removeSession"></i>
+        <i class="bi bi-x-lg hiding removeSession"></i>
       </div>
       <div class="col-md-2 text-end">
         <button type="submit" class="btn btn-primary yinStyle" onclick="subscribeLesson()" id="subscribe">Inschrijven</button>
@@ -140,12 +145,13 @@ function loadSessionItem(id, title, teacher, time, date, day) {
     </div>`
 
   $(itemLayout).appendTo("#" + day);
-  addEventHandlersSession(id);
+  addEventHandlersSession();
 }
 
-function addEventHandlersSession(id) {
-  $("#" + id).on("click", async function () {
+function addEventHandlersSession() {
+  $(".sessionDetails").on("click", async function () {
     try {
+      const id = $(this).parent().attr('id');
       const res = await ApiCaller.getSingleSession(id);
       const json = await res.json();
       sessionDetails(json);
@@ -162,9 +168,44 @@ function clickEvents() {
     console.log("EDIT SESSION");
   });
   // Remove a session ->
-  $(".removeSession").on("click", function () {
-    console.log("REMOVE SESSION");
+  $(".removeSession").on("click", function() {
+    const sessionId = $(this).parent().parent().attr("id");
+    removeSession(sessionId);
   });
+  $(".subscribe").on("click", function() {
+    const sessionId = $(this).parent().parent().attr("id");
+    console.log(sessionId, user.userId);
+    // subscribe functon with @id and @userId
+  });
+}
+
+// Remove a session as Admin
+async function removeSession(sessionId) {
+      Swal.fire({
+        title: 'Weet u zeker dat u deze les wilt annuleren?',
+        showCancelButton: true,
+        confirmButtonColor: '#D5CA9B',
+        confirmButtonText: 'Annuleer',
+      }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          try { 
+            let res = await ApiCaller.removeSession(sessionId);
+            if(res.status == 200) {
+              loadAndSetFullAgenda(); 
+            }
+            Swal.fire({
+              title : "Les geannuleerd!",
+              icon: 'success',
+              showCloseButton: true,
+              confirmButtonColor: '#D5CA9B'
+            });
+          } catch(err) { 
+            console.log(err)
+          }
+        }
+      })
+      
 }
 
 // loading prev and next week ->
@@ -189,8 +230,8 @@ $(".nextWeek").on("click", function () {
 });
 
 // Go to current week ->
-$(".week").on("click", function () {
-  weekNumb = getCurrentWeekNumber() - 1;
+$(".week").on("click", function ()  {
+  weekNumb = getCurrentWeekNumber();
   loadAndSetFullAgenda();
 });
 
@@ -198,31 +239,32 @@ $(".addLesson").on("click", function () {
   Swal.fire({
     html:
       `<h2>Voeg nieuwe les toe</h2>
+    <hr>
     <div class="row width">
     <div class="col-md-6">
     <h3 class="lead"><b>Lesnaam:</b></h3>
-    <input id="lessonname" class="swal2-input" type="text">
+    <input id="lessonName" class="swal2-input" type="text">
     <h3 class="lead"><b>Beschrijving:</b></h3>
-    <textarea id="lessondescription" class="swal2-input"></textarea>
+    <textarea id="lessonDescription" class="swal2-input"></textarea>
     <h3 class="lead"><b>Yogadocent:</b></h3>
-    <p><input id="lessondocent" type="radio" checked="true" value="Natascha Puper">
+    <p><input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
     Natascha Puper</p>
     </div>
     <div class="col-md-6">
     <h3 class="lead"><b>Dag:</b></h3>
     <div class="row">
     <div class="col-md-4">
-    <input id="lessonday" class="swal2-input" type="date">
+    <input id="lessonDay" class="swal2-input" type="date">
     </div></div>
     <h3 class="lead"><b>Starttijd:</b></h3>
     <div class="row">
     <div class="col-md-4">
-    <input id="lessontime" class="swal2-input" type="time">
+    <input id="lessonTime" class="swal2-input" type="time">
     </div></div>
     <h3 class="lead"><b>Duur:</b></h3>
     <div class="row">
     <div class="col-md-4">
-    <input id="lessonduration" class="swal2-input" type="number" step="0.5" min="0.5" max="8">
+    <input id="lessonDuration" class="swal2-input" type="number" step="0.5" min="0.5" max="8">
     </div></div>
     <h3 class="lead"><b>Max. aantal deelnemers:</b></h3>
     <div class="row">
@@ -235,6 +277,23 @@ $(".addLesson").on("click", function () {
     confirmButtonText: 'Voeg les toe',
     confirmButtonColor: '#D5CA9B',
     cancelButtonText: 'Cancel',
+  }).then((result) => {
+    if(result.isConfirmed)
+    {
+
+      let json = {
+        "title": $("#lessonName").val(),
+        "location": "Emmen",
+        "date": createDateString($("#lessonDay").val(), $("#lessonTime").val()),
+        "duration": $("#lessonDuration").val(),
+        "participants": [],
+        "teacher": $("#lesssonTeacher").val(),
+        "description": $("#lessonDescription").val(),
+        "maxAmountOfParticipants": $("#maxPeople").val(),
+        "weekly": false
+    }
+    console.log(json)
+    } 
   });
 });
 
@@ -244,6 +303,7 @@ function subscribeLesson() {
   Swal.fire({
     html:
       `<h2>Inschrijven</h2>
+      <hr>
     <p>U wilt u inschrijven voor (les).</p>
     <p><b> Hoeveel personen wilt u inschrijven?</b></p>
     <div class="row width">
@@ -288,6 +348,7 @@ function setWeekData(week) {
 
   $(".week").html(fDay + " - " + lDay)
 }
+
 
 
 
