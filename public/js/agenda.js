@@ -69,23 +69,46 @@ function getAllDaysOfWeek(data) {
   return days;
 }
 
+function addMinutes(date, minutes) {
+  return new Date(date.getTime() + minutes*60000);
+}
+
 // Show all details per session ->
 function sessionDetails(data) {
-
   Swal.fire(
     {
       html: `<div class="alerttitle">
       <h2>${data.title}<h2>
+      <hr/>
       </div>
       <div class="test">
+      <div class="row width">
+      <div class="col-md-6">
         <h3 class="lead"><b>Locatie:</b></h3>
         <p>${data.location}</p>
+      </div>
+      <div class="col-md-6">
         <h3 class="lead"><b>Beschrijving:</b></h3>
         <p>${data.description}<p>
+      </div></div>
+      <div class="row width">
+      <div class="col-md-6">
         <h3 class="lead"><b>Docent:</b></h3>
         <p>${data.teacher}<p>
+      </div>
+      <div class="col-md-6">
         <h3 class="lead"><b>Datum:</b></h3> 
         <p>${dateFormat(data.date).date}</p>
+        </div></div>
+        <div class="row width">
+      <div class="col-md-6">
+        <h3 class="lead"><b>Starttijd:</b></h3>
+        <p>${dateFormat(data.date).time}<p>
+      </div>
+      <div class="col-md-6">
+        <h3 class="lead"><b>Eindtijd:</b></h3> 
+        <p>${dateFormat(addMinutes(new Date(data.date), data.duration)).time}</p>
+        </div></div>
       </div>`,
       customClass: 'sweetalert-seelesson',
       confirmButtonColor: '#D5CA9B',
@@ -174,7 +197,7 @@ $(".week").on("click", function () {
 $(".addLesson").on("click", function () {
   Swal.fire({
     html:
-    `<h2>Voeg nieuwe les toe</h2>
+      `<h2>Voeg nieuwe les toe</h2>
     <div class="row width">
     <div class="col-md-6">
     <h3 class="lead"><b>Lesnaam:</b></h3>
@@ -220,7 +243,7 @@ $(".addLesson").on("click", function () {
 function subscribeLesson() {
   Swal.fire({
     html:
-    `<h2>Inschrijven</h2>
+      `<h2>Inschrijven</h2>
     <p>U wilt u inschrijven voor (les).</p>
     <p><b> Hoeveel personen wilt u inschrijven?</b></p>
     <div class="row width">
