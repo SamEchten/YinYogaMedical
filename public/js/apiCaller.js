@@ -68,5 +68,21 @@ class  ApiCaller
             //error
         }
     }
+    // Remove a session as admin
+    static removeSession = async(sessionId) => {
+        let url = "/api/session/" + sessionId;
+        let options = {
+            method: 'DELETE',
+            headers:{
+            'Content-Type':'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch(err) {
+            //error
+        }
+    }
     
 }

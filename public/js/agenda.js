@@ -1,7 +1,7 @@
 let schedule;
 let userRole = "user";
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber() - 1;
+let weekNumb = getCurrentWeekNumber();
 
 // Render lesrooster from apiCaller and format it on date ->
 $(async function () {
@@ -10,9 +10,14 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
 });
+async function setApiDataAgenda() {
+  
+}
 
 // Loading agenda data per week ->
-function loadAgenda(weekNumber) {
+async function loadAgenda(weekNumber) {
+  const res = await (await ApiCaller.getAllSessions()).json();
+  schedule = res;
   showOrhideElements();
   let week = schedule[weekNumber];
   if (week != undefined) {
@@ -96,11 +101,11 @@ function sessionDetails(data) {
 
 function loadSessionItem(id, title, teacher, time, date, day) {
   let itemLayout = `
-    <div class="row ps-4 p-2 agendaItem align-items-center">
+    <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
         <h4 id="time" class="text-left lead rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
       </div>
-      <div id="${id}" class="col-md-2">
+      <div class="col-md-2 sessionDetails">
         <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
       </div>
       <div class="col-md-2">
@@ -112,18 +117,19 @@ function loadSessionItem(id, title, teacher, time, date, day) {
       <div class="col-md-2 text-start ">
         <i class="bi bi-trash3 hiding removeSession"></i>
       </div>
-      <div class="col-md-2 text-end">
-        <button type="submit" class="btn btn-primary yinStyle" id="subscribe">Inschrijven</button>
+      <div class="col-md-2 subButton text-end">
+        <button type="submit" class="btn btn-primary yinStyle subscribe">Inschrijven</button>
       </div>
     </div>`
 
   $(itemLayout).appendTo("#" + day);
-  addEventHandlersSession(id);
+  addEventHandlersSession();
 }
 
-function addEventHandlersSession(id) {
-  $("#" + id).on("click", async function () {
+function addEventHandlersSession() {
+  $(".sessionDetails").on("click", async function () {
     try {
+      const id = $(this).parent().attr('id');
       const res = await ApiCaller.getSingleSession(id);
       const json = await res.json();
       sessionDetails(json);
@@ -141,8 +147,42 @@ function clickEvents() {
   });
   // Remove a session ->
   $(".removeSession").on("click", function() {
-    console.log("REMOVE SESSION");
+    const sessionId = $(this).parent().parent().attr("id");
+    removeSession(sessionId);
   });
+  $(".subscribe").on("click", function() {
+    const sessionId = $(this).parent().parent().attr("id");
+    console.log(sessionId, user.userId);
+    // subscribe functon with @id and @userId
+  });
+}
+
+async function removeSession(sessionId) {
+      Swal.fire({
+        title: 'Weet u zeker dat u deze wilt verwijderen?',
+        showCancelButton: true,
+        confirmButtonColor: '#D5CA9B',
+        confirmButtonText: 'Verwijderen',
+      }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          try { 
+            let res = await ApiCaller.removeSession(sessionId);
+            if(res.status == 200) {
+              loadAndSetFullAgenda(); 
+            }
+            Swal.fire({
+              title : "Les verwijderd!",
+              icon: 'success',
+              showCloseButton: true,
+              confirmButtonColor: '#D5CA9B'
+            });
+          } catch(err) { 
+            console.log(err)
+          }
+        }
+      })
+      
 }
 
 // loading prev and next week ->
@@ -168,7 +208,7 @@ $(".nextWeek").on("click", function () {
 
 // Go to current week ->
 $(".week").on("click", function ()  {
-  weekNumb = getCurrentWeekNumber() - 1;
+  weekNumb = getCurrentWeekNumber();
   loadAndSetFullAgenda();
 });
 
@@ -197,7 +237,7 @@ $(".addLesson").on("click", function() {
   });
 });
 
-$('#subscribe').on("click", function() {
+function subscribeToSession(id) {
   Swal.fire({
     html:
       `<h2>Inschrijven</h2>
@@ -212,7 +252,8 @@ $('#subscribe').on("click", function() {
     confirmButtonColor: '#D5CA9B',
     cancelButtonText: 'Cancel',
   });
-});
+}
+
 
 // Loads inputfields.
 function nrOfPeopleChanged() {
@@ -240,6 +281,7 @@ function setWeekData(week) {
 
   $(".week").html(fDay + " - " + lDay)
 }
+
 
 
 

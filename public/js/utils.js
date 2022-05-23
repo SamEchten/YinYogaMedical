@@ -1,3 +1,5 @@
+let user = JSON.parse($.cookie("user"));
+
 // Error message : give the class "errorBox" to activate ->
 $(".errorBox").on("click", function()
 {
@@ -34,7 +36,7 @@ function dateFormat(data)
 
 };
 
-// returns the current week, in most cases the week is 1 week off so -1. ->
+// returns the dcurrent week, in most cases the week is 1 week off so -1. ->
 function getCurrentWeekNumber() {
     currentDate = new Date();
     startDate = new Date(currentDate.getFullYear(), 0, 1);
@@ -58,6 +60,13 @@ function getfirstAndlastDatesOfTheWeek(year, week)
         firstDay: firstDay.toLocaleDateString("en-GB"),
         lastDay: lastDay.toLocaleDateString("en-GB")
     }
+}
+
+// Set the user object to the user credentials ->
+function setUserObject()
+{
+  let data = JSON.parse($.cookie("user"));
+  new User(data.userId, data.fullName, data.email, data.isEmployee);
 }
 
 // Checks client role  ->
