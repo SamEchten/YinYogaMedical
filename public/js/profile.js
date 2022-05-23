@@ -6,7 +6,14 @@ $(".setting").on("click", function () {
     // });
     if (this.id == "profiel")
     {
-        console.log('works');
         $(".settingsContent").load("profile/myProfile");
+    }
+    else if (this.id == "product")
+    {
+        $(".settingsContent").load("profile/myPoducts");
+    }
+    else if (this.id == "enrollments")
+    {
+        $(".settingsContent").load("profile/myEnrollments");
     }
 })

@@ -3,6 +3,7 @@
 //Handles the error passed through by the login and signup methods
 //Returns an error object containing the error messages for the different fields
 module.exports.handleUserErrors = (err) => {
+    console.log(err);
     const errors = { fullName: null, email: null, password: null, phoneNumber: null, notes: null, isEmployee: null };
 
     //Duplicate email ->

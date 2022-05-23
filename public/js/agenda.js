@@ -1,5 +1,5 @@
 let schedule;
-let userRole = "user";
+let userRole = "admin";
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber() - 1;
 
@@ -30,10 +30,9 @@ function loadAgenda(weekNumber) {
         $("#" + day).append("<h4 class='lead p-3'>Geen lessen</h4>")
       }
     }
-  } else
-  {
+  } else {
     fullClear();
-  } 
+  }
   showOrhideElements();
   clickEvents();
 }
@@ -50,7 +49,7 @@ function clearAgenda(day) {
 
 // Clear all days
 function fullClear() {
-  for(day in daysOfWeek) {
+  for (day in daysOfWeek) {
     console.log(day)
     $("#" + daysOfWeek[day]).empty();
     $("#" + daysOfWeek[day]).append("<h4 class='lead p-3'>Geen lessen</h4>")
@@ -72,23 +71,23 @@ function getAllDaysOfWeek(data) {
 
 // Show all details per session ->
 function sessionDetails(data) {
-  
+
   Swal.fire(
     {
-      html: `<h2>${data.title}<h2>
-      <hr>
-      <div class="test">
-        <h1 class="lead"><b>Locatie:</b></h1>
-        <p>${data.location}</p>
-        <h1 class="lead"><b>Beschrijving:</b></h1>
-        <p>${data.description}<p>
-        <h1 class="lead"><b>Docent:</b></h1>
-        <p>${data.teacher}<p>
-        <h1 class="lead"><b>Datum:</b></h1> 
-        <p>${dateFormat(data.date).date}</p>
+      html: `<div class="alerttitle">
+      <h2>${data.title}<h2>
       </div>
-        `,
-      customClass: 'sweetalert-seeLesson',
+      <div class="test">
+        <h3 class="lead"><b>Locatie:</b></h3>
+        <p>${data.location}</p>
+        <h3 class="lead"><b>Beschrijving:</b></h3>
+        <p>${data.description}<p>
+        <h3 class="lead"><b>Docent:</b></h3>
+        <p>${data.teacher}<p>
+        <h3 class="lead"><b>Datum:</b></h3> 
+        <p>${dateFormat(data.date).date}</p>
+      </div>`,
+      customClass: 'sweetalert-seelesson',
       confirmButtonColor: '#D5CA9B',
       confirmButtonText: 'OK'
     });
@@ -113,7 +112,7 @@ function loadSessionItem(id, title, teacher, time, date, day) {
         <i class="bi bi-trash3 hiding removeSession"></i>
       </div>
       <div class="col-md-2 text-end">
-        <button type="submit" class="btn btn-primary yinStyle" id="subscribe">Inschrijven</button>
+        <button type="submit" class="btn btn-primary yinStyle" onclick="subscribeLesson()" id="subscribe">Inschrijven</button>
       </div>
     </div>`
 
@@ -134,13 +133,13 @@ function addEventHandlersSession(id) {
 }
 
 // Add eventlisteners for button that render in after dom has loaded ->
-function clickEvents() { 
+function clickEvents() {
   // Edit a session ->
-  $(".editSession").on("click", function() {
+  $(".editSession").on("click", function () {
     console.log("EDIT SESSION");
   });
   // Remove a session ->
-  $(".removeSession").on("click", function() {
+  $(".removeSession").on("click", function () {
     console.log("REMOVE SESSION");
   });
 }
@@ -148,7 +147,7 @@ function clickEvents() {
 // loading prev and next week ->
 $(".prevWeek").on("click", function () {
   weekNumb--;
-  if(weekNumb < 1) {
+  if (weekNumb < 1) {
     weekNumb = 52;
     loadAndSetFullAgenda();
   } else {
@@ -158,7 +157,7 @@ $(".prevWeek").on("click", function () {
 
 $(".nextWeek").on("click", function () {
   weekNumb++;
-  if(weekNumb > 52) {
+  if (weekNumb > 52) {
     weekNumb = 1;
     loadAndSetFullAgenda();
   } else {
@@ -167,28 +166,47 @@ $(".nextWeek").on("click", function () {
 });
 
 // Go to current week ->
-$(".week").on("click", function ()  {
+$(".week").on("click", function () {
   weekNumb = getCurrentWeekNumber() - 1;
   loadAndSetFullAgenda();
 });
 
-$(".addLesson").on("click", function() {
+$(".addLesson").on("click", function () {
   Swal.fire({
-    html: 
+    html:
     `<h2>Voeg nieuwe les toe</h2>
-    <p><b>Lesnaam:</b></p>
+    <div class="row width">
+    <div class="col-md-6">
+    <h3 class="lead"><b>Lesnaam:</b></h3>
     <input id="lessonname" class="swal2-input" type="text">
-    <p><b>Beschrijving:</b></p>
+    <h3 class="lead"><b>Beschrijving:</b></h3>
     <textarea id="lessondescription" class="swal2-input"></textarea>
-    <p><b>Yogadocent:</b></p>
+    <h3 class="lead"><b>Yogadocent:</b></h3>
     <p><input id="lessondocent" type="radio" checked="true" value="Natascha Puper">
     Natascha Puper</p>
-    <p><b>Dag:</b></p>
+    </div>
+    <div class="col-md-6">
+    <h3 class="lead"><b>Dag:</b></h3>
+    <div class="row">
+    <div class="col-md-4">
     <input id="lessonday" class="swal2-input" type="date">
-    <p><b>Starttijd:</b></p>
+    </div></div>
+    <h3 class="lead"><b>Starttijd:</b></h3>
+    <div class="row">
+    <div class="col-md-4">
     <input id="lessontime" class="swal2-input" type="time">
-    <p><b>Duur:</b></p>
-    <input id="lessonduration" class="swal2-input" type="number" step="0.5" min="0.5" max="8">`,
+    </div></div>
+    <h3 class="lead"><b>Duur:</b></h3>
+    <div class="row">
+    <div class="col-md-4">
+    <input id="lessonduration" class="swal2-input" type="number" step="0.5" min="0.5" max="8">
+    </div></div>
+    <h3 class="lead"><b>Max. aantal deelnemers:</b></h3>
+    <div class="row">
+    <div class="col-md-4">
+    <input id="maxPeople" class="swal2-input" type="number" step="1" min="1">
+    </div></div>
+    </div></div>`,
     customClass: 'sweetalert-makeLesson',
     showCancelButton: true,
     confirmButtonText: 'Voeg les toe',
@@ -197,13 +215,18 @@ $(".addLesson").on("click", function() {
   });
 });
 
-$('#subscribe').on("click", function() {
+
+// TODO: Laat les zien waarvoor er ingeschreven wordt.
+function subscribeLesson() {
   Swal.fire({
     html:
-      `<h2>Inschrijven</h2>
+    `<h2>Inschrijven</h2>
     <p>U wilt u inschrijven voor (les).</p>
     <p><b> Hoeveel personen wilt u inschrijven?</b></p>
+    <div class="row width">
+    <div class="col-md-3">
     <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
+    </div></div>
     <p><b id="extraPeopleTitle"></b></p>
     <p id="inputfields"></p>`,
     customClass: 'sweetalert-subscribe',
@@ -212,7 +235,7 @@ $('#subscribe').on("click", function() {
     confirmButtonColor: '#D5CA9B',
     cancelButtonText: 'Cancel',
   });
-});
+}
 
 // Loads inputfields.
 function nrOfPeopleChanged() {
@@ -222,8 +245,10 @@ function nrOfPeopleChanged() {
   if (val > 1) {
     for (let i = 0; i < val - 1; i++) {
       temporary +=
-        "<input id='name" + val + "' class='swal2-input' type='text' placeholder='Naam'>" +
-        "<input id='emailaddress" + val + "' class='swal2-input' type='text' placeholder='E-mailadres'>";
+        `<div class="row width">
+        <div class="col-md-6"><input id='name${val}' class='swal2-input' type='text' placeholder='Naam'></div>
+        <div class="col-md-6"><input id='emailaddress${val}' class='swal2-input' type='text' placeholder='E-mailadres'></div> 
+        </div>`;
     }
     title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
     document.getElementById('inputfields').innerHTML = temporary;
