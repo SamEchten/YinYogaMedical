@@ -12,9 +12,9 @@ const { validateJwt } = require("./middleware/validator");
 const { validateAdmin } = require("./middleware/validator");
 const { validateJson } = require("./middleware/validator");
 
-//Mollie ->
-const mollieModule = require("./mollie/mollieClient");
-mollieModule.createPayment("1.00", "test payment", "https://google.com");
+// //Mollie ->
+// const mollieModule = require("./mollie/mollieClient");
+// mollieModule.createPayment("1.00", "test payment", "https://google.com");
 
 //Server port ->
 const port = 3030;
@@ -65,8 +65,10 @@ const viewRouter = require("./routes/viewRouter");
 const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
 const sessionRouter = require("./routes/sessionRouter");
+const productRouter = require("./routes/productRouter");
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", validateJwt, userRouter);
 app.use("/api/session", sessionRouter);
+app.use("/api/product", productRouter);
 app.use(viewRouter);
