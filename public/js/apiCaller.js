@@ -53,6 +53,8 @@ class  ApiCaller
             //error
         }
     }
+    
+    // Gets on single session -> 
     static getSingleSession = async(id) => {
         let url = "/api/session/" + id;
         let options = {
@@ -68,7 +70,8 @@ class  ApiCaller
             //error
         }
     }
-    // Remove a session as admin
+
+    // Remove a session -> *ADMIN*
     static removeSession = async(sessionId) => {
         let url = "/api/session/" + sessionId;
         let options = {
@@ -76,6 +79,24 @@ class  ApiCaller
             headers:{
             'Content-Type':'application/json'
             }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch(err) {
+            //error
+        }
+    }
+
+    // Add a session to the agenda -> *ADMIN*
+    static addSession = async(data) => {
+        let url = "/api/session/";
+        let options = {
+            method: 'POST',
+            headers:{
+            'Content-Type':'application/json'
+            },
+            body: JSON.stringify(data)
         };
         try {
             let response = await fetch(url, options);

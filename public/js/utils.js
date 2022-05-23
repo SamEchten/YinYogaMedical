@@ -1,4 +1,10 @@
-let user = JSON.parse($.cookie("user"));
+let cookie = $.cookie("user");
+let user;
+
+$(function () {
+  roleCheck();
+  $(".userName").html(user.fullName);
+});
 
 // Error message : give the class "errorBox" to activate ->
 $(".errorBox").on("click", function()
@@ -68,21 +74,19 @@ function createDateString(date, time)
     return string;
 }
 
-// Set the user object to the user credentials ->
-function setUserObject()
-{
-  let data = JSON.parse($.cookie("user"));
-  new User(data.userId, data.fullName, data.email, data.isEmployee);
-}
-
 // Checks client role  ->
 function roleCheck()
 {
-  if(userRole == "admin")
-  {
-    return true
+  try {
+    user = JSON.parse(cookie);
+    if(user.isEmployee) {
+      return true
+    } else {
+      return  false
+    }
+  } catch(err) {
+    
   }
-  return  false
 }
 
 // Hide elements for none admins else show them ->
@@ -92,4 +96,6 @@ function showOrhideElements() {
     $(".hiding").css("display","block");
   }
 }
+
+
     

@@ -1,5 +1,4 @@
 let schedule;
-let userRole = "admin";
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber();
 
@@ -10,9 +9,6 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
 });
-async function setApiDataAgenda() {
-  
-}
 
 // Loading agenda data per week ->
 async function loadAgenda(weekNumber) {
@@ -125,7 +121,7 @@ function loadSessionItem(id, title, teacher, time, date, day) {
   let itemLayout = `
     <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
-        <h4 id="time" class="text-left lead rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
+        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
       </div>
       <div class="col-md-2 sessionDetails">
         <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
@@ -163,20 +159,23 @@ function addEventHandlersSession() {
 
 // Add eventlisteners for button that render in after dom has loaded ->
 function clickEvents() {
-  // Edit a session ->
-  $(".editSession").on("click", function () {
-    console.log("EDIT SESSION");
-  });
-  // Remove a session ->
-  $(".removeSession").on("click", function() {
-    const sessionId = $(this).parent().parent().attr("id");
-    removeSession(sessionId);
-  });
-  $(".subscribe").on("click", function() {
-    const sessionId = $(this).parent().parent().attr("id");
-    console.log(sessionId, user.userId);
-    // subscribe functon with @id and @userId
-  });
+  if(roleCheck()) { 
+    // Edit a session ->
+    $(".editSession").on("click", function () {
+      console.log("EDIT SESSION");
+    });
+    // Remove a session ->
+    $(".removeSession").on("click", function() {
+      const sessionId = $(this).parent().parent().attr("id");
+      removeSession(sessionId);
+    });
+    $(".subscribe").on("click", function() {
+      const sessionId = $(this).parent().parent().attr("id");
+      console.log(sessionId, user.userId);
+      // subscribe functon with @id and @userId
+    });
+  }
+  
 }
 
 // Remove a session as Admin
@@ -204,8 +203,7 @@ async function removeSession(sessionId) {
             console.log(err)
           }
         }
-      })
-      
+      });  
 }
 
 // loading prev and next week ->
@@ -235,7 +233,8 @@ $(".week").on("click", function ()  {
   loadAndSetFullAgenda();
 });
 
-$(".addLesson").on("click", function () {
+$(".addLesson").on("click", async function () {
+  let error = false;
   Swal.fire({
     html:
       `<h2>Voeg nieuwe les toe</h2>
@@ -251,11 +250,12 @@ $(".addLesson").on("click", function () {
     Natascha Puper</p>
     </div>
     <div class="col-md-6">
-    <h3 class="lead"><b>Dag:</b></h3>
+      <h3 class="lead"><b>Dag:</b></h3>
     <div class="row">
-    <div class="col-md-4">
-    <input id="lessonDay" class="swal2-input" type="date">
-    </div></div>
+      <div class="col-md-4">
+      <input id="lessonDay" class="swal2-input" type="date">
+      </div>
+    </div>
     <h3 class="lead"><b>Starttijd:</b></h3>
     <div class="row">
     <div class="col-md-4">
@@ -270,33 +270,68 @@ $(".addLesson").on("click", function () {
     <div class="row">
     <div class="col-md-4">
     <input id="maxPeople" class="swal2-input" type="number" step="1" min="1">
-    </div></div>
-    </div></div>`,
+    </div></div></div>
+    <div class="alert alert-warning errorBox" role="alert">
+    </div>
+    </div>`,
     customClass: 'sweetalert-makeLesson',
     showCancelButton: true,
     confirmButtonText: 'Voeg les toe',
     confirmButtonColor: '#D5CA9B',
+    closeOnConfirm: false,
     cancelButtonText: 'Cancel',
-  }).then((result) => {
-    if(result.isConfirmed)
-    {
-
-      let json = {
-        "title": $("#lessonName").val(),
-        "location": "Emmen",
-        "date": createDateString($("#lessonDay").val(), $("#lessonTime").val()),
-        "duration": $("#lessonDuration").val(),
-        "participants": [],
-        "teacher": $("#lesssonTeacher").val(),
-        "description": $("#lessonDescription").val(),
-        "maxAmountOfParticipants": $("#maxPeople").val(),
-        "weekly": false
+    preConfirm: async () => {
+      let add = await addSession();
+        if(add) {
+          error = true;
+        }
     }
-    console.log(json)
-    } 
+  }).then((result) => {
+      if(result.isConfirmed) {
+        if(error) { 
+          Swal.fire({
+            title : "Les aangemaakt!",
+            icon: 'success',
+            showCloseButton: true,
+            confirmButtonColor: '#D5CA9B'
+          });
+        }else {
+          Swal.fire({
+            title : "Velden niet correct ingevuld",
+            icon: 'warning',
+            showCloseButton: true,
+            confirmButtonColor: '#D5CA9B'
+          });
+        }
+      }
   });
 });
 
+// Add session call ->
+async function addSession() { 
+  let json = {
+    "title": $("#lessonName").val(),
+    "location": "Emmen",
+    "date": createDateString($("#lessonDay").val(), $("#lessonTime").val()),
+    "duration": $("#lessonDuration").val(),
+    "participants": [],
+    "teacher": "Natascha",
+    "description": $("#lessonDescription").val(),
+    "maxAmountOfParticipants": $("#maxPeople").val(),
+    "weekly": false
+  }  
+  try {
+    let res = await ApiCaller.addSession(json);
+    console.log(res.status)
+    if(res.status == 201) { 
+      return true;
+    } else { 
+      return false;
+    }
+  } catch(err) {
+    console.log(err);
+  }
+}
 
 // TODO: Laat les zien waarvoor er ingeschreven wordt.
 function subscribeLesson() {
