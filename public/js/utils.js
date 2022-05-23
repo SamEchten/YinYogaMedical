@@ -62,6 +62,12 @@ function getfirstAndlastDatesOfTheWeek(year, week)
     }
 }
 
+function createDateString(date, time)
+{
+    let string = date + "T" + time + ":00Z"
+    return string;
+}
+
 // Set the user object to the user credentials ->
 function setUserObject()
 {

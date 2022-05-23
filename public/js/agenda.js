@@ -137,7 +137,7 @@ function loadSessionItem(id, title, teacher, time, date, day) {
         <i class="bi bi-pencil hiding editSession"></i>
       </div>
       <div class="col-md-2 text-start ">
-        <i class="bi bi-trash3 hiding removeSession"></i>
+        <i class="bi bi-x-lg hiding removeSession"></i>
       </div>
       <div class="col-md-2 text-end">
         <button type="submit" class="btn btn-primary yinStyle" onclick="subscribeLesson()" id="subscribe">Inschrijven</button>
@@ -179,12 +179,13 @@ function clickEvents() {
   });
 }
 
+// Remove a session as Admin
 async function removeSession(sessionId) {
       Swal.fire({
-        title: 'Weet u zeker dat u deze wilt verwijderen?',
+        title: 'Weet u zeker dat u deze les wilt annuleren?',
         showCancelButton: true,
         confirmButtonColor: '#D5CA9B',
-        confirmButtonText: 'Verwijderen',
+        confirmButtonText: 'Annuleer',
       }).then(async (result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
@@ -194,7 +195,7 @@ async function removeSession(sessionId) {
               loadAndSetFullAgenda(); 
             }
             Swal.fire({
-              title : "Les verwijderd!",
+              title : "Les geannuleerd!",
               icon: 'success',
               showCloseButton: true,
               confirmButtonColor: '#D5CA9B'
@@ -238,31 +239,32 @@ $(".addLesson").on("click", function () {
   Swal.fire({
     html:
       `<h2>Voeg nieuwe les toe</h2>
+    <hr>
     <div class="row width">
     <div class="col-md-6">
     <h3 class="lead"><b>Lesnaam:</b></h3>
-    <input id="lessonname" class="swal2-input" type="text">
+    <input id="lessonName" class="swal2-input" type="text">
     <h3 class="lead"><b>Beschrijving:</b></h3>
-    <textarea id="lessondescription" class="swal2-input"></textarea>
+    <textarea id="lessonDescription" class="swal2-input"></textarea>
     <h3 class="lead"><b>Yogadocent:</b></h3>
-    <p><input id="lessondocent" type="radio" checked="true" value="Natascha Puper">
+    <p><input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
     Natascha Puper</p>
     </div>
     <div class="col-md-6">
     <h3 class="lead"><b>Dag:</b></h3>
     <div class="row">
     <div class="col-md-4">
-    <input id="lessonday" class="swal2-input" type="date">
+    <input id="lessonDay" class="swal2-input" type="date">
     </div></div>
     <h3 class="lead"><b>Starttijd:</b></h3>
     <div class="row">
     <div class="col-md-4">
-    <input id="lessontime" class="swal2-input" type="time">
+    <input id="lessonTime" class="swal2-input" type="time">
     </div></div>
     <h3 class="lead"><b>Duur:</b></h3>
     <div class="row">
     <div class="col-md-4">
-    <input id="lessonduration" class="swal2-input" type="number" step="0.5" min="0.5" max="8">
+    <input id="lessonDuration" class="swal2-input" type="number" step="0.5" min="0.5" max="8">
     </div></div>
     <h3 class="lead"><b>Max. aantal deelnemers:</b></h3>
     <div class="row">
@@ -275,6 +277,23 @@ $(".addLesson").on("click", function () {
     confirmButtonText: 'Voeg les toe',
     confirmButtonColor: '#D5CA9B',
     cancelButtonText: 'Cancel',
+  }).then((result) => {
+    if(result.isConfirmed)
+    {
+
+      let json = {
+        "title": $("#lessonName").val(),
+        "location": "Emmen",
+        "date": createDateString($("#lessonDay").val(), $("#lessonTime").val()),
+        "duration": $("#lessonDuration").val(),
+        "participants": [],
+        "teacher": $("#lesssonTeacher").val(),
+        "description": $("#lessonDescription").val(),
+        "maxAmountOfParticipants": $("#maxPeople").val(),
+        "weekly": false
+    }
+    console.log(json)
+    } 
   });
 });
 
@@ -284,6 +303,7 @@ function subscribeLesson() {
   Swal.fire({
     html:
       `<h2>Inschrijven</h2>
+      <hr>
     <p>U wilt u inschrijven voor (les).</p>
     <p><b> Hoeveel personen wilt u inschrijven?</b></p>
     <div class="row width">
