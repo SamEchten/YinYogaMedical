@@ -19,6 +19,8 @@ router.get("/agenda", sessionController.view);
 //TODO: add jwt validation
 router.get("/profile/", profileController.viewProfile);
 router.get("/profile/myProfile", profileController.viewMyProfile);
+router.get("/profile/myPoducts", profileController.viewMyProducts);
+router.get("/profile/myEnrollments", profileController.viewMyEnrollments);
 
 
 // Home ->
