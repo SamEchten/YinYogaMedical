@@ -17,3 +17,4 @@ $(".setting").on("click", function () {
         $(".settingsContent").load("profile/myEnrollments");
     }
 })
+

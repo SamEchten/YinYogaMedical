@@ -7,5 +7,9 @@ module.exports.config = {
     email: {
         user: "yinyogamedical.server@gmail.com",
         password: "YinYogaMedicalServer"
+    },
+    mollie: {
+        testKey: "test_km7UfBwDBk2xjFtCAfW3HvyCvcM4UJ",
+        liveKey: ""
     }
 }
