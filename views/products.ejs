@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Producten</title>
   <link rel="icon" type="image/png" href="./static/favicon.png" />
-  <link rel="stylesheet" href="static/agenda.css">
+  <link rel="stylesheet" href="static/products.css">
   <link rel="stylesheet" href="static/styles.css">
   <link rel="stylesheet" href="./css/bootstrap.min.css">
   <link rel="stylesheet" href="./bicons/bootstrap-icons.css">
@@ -48,22 +48,44 @@
             <h1 class="lead text-start m-0 headerText">Producten</h1>
           </div>
         </div>
-        <div class="row contentRow">
-          
+        <div class="row contentcontainer">
+          <div class="row productCategory">
+            <div class="col-md p-4">
+              <div class="row width">
+                <div class="col text-start">
+                  <h2 class="lbs lead categoryTitle">Strippenkaarten</h2>
+                </div>
+                <div class="col text-end">
+                  <i class="bi bi-plus-circle hiding addProduct"></i>
+                </div>
+              </div>
+              <div id="category" class="row ps-4 p-2 productItem align-items-center">
+                <div class="col-md-8">
+                  <h4 id="title" class="text-left lead fw-bold productTitle">Mantelzorgers strippenkaart</h4>
+                  <p id="subtitle" class="productSubtitle">Geldig tot 09/05/2023</p>
+                </div>
+                <div class="col-md-2 text-end ">
+                  <h4 id="price" class="text-left lead fw-bold productPrice">€100,-</h4>
+                </div>
+                <div class="col-md-2 text-end">
+                  <button type="submit" class="btn btn-primary yinStyle" onclick="buyProduct()" id="BuyNow">+ Koop nu</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script type="text/javascript"
- src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+  <script type="text/javascript"
+    src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <script src="./js/bootstrap.min.js"></script>
   <script src="sweetalert"></script>
   <script src="static/utils.js"></script>
-  <script src="static/agenda.js"></script>
+  <script src="static/products.js"></script>
   <script src="static/apiCaller.js"></script>
 </body>
 
