@@ -8,6 +8,9 @@
     src: url(./open_sans);
 }
 
+b { 
+    font-weight: bold !important;
+}
 /* Left border style : accent */
 .lbs {
     border-left: 3px solid #D5CA9B;

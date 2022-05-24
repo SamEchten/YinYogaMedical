@@ -140,12 +140,14 @@ function loadSessionItem(id, title, teacher, time, date, day) {
         <i class="bi bi-x-lg hiding removeSession"></i>
       </div>
       <div class="col-md-2 text-end">
-        <button type="submit" class="btn btn-primary yinStyle" onclick="subscribeLesson()" id="subscribe">Inschrijven</button>
+        <button type="submit" class="btn btn-primary yinStyle" id="subscribe">Inschrijven</button>
       </div>
     </div>`
 
   $(itemLayout).appendTo("#" + day);
   addEventHandlersSession();
+  subscribeToSession();
+  
 }
 
 function addEventHandlersSession() {
@@ -159,6 +161,7 @@ function addEventHandlersSession() {
       console.log(err)
     }
   });
+  
 }
 
 // Add eventlisteners for button that render in after dom has loaded ->
@@ -245,26 +248,26 @@ $(".addLesson").on("click", async function () {
     <hr>
     <div class="row width">
       <div class="col-md-6">
-        <h3 class="lead"><b>Lesnaam:</b></h3>
+        <h3 class="lead lbs"><b>Lesnaam:</b></h3>
         <input id="lessonName" class="swal2-input" type="text">
-        <h3 class="lead"><b>Beschrijving:</b></h3>
+        <h3 class="lead lbs"><b>Beschrijving:</b></h3>
         <textarea id="lessonDescription" class="swal2-input"></textarea>
-        <h3 class="lead"><b>Locatie:</b></h3>
+        <h3 class="lead lbs"><b>Locatie:</b></h3>
         <input id="lessonLocation" class="swal2-input" type="text">
-        <h3 class="lead"><b>Yogadocent:</b></h3>
+        <h3 class="lead lbs"><b>Yogadocent:</b></h3>
         <p>
           <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
           Natascha Puper
         </p>
       </div>
       <div class="col-md-6">
-        <h3 class="lead"><b>Dag:</b></h3>
+        <h3 class="lead lbs"><b>Dag:</b></h3>
         <div class="row">
           <div class="col-md-4">
           <input id="lessonDay" class="swal2-input" type="date">
           </div>
         </div>
-        <h3 class="lead"><b>Starttijd:</b></h3>
+        <h3 class="lead lbs"><b>Starttijd:</b></h3>
         <div class="row">
           <div class="col-md-4">
             <input id="lessonTime" class="swal2-input" type="time">
@@ -346,42 +349,52 @@ async function addSession() {
   }
 }
 
-// TODO: Laat les zien waarvoor er ingeschreven wordt.
-function subscribeLesson() {
-  Swal.fire({
-    html:`
-    <h2>Inschrijven</h2>
-    <hr>
-    <p>U wilt u inschrijven voor (les).</p>
-    <p><b> Hoeveel personen wilt u inschrijven?</b></p>
-    <div class="row width">
-      <div class="col-md-3">
-        <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
+// TODO: Laat les zien waarvoor er ingeschreven wordt. ->
+function subscribeToSession() {
+  $("#subscribe").on("click", function() {
+    console.log($(this).parent().parent().attr("id"));
+    Swal.fire({
+      html:`
+      <h2>Inschrijven</h2>
+      <hr>
+      <p>U wilt u inschrijven voor (les).</p>
+      <p><b> Hoeveel personen wilt u inschrijven?</b></p>
+      <div class="row width">
+        <div class="col-md-3">
+          <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
+        </div>
       </div>
-    </div>
-    <p><b id="extraPeopleTitle"></b></p>
-    <p id="inputfields"></p>`,
-    customClass: 'sweetalert-subscribe',
-    showCancelButton: true,
-    confirmButtonText: 'Schrijf mij in',
-    confirmButtonColor: '#D5CA9B',
-    cancelButtonText: 'Cancel',
+      <p><b id="extraPeopleTitle"></b></p>
+      <p id="inputfields"></p>`,
+      customClass: 'sweetalert-subscribe',
+      showCancelButton: true,
+      confirmButtonText: 'Schrijf mij in',
+      confirmButtonColor: '#D5CA9B',
+      cancelButtonText: 'Cancel',
+    });
   });
+  
 }
 
-// Loads inputfields.
+// Loads inputfields. ->
 function nrOfPeopleChanged() {
   let val = document.getElementById('nrOfPeople').value;
   let title = document.getElementById('extraPeopleTitle');
   let temporary = '';
+  let jsonObj = [];
   if (val > 1) {
     for (let i = 0; i < val - 1; i++) {
       temporary += `
-      <div class="row width">
-        <div class="col-md-6"><input id='name${val}' class='swal2-input' type='text' placeholder='Naam'></div>
-        <div class="col-md-6"><input id='emailaddress${val}' class='swal2-input' type='text' placeholder='E-mailadres'></div> 
+      <div class="row extraPerson${i} width">
+        <div class="col-md-6"><input id='' class='swal2-input name' type='text' placeholder='Naam'></div>
+        <div class="col-md-6"><input id='' class='swal2-input emailaddress' type='text' placeholder='E-mailadres'></div> 
       </div>`;
+
+      jsonObj.push($("extraPerson" + i));
+      
+
     }
+    console.log(jsonObj)
     title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
     document.getElementById('inputfields').innerHTML = temporary;
   }
