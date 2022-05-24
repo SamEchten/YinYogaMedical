@@ -27,6 +27,11 @@ body {
 .productSubtitle {
     font-size: 11pt !important;
     font-weight: 300;
+    margin: 0 !important;
+}
+
+.icons {
+    margin-right: 10px;
 }
 
 .productPrice {
@@ -61,16 +66,17 @@ body {
     margin-top: 0px !important;
     margin-bottom: 20px !important;
     margin-left: 5px !important;
+    text-align: left;
 }
 
 .sweetalert-makeProduct input[type=text], textarea {
     width: 90% !important;
     margin-bottom: 20px !important;
+    margin-left: 5px !important;
 }
 
 .sweetalert-makeProduct textarea {
     height: 80px !important;
-    margin-left: 5px !important;
     resize: none !important;
 }
 
@@ -93,4 +99,12 @@ body {
     font-size: 11pt;
     text-align: start;
     color: #707070;
+}
+
+.half {
+    max-width: 100% !important;
+}
+
+.radiobutton {
+    margin: 0 !important;
 }

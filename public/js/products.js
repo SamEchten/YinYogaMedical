@@ -1,6 +1,3 @@
-let schedule;
-let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber();
 
 // // Show all details per session ->
 // function sessionDetails(data) {
@@ -53,14 +50,18 @@ function loadProductItem(id, productName, price) {
   let itemLayout = `
     <div id="${id}" class="row ps-4 p-2 productItem align-items-center">
       <div class="col-md-8">
-        <h4 id="title" class="text-left lead fw-bold productTitle">${productName}</h4>
+        <h4 id="title" class="text-left lead fw-bold productTitle">Mantelzorgers strippenkaart</h4>
         <p id="subtitle" class="productSubtitle">Geldig tot 09/05/2023</p>
       </div>
-      <div class="col-md-2 text-end ">
-        <h4 id="price" class="text-left lead fw-bold productPrice">€${price}</h4>
+      <div class="col-md text-end ">
+        <h4 id="price" class="text-left lead fw-bold productPrice">€100,-</h4>
       </div>
-      <div class="col-md-2 text-end">
+      <div class="col-md text-end">
         <button type="submit" class="btn btn-primary yinStyle" onclick="buyProduct()" id="BuyNow">+ Koop nu</button>
+      </div>
+      <div class="col-md-1 text-end">
+        <i class="bi bi-pencil hiding editSession icons"></i>
+        <i class="bi bi-trash3 hiding removeSession icons"></i>
       </div>
     </div>`
 
@@ -72,11 +73,11 @@ function loadProductItem(id, productName, price) {
 function clickEvents() {
   if (roleCheck()) {
     // Edit a session ->
-    $(".editSession").on("click", function () {
+    $(".editProduct").on("click", function () {
       console.log("EDIT PRODUCT");
     });
     // Remove a session ->
-    $(".removeSession").on("click", function () {
+    $(".removeProduct").on("click", function () {
       // const sessionId = $(this).parent().parent().attr("id");
       // removeSession(sessionId);
       console.log("REMOVE PRODUCT");
@@ -88,7 +89,6 @@ function clickEvents() {
       // subscribe functon with @id and @userId
     });
   }
-
 }
 
 // Remove a session as Admin
@@ -119,17 +119,6 @@ function clickEvents() {
   //   });
   // }
 
-// loading prev and next week ->
-$(".prevWeek").on("click", function () {
-  weekNumb--;
-  if (weekNumb < 1) {
-    weekNumb = 52;
-    loadAndSetFullAgenda();
-  } else {
-    loadAndSetFullAgenda();
-  }
-});
-
 $(".addProduct").on("click", async function () {
   let error = false;
   Swal.fire({
@@ -139,25 +128,49 @@ $(".addProduct").on("click", async function () {
     <div class="row width">
       <div class="col-md-6">
         <h3 class="lead"><b>Productnaam:</b></h3>
-        <input id="productName" class="swal2-input" type="text">
+        <input id="productName" class="swal2-input" type="text" placeholder="Productnaam">
         <h3 class="lead"><b>Beschrijving:</b></h3>
-        <textarea id="productDescription" class="swal2-input"></textarea>
+        <textarea id="productDescription" class="swal2-input" placeholder="Productbeschrijving"></textarea>
+        <div class="row width">
+          <div class="col-md-6">
+            <h3 class="lead"><b>Prijs:</b></h3>
+            <p class="subtext">De prijs van het product.</p>
+            <input id="productPrice" class="swal2-input half" type="number" step="0.5" min="0.5" value="0.5">
+          </div>
+          <div class="col-md-6">
+            <h3 class="lead"><b>Aantal uur:</b></h3>
+            <p class="subtext">Aantal uren op het product.</p>
+            <input id="productHours" class="swal2-input half" type="number" step="0.5" min="0.5" value="0.5">
+          </div>
+        </div>
       </div>
-      <div class="col-md-6">
-        <h3 class="lead"><b>Aantal uur:</b></h3>
-        <p class="subtext">Aantal uren op het product.</p>
-        <div class="row">
-          <div class="col-md-4">
-            <input id="lessonTime" class="swal2-input" type="number" step="0.5" min="0.5" placeholder="0,5">
-          </div>
-        </div>
-        <h3 class="lead"><b>Prijs:</b></h3>
-        <p class="subtext">De prijs van het product.</p>
-        <div class="row">
-          <div class="col-md-4">
-            <input id="lessonPrice" class="swal2-input" type="number" step="0.5" min="0.5" placeholder="0,5">
-          </div>
-        </div>
+      <div class="col-md-6 text-start">
+        <h3 class="lead"><b>Categorie:</b></h3>
+        <p class="radiobutton">
+          <input id="strippenkaarten" type="radio" name="category" checked="true" value="Strippenkaarten">
+          Strippenkaarten
+        </p>
+        <p class="radiobutton">
+          <input id="cadeaubonnen" type="radio" name="category" value="Cadeaubonnen">
+          Cadeaubonnen
+        </p>
+        <p class="radiobutton">
+          <input id="abonnementen" type="radio" name="category" value="Abonnementen">
+          Abonnementen
+        </p>
+        <h3 class="lead"><b>Hiermee te kopen:</b></h3>
+        <p class="radiobutton">
+          <input id="lessen" type="checkbox" name="buywith" value="Lessen">
+          Lessen
+        </p>
+        <p class="radiobutton">
+          <input id="massages" type="checkbox" name="buywith" value="Massages">
+          Massages
+        </p>
+        <p class="radiobutton">
+          <input id="videos" type="checkbox" name="buywith" value="Video's">
+          Video's
+        </p>
       </div>
       <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`,
@@ -167,49 +180,21 @@ $(".addProduct").on("click", async function () {
     confirmButtonColor: '#D5CA9B',
     closeOnConfirm: false,
     cancelButtonText: 'Cancel',
-    preConfirm: async () => {
-      let add = await addSession();
-      if (add) {
-        error = true;
-      }
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-      if (error) {
-        Swal.fire({
-          title: "Product aangemaakt!",
-          icon: 'success',
-          showCloseButton: true,
-          confirmButtonColor: '#D5CA9B'
-        });
-      } else {
-        Swal.fire({
-          title: "Velden niet correct ingevuld",
-          icon: 'warning',
-          showCloseButton: true,
-          confirmButtonColor: '#D5CA9B'
-        });
-      }
-    }
   });
 });
 
 // Add session call ->
-async function addSession() {
+async function addProduct() {
   let json = {
     "productName": $("#productName").val(),
-    "discription": $("#productDescription").val(),
     "price": $("#productPrice").val(),
-    "duration": $("#lessonDuration").val(),
-    "participants": [],
-    "teacher": "Natascha",
-    "description": $("#lessonDescription").val(),
-    "maxAmountOfParticipants": $("#maxPeople").val(),
-    "weekly": false
+    "discription": $("#productDescription").val(),
+    "amountOfHours": $("#productHours").val()
   }
   try {
-    let res = await ApiCaller.addSession(json);
-    console.log(res.status)
+    let res = await ApiCaller.addProduct(json);
+    let json = await res.json();
+    console.log(json)
     if (res.status == 201) {
       return true;
     } else {
@@ -220,7 +205,7 @@ async function addSession() {
   }
 }
 
-// TODO: Laat les zien waarvoor er ingeschreven wordt.
+// TODO: Laat product zien welke gekocht wordt.
 function buyProduct() {
   Swal.fire({
     html: `
@@ -234,36 +219,6 @@ function buyProduct() {
     cancelButtonText: 'Cancel',
   });
 }
-
-// Loads inputfields.
-function nrOfPeopleChanged() {
-  let val = document.getElementById('nrOfPeople').value;
-  let title = document.getElementById('extraPeopleTitle');
-  let temporary = '';
-  if (val > 1) {
-    for (let i = 0; i < val - 1; i++) {
-      temporary += `
-      <div class="row width">
-        <div class="col-md-6"><input id='name${val}' class='swal2-input' type='text' placeholder='Naam'></div>
-        <div class="col-md-6"><input id='emailaddress${val}' class='swal2-input' type='text' placeholder='E-mailadres'></div> 
-      </div>`;
-    }
-    title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
-    document.getElementById('inputfields').innerHTML = temporary;
-  }
-  else {
-    title.innerHTML = '';
-    document.getElementById('inputfields').innerHTML = '';
-  }
-}
-
-function setWeekData(week) {
-  let fDay = getfirstAndlastDatesOfTheWeek(2022, week).firstDay;
-  let lDay = getfirstAndlastDatesOfTheWeek(2022, week).lastDay;
-
-  $(".week").html(fDay + " - " + lDay)
-}
-
 
 
 
