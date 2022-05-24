@@ -15,6 +15,11 @@ router.get("/logout", authController.logout);
 //Session ->
 router.get("/agenda", sessionController.view);
 
+//Products ->
+router.get("/products", validateJwt, (req, res) => {
+    res.render(path.join(__dirname, "../views/products"));
+});
+
 //profile ->
 //TODO: add jwt validation
 router.get("/profile/", profileController.viewProfile);

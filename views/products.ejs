@@ -5,12 +5,13 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
+  <title>Producten</title>
   <link rel="icon" type="image/png" href="./static/favicon.png" />
-  <link rel="stylesheet" href="static/home.css">
+  <link rel="stylesheet" href="static/agenda.css">
   <link rel="stylesheet" href="static/styles.css">
   <link rel="stylesheet" href="./css/bootstrap.min.css">
   <link rel="stylesheet" href="./bicons/bootstrap-icons.css">
+  <link rel="stylesheet" href="sweetalert2.min.css">
 </head>
 
 <body>
@@ -22,13 +23,13 @@
     <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item text-center active">
-          <a class="nav-link currentNavItem" href="#">Home</a>
+          <a class="nav-link" href="/home">Home</a>
         </li>
         <li class="nav-item text-center">
           <a class="nav-link" href="/agenda">Lesrooster</a>
         </li>
         <li class="nav-item text-center">
-          <a class="nav-link" href="/products">Producten</a>
+          <a class="nav-link currentNavItem" href="#">Producten</a>
         </li>
         <li class="nav-item text-center">
           <a class="nav-link" href="#">Media</a>
@@ -41,30 +42,29 @@
   </nav>
   <div class="main-wrapper container-fluid">
     <div class="row h-100">
-      <div class="col-md-3 lesrooster">
-        Lesrooster
-      </div>
-      <div class="col-md-9">
-        <div class="row h-50">
-          <div class="col-md vidPod">
-            video/podcast
+      <div class="col-md h-100">
+        <div class="row headerRow align-items-center">
+          <div class="col-md-12">
+            <h1 class="lead text-start m-0 headerText">Producten</h1>
           </div>
         </div>
-        <div class="row h-50">
-          <div class="col-md producten">
-            Producten
-          </div>
+        <div class="row contentRow">
+          
         </div>
       </div>
     </div>
   </div>
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript"
+ src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <script src="./js/bootstrap.min.js"></script>
-  <script src="static/apiCaller.js"></script>
+  <script src="sweetalert"></script>
   <script src="static/utils.js"></script>
+  <script src="static/agenda.js"></script>
+  <script src="static/apiCaller.js"></script>
 </body>
 
 </html>
