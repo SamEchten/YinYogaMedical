@@ -1,104 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Registreren</title>
-        <link rel="icon" type="image/png" href="./static/favicon.png"/>
-        <link rel="stylesheet" href="static/register.css">
-        <link rel="stylesheet" href="static/styles.css">
-        <link rel="stylesheet" href="./css/bootstrap.min.css">
-        <link rel="stylesheet" href="./bicons/bootstrap-icons.css">
-        
-    </head>
-    <body>
-        <div class="container-fluid main-wrapper">
-            <div class="row h-100">
-                <div class="col-md-4 imageHolder">
-                   
-                </div>
-                <div class="col-md-8 ">
-                    <div class="row h-100 align-items-center">
-                        <div class="col-md-12">
-                            <div class="registerContent">
-                                <div class="registerHeader">
-                                    <h1 class="display-3">REGISTREER</h1>
-                                    <hr>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 pb-3">
-                                        <div class="pb-3">
-                                            <label class="blockquote lbs" for="exampleInputEmail1">Volledige naam</label>
-                                            <input type="email" class="form-control nameInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Naam">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        Geboortedatum
-                                    </div>  
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 pb-3">
-                                        <div class="pb-3">
-                                            <label class="blockquote lbs" for="exampleInputEmail1">E-mailadres</label>
-                                            <input type="email" class="form-control emailInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="E-mail">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 pb-3">
-                                        <div class="pb-3">
-                                            <label class="blockquote lbs" for="exampleInputEmail1">Telefoonnummer</label>
-                                            <input type="text" class="form-control phoneInput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Telefoonnummer">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">   
-                                    <div class="col-md-6 pb-3">
-                                        <div class="pb-3">
-                                            <label class="blockquote lbs" for="exampleInputPassword1">Wachtwoord</label>
-                                            <div>
-                                               <input type="password" class="form-control passwordInput pass" id="exampleInputPassword1" placeholder="Wachtwoord">
-                                                <i class="bi bi-eye passIcon"></i> 
-                                            </div>
-                                            <small class="text-muted">Wachtwoord moet minimaal 6 karakters bevatten.</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 pb-3">
-                                        <div class="">
-                                            <label class="blockquote lbs" for="exampleInputPassword2">Verifieer wachtwoord</label>
-                                            <input type="password" class="form-control vPasswordInput pass" id="exampleInputPassword2" placeholder="Wachtwoord">
-                                            <i class="fa fa-envelope icon">
-                                            </i>
-                                            <small class="text-muted">Wachtwoord moet minimaal 6 karakters bevatten.</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 pb-3">
-                                        <div class="form-floating">
-                                            <textarea class="form-control notesInput" placeholder="Heeft u klachten?" id="floatingTextarea2" style="height: 100px"></textarea>
-                                            <label for="floatingTextarea2">Notities</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary yinStyle registerButton">Registreer</button>
-                                <p class="registerFooterText pt-3">
-                                    Al een account?
-                                    <span>
-                                        <a href="/login">Login</a>
-                                    </span>
-                                </p> 
-                                <div class="alert alert-warning errorBox" role="alert"></div>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registreren</title>
+    <link rel="icon" type="image/png" href="./static/favicon.png" />
+    <link rel="stylesheet" href="static/register.css">
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./bicons/bootstrap-icons.css">
+
+</head>
+
+<body>
+    <div class="container-fluid main-wrapper">
+        <div class="row h-100">
+            <div class="col-md-4 imageHolder">
+
+            </div>
+            <div class="col-md-8 ">
+                <div class="row h-100 align-items-center">
+                    <div class="col-md-12">
+                        <div class="registerContent">
+                            <div class="registerHeader">
+                                <h1 class="display-3">REGISTREER</h1>
+                                <hr>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6 pb-3">
+                                    <div class="pb-3">
+                                        <label class="blockquote lbs" for="exampleInputEmail1">Volledige naam</label>
+                                        <input type="email" class="form-control nameInput" id="exampleInputEmail1"
+                                            aria-describedby="emailHelp" placeholder="Naam">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    Geboortedatum
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 pb-3">
+                                    <div class="pb-3">
+                                        <label class="blockquote lbs" for="exampleInputEmail1">E-mailadres</label>
+                                        <input type="email" class="form-control emailInput" id="exampleInputEmail1"
+                                            aria-describedby="emailHelp" placeholder="E-mail">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pb-3">
+                                    <div class="pb-3">
+                                        <label class="blockquote lbs" for="exampleInputEmail1">Telefoonnummer</label>
+                                        <input type="text" class="form-control phoneInput" id="exampleInputEmail1"
+                                            aria-describedby="emailHelp" placeholder="Telefoonnummer">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 pb-3">
+                                    <div class="pb-3">
+                                        <label class="blockquote lbs" for="exampleInputPassword1">Wachtwoord</label>
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="Uw wachtwoord moet minstens 6 karakters bevatten"
+                                            custom-class="red-tooltip" class="bi bi-question-circle"></i>
+                                        <div>
+                                            <input type="password" class="form-control passwordInput pass"
+                                                id="exampleInputPassword1" placeholder="Wachtwoord">
+                                            <i class="bi bi-eye passIcon"></i>
+                                        </div>
+                                        <small class="text-muted">Wachtwoord moet minimaal 6 karakters bevatten.</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pb-3">
+                                    <div class="">
+                                        <label class="blockquote lbs" for="exampleInputPassword2">Verifieer
+                                            wachtwoord</label>
+                                        <input type="password" class="form-control vPasswordInput pass"
+                                            id="exampleInputPassword2" placeholder="Wachtwoord">
+                                        <i class="fa fa-envelope icon">
+                                        </i>
+                                        <small class="text-muted">Wachtwoord moet minimaal 6 karakters bevatten.</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 pb-3">
+                                    <div class="form-floating">
+                                        <textarea class="form-control notesInput" placeholder="Heeft u klachten?"
+                                            id="floatingTextarea2" style="height: 100px"></textarea>
+                                        <label for="floatingTextarea2">Notities</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary yinStyle registerButton">Registreer</button>
+                            <p class="registerFooterText pt-3">
+                                Al een account?
+                                <span>
+                                    <a href="/login">Login</a>
+                                </span>
+                            </p>
+                            <div class="alert alert-warning errorBox" role="alert"></div>
                         </div>
                     </div>
                 </div>
             </div>
-          </div>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-        <script src="./js/bootstrap.min.js"></script> 
-        <script src="static/apiCaller.js"></script>
-        <script src="static/register.js"></script> 
-        <script src="static/utils.js"></script>
-        
-    </body>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+        integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="static/apiCaller.js"></script>
+    <script src="static/register.js"></script>
+    <script src="static/utils.js"></script>
+</body>
+
 </html>
