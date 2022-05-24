@@ -21,7 +21,7 @@
 
 /* Global title styling */
 h1 {
-    font-family: 'Lato';
+    font-family: 'Lato', 'Segoe UI';
     text-transform: uppercase;
     color: #707070 !important;
 }
@@ -32,6 +32,11 @@ h2 {
     text-transform: uppercase;
     color: #707070 !important;
 }
+
+h3 {
+    font-family: 'Lato', 'Segoe UI';
+}
+
 h4 {
     margin: 0px !important;
 }
