@@ -5,6 +5,7 @@ let weekNumb = getCurrentWeekNumber();
 // Render lesrooster from apiCaller and format it on date ->
 $(async function () {
   setWeekData(weekNumb);
+  
   const res = await (await ApiCaller.getAllSessions()).json();
   schedule = res;
   loadAgenda(weekNumb);
@@ -147,7 +148,6 @@ function loadSessionItem(id, title, teacher, time, date, day) {
   $(itemLayout).appendTo("#" + day);
   addEventHandlersSession();
   subscribeToSession();
-  
 }
 
 function addEventHandlersSession() {
@@ -352,28 +352,89 @@ async function addSession() {
 // TODO: Laat les zien waarvoor er ingeschreven wordt. ->
 function subscribeToSession() {
   $("#subscribe").on("click", function() {
-    console.log($(this).parent().parent().attr("id"));
-    Swal.fire({
-      html:`
-      <h2>Inschrijven</h2>
-      <hr>
-      <p>U wilt u inschrijven voor (les).</p>
-      <p><b> Hoeveel personen wilt u inschrijven?</b></p>
-      <div class="row width">
-        <div class="col-md-3">
-          <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
+    if(typeof user == 'undefined') {
+      console.log("user not logged in");
+      location.href ="/login";
+    } else {
+      let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
+      console.log(lesson)
+      Swal.fire({
+        html:`
+        <h2>Inschrijven</h2>
+        <hr>
+        <p>U wilt u inschrijven voor <b>${lesson}</b>.</p>
+        <p><b> Hoeveel personen wilt u inschrijven?</b></p>
+        <div class="row width">
+          <div class="col-md-3">
+            <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
+          </div>
         </div>
-      </div>
-      <p><b id="extraPeopleTitle"></b></p>
-      <p id="inputfields"></p>`,
-      customClass: 'sweetalert-subscribe',
-      showCancelButton: true,
-      confirmButtonText: 'Schrijf mij in',
-      confirmButtonColor: '#D5CA9B',
-      cancelButtonText: 'Cancel',
-    });
+        <p><b id="extraPeopleTitle"></b></p>
+        <div id="allInputs">
+
+        </div>`,
+        customClass: 'sweetalert-subscribe',
+        showCancelButton: true,
+        confirmButtonText: 'Schrijf mij in',
+        confirmButtonColor: '#D5CA9B',
+        cancelButtonText: 'Cancel',
+      }).then(async (result)  => {
+        if(result.isConfirmed) {
+          let sessionId = $(this).parent().parent().attr("id");
+          let jsonData = {
+            "userId" : user.userId,
+            "comingWith" : sessionUserObject()
+          }
+          console.log(sessionId)
+          console.log(jsonData)
+          try {
+            let res = await ApiCaller.addUserToSession(jsonData, sessionId);
+            let jsonRes = await res.json();
+            if(res.status == 200)
+            {
+              Swal.fire({
+                title : `U heeft zich ingeschreven voor ${lesson} .`,
+                icon: 'success',
+                text: `Wat leuk dat u zich hebt ingeschreven voor ${lesson}! Tot snel! `,
+                showCloseButton: true,
+                confirmButtonColor: '#D5CA9B'
+              }); 
+            } else {
+              Swal.fire({
+                title : `Oops!`,
+                icon: 'warning',
+                text: jsonRes.message,
+                showCloseButton: true,
+                confirmButtonColor: '#D5CA9B'
+              });
+            }
+          } catch(err) {
+            console.log(err);
+          }
+        }
+      });
+    }  
   });
-  
+}
+
+// Gets all input fields of extra participants when enrolling for a session ->
+function sessionUserObject() {
+  let val = $("#nrOfPeople").val() -2; //amount to loop
+  let array = [];
+  let json = {};
+
+  if(val < 0) {
+    return array;
+  } else {
+    for(let i = 0; i <= val; i++) {
+    
+      json["name"] = $(".name" +  i).val();
+      json["email"] = $(".emailAddress" + i).val()
+      array.push(json)
+      json = {};
+    }
+    return array;
+  }
 }
 
 // Loads inputfields. ->
@@ -381,26 +442,25 @@ function nrOfPeopleChanged() {
   let val = document.getElementById('nrOfPeople').value;
   let title = document.getElementById('extraPeopleTitle');
   let temporary = '';
-  let jsonObj = [];
   if (val > 1) {
     for (let i = 0; i < val - 1; i++) {
       temporary += `
-      <div class="row extraPerson${i} width">
-        <div class="col-md-6"><input id='' class='swal2-input name' type='text' placeholder='Naam'></div>
-        <div class="col-md-6"><input id='' class='swal2-input emailaddress' type='text' placeholder='E-mailadres'></div> 
-      </div>`;
-
-      jsonObj.push($("extraPerson" + i));
-      
+      <div class="row extraPerson width">
+        <div class="col-md-6">
+          <input class='swal2-input name${i}' type='text' placeholder='Naam'>
+        </div>
+        <div class="col-md-6">
+          <input class='swal2-input emailAddress${i}' type='text' placeholder='E-mailadres'>
+        </div> 
+      </div>`;      
 
     }
-    console.log(jsonObj)
     title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
-    document.getElementById('inputfields').innerHTML = temporary;
+    document.getElementById('allInputs').innerHTML = temporary;
   }
   else {
     title.innerHTML = '';
-    document.getElementById('inputfields').innerHTML = '';
+    document.getElementById('allInputs').innerHTML = '';
   }
 }
 

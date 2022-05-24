@@ -123,4 +123,22 @@ class ApiCaller {
         }
     }
 
+    // Add a user to a session with extra participants ->
+    static addUserToSession = async (data, sessionId) => {
+        let url = "/api/session/signup/" + sessionId;
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
 }
