@@ -78,38 +78,42 @@ function addMinutes(date, minutes) {
 function sessionDetails(data) {
   Swal.fire(
     {
-      html: `<div class="alerttitle">
-      <h2>${data.title}<h2>
-      <hr/>
+      html: `
+      <div class="alerttitle">
+        <h2>${data.title}<h2>
+        <hr/>
       </div>
       <div class="test">
-      <div class="row width">
-      <div class="col-md-6">
-        <h3 class="lead"><b>Locatie:</b></h3>
-        <p>${data.location}</p>
-      </div>
-      <div class="col-md-6">
-        <h3 class="lead"><b>Beschrijving:</b></h3>
-        <p>${data.description}<p>
-      </div></div>
-      <div class="row width">
-      <div class="col-md-6">
-        <h3 class="lead"><b>Docent:</b></h3>
-        <p>${data.teacher}<p>
-      </div>
-      <div class="col-md-6">
-        <h3 class="lead"><b>Datum:</b></h3> 
-        <p>${dateFormat(data.date).date}</p>
-        </div></div>
         <div class="row width">
-      <div class="col-md-6">
-        <h3 class="lead"><b>Starttijd:</b></h3>
-        <p>${dateFormat(data.date).time}<p>
-      </div>
-      <div class="col-md-6">
-        <h3 class="lead"><b>Eindtijd:</b></h3> 
-        <p>${dateFormat(addMinutes(new Date(data.date), data.duration)).time}</p>
-        </div></div>
+          <div class="col-md-7">          
+            <h3 class="lbs">Beschrijving</h3>
+            <p>${data.description}<p>
+          </div>
+          <div class="col-md-5">
+            <h3 class="lbs">Datum</h3> 
+            <p>${dateFormat(data.date).date}</p>
+          </div>
+        </div>
+        <div class="row width">
+          <div class="col-md-7">
+            <h3 class="lbs">Locatie</h3>
+            <p>${data.location}</p>
+          </div>
+          <div class="col-md-5">
+            <h3 class="lbs">Starttijd</h3>
+            <p>${dateFormat(data.date).time}<p>
+          </div>
+        </div>
+        <div class="row width">
+          <div class="col-md-7">
+            <h3 class="lbs">Docent</h3>
+            <p><i class="bi bi-person-circle icon"></i>${data.teacher}<p>
+          </div>
+          <div class="col-md-5">
+            <h3 class="lbs">Eindtijd</h3> 
+            <p>${dateFormat(addMinutes(new Date(data.date), data.duration)).time}</p>
+          </div>
+        </div>
       </div>`,
       customClass: 'sweetalert-seelesson',
       confirmButtonColor: '#D5CA9B',
@@ -236,43 +240,52 @@ $(".week").on("click", function ()  {
 $(".addLesson").on("click", async function () {
   let error = false;
   Swal.fire({
-    html:
-      `<h2>Voeg nieuwe les toe</h2>
+    html:`
+    <h2>Voeg nieuwe les toe</h2>
     <hr>
     <div class="row width">
-    <div class="col-md-6">
-    <h3 class="lead"><b>Lesnaam:</b></h3>
-    <input id="lessonName" class="swal2-input" type="text">
-    <h3 class="lead"><b>Beschrijving:</b></h3>
-    <textarea id="lessonDescription" class="swal2-input"></textarea>
-    <h3 class="lead"><b>Yogadocent:</b></h3>
-    <p><input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
-    Natascha Puper</p>
-    </div>
-    <div class="col-md-6">
-      <h3 class="lead"><b>Dag:</b></h3>
-    <div class="row">
-      <div class="col-md-4">
-      <input id="lessonDay" class="swal2-input" type="date">
+      <div class="col-md-6">
+        <h3 class="lead"><b>Lesnaam:</b></h3>
+        <input id="lessonName" class="swal2-input" type="text">
+        <h3 class="lead"><b>Beschrijving:</b></h3>
+        <textarea id="lessonDescription" class="swal2-input"></textarea>
+        <h3 class="lead"><b>Locatie:</b></h3>
+        <input id="lessonLocation" class="swal2-input" type="text">
+        <h3 class="lead"><b>Yogadocent:</b></h3>
+        <p>
+          <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
+          Natascha Puper
+        </p>
       </div>
-    </div>
-    <h3 class="lead"><b>Starttijd:</b></h3>
-    <div class="row">
-    <div class="col-md-4">
-    <input id="lessonTime" class="swal2-input" type="time">
-    </div></div>
-    <h3 class="lead"><b>Duur:</b></h3>
-    <div class="row">
-    <div class="col-md-4">
-    <input id="lessonDuration" class="swal2-input" type="number" step="0.5" min="0.5" max="8">
-    </div></div>
-    <h3 class="lead"><b>Max. aantal deelnemers:</b></h3>
-    <div class="row">
-    <div class="col-md-4">
-    <input id="maxPeople" class="swal2-input" type="number" step="1" min="1">
-    </div></div></div>
-    <div class="alert alert-warning errorBox" role="alert">
-    </div>
+      <div class="col-md-6">
+        <h3 class="lead"><b>Dag:</b></h3>
+        <div class="row">
+          <div class="col-md-4">
+          <input id="lessonDay" class="swal2-input" type="date">
+          </div>
+        </div>
+        <h3 class="lead"><b>Starttijd:</b></h3>
+        <div class="row">
+          <div class="col-md-4">
+            <input id="lessonTime" class="swal2-input" type="time">
+          </div>
+        </div>
+        <h3 class="lead"><b>Duur:</b></h3>
+        <p class="subtext">De duur van de les in minuten.</p>
+        <div class="row">
+          <div class="col-md-4">
+            <input id="lessonDuration" class="swal2-input" type="number" step="30" min="30">
+          </div>
+        </div>
+        <h3 class="lead"><b>Aantal deelnemers:</b></h3>
+        <p class="subtext">Het maximale aantal deelnemers dat mee kan doen.</p>
+        <div class="row">
+          <div class="col-md-4">
+            <input id="maxPeople" class="swal2-input" type="number" step="1" min="1">
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`,
     customClass: 'sweetalert-makeLesson',
     showCancelButton: true,
@@ -336,15 +349,16 @@ async function addSession() {
 // TODO: Laat les zien waarvoor er ingeschreven wordt.
 function subscribeLesson() {
   Swal.fire({
-    html:
-      `<h2>Inschrijven</h2>
-      <hr>
+    html:`
+    <h2>Inschrijven</h2>
+    <hr>
     <p>U wilt u inschrijven voor (les).</p>
     <p><b> Hoeveel personen wilt u inschrijven?</b></p>
     <div class="row width">
-    <div class="col-md-3">
-    <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
-    </div></div>
+      <div class="col-md-3">
+        <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
+      </div>
+    </div>
     <p><b id="extraPeopleTitle"></b></p>
     <p id="inputfields"></p>`,
     customClass: 'sweetalert-subscribe',
@@ -362,11 +376,11 @@ function nrOfPeopleChanged() {
   let temporary = '';
   if (val > 1) {
     for (let i = 0; i < val - 1; i++) {
-      temporary +=
-        `<div class="row width">
+      temporary += `
+      <div class="row width">
         <div class="col-md-6"><input id='name${val}' class='swal2-input' type='text' placeholder='Naam'></div>
         <div class="col-md-6"><input id='emailaddress${val}' class='swal2-input' type='text' placeholder='E-mailadres'></div> 
-        </div>`;
+      </div>`;
     }
     title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
     document.getElementById('inputfields').innerHTML = temporary;

@@ -1,9 +1,6 @@
+//click on nav and change the content
 $(".setting").on("click", function () {
     $(".settingsContent").empty();
-    // $(".settingsContent").append("<h1>" + this.id + "</h1>");
-    // $.get("profile/myProfile.ejs", function (data) {
-    //     $(this).children("div:first").html(data);
-    // });
     if (this.id == "profiel")
     {
         $(".settingsContent").load("profile/myProfile");
@@ -17,4 +14,12 @@ $(".setting").on("click", function () {
         $(".settingsContent").load("profile/myEnrollments");
     }
 })
+// Render lesrooster from apiCaller and format it on date ->
+// $(async function () {
+//     setWeekData(weekNumb);
+//     const res = await (await ApiCaller.getAllSessions()).json();
+//     schedule = res;
+//     loadAgenda(weekNumb);
+// });
+// console.log()
 
