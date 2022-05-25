@@ -3,6 +3,14 @@
     src: url(./font_lato);
 }
 
+@font-face {
+    font-family: OpenSans;
+    src: url(./open_sans);
+}
+
+b { 
+    font-weight: bold !important;
+}
 /* Left border style : accent */
 .lbs {
     border-left: 3px solid #D5CA9B;
@@ -21,7 +29,7 @@
 
 /* Global title styling */
 h1 {
-    font-family: 'Lato';
+    font-family: 'Lato', 'Segoe UI';
     text-transform: uppercase;
     color: #707070 !important;
 }
@@ -32,7 +40,13 @@ h2 {
     text-transform: uppercase;
     color: #707070 !important;
 }
+
+h3 {
+    font-family: 'Lato', 'Segoe UI';
+}
+
 h4 {
+    font-family: 'OpenSans', 'Segoe UI';
     margin: 0px !important;
 }
 
@@ -44,11 +58,11 @@ h4 {
 
 /* Global white box styling */
 .contentcontainer {
-    background-color: #ffffffd0;
-    border-radius: 30px;
-    min-height: 75vh;
-    padding: 50px;
-    margin: 25px 30px 30px 30px;
+    background-color: #ffffffbd;
+    border-radius: 30px 30px 0px 0px;
+    min-height: 90%;
+    padding: 20px 10px 20px 10px;
+    margin: 0px 30px 0px 30px !important;
 }
 
 /* Global navbar classes */

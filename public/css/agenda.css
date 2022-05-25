@@ -1,3 +1,7 @@
+@font-face {
+    font-family: OpenSans;
+    src: url(./open_sans);
+}
 
 .main-wrapper
 {
@@ -100,7 +104,7 @@ body {
 
 .headerSchedule {
 
-    background: #ffea8f;
+    background: #D5CA9B;
     border-radius: 10px 10px 0px 0px;
 }
 
@@ -150,6 +154,7 @@ body {
 
 .sweetalert-makeLesson input[type=text], textarea {
     width: 90% !important;
+    margin-bottom: 20px !important;
 }
 
 .sweetalert-makeLesson textarea {
@@ -173,6 +178,11 @@ body {
     text-align: start !important;
 }
 
+.subtext {
+    font-size: 11pt;
+    color: #707070;
+}
+
 /* Sweetalert for info about a lesson */
 
 .alerttitle {
@@ -183,12 +193,24 @@ body {
 .sweetalert-seelesson h3 {
     text-align: start !important;
     text-transform: uppercase !important;
+    font-size: 14pt !important;
+    margin-bottom: 10px !important;
+    color: #707070;
 }
 
 .sweetalert-seelesson p {
+    font-family: 'OpenSans', 'Segoe UI' !important;
     font-size: 14pt !important;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    font-weight: 300;
     text-align: start !important;
+    color: #707070;
     text-transform: initial !important;
+}
+
+.icon {
+    margin-right: 10px;
 }
 
 /* KEYFRAMES ANIMATION */

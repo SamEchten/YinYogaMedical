@@ -1,0 +1,110 @@
+body {
+    background-image: url("./background.png"); 
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed ;
+}
+
+.main-wrapper
+{
+    height: calc(100vh - 58px);
+}
+
+.headerText {
+    font-size: 18pt !important;
+    padding: 15px 0px 20px 35px;
+}
+
+.categoryTitle{
+    margin-bottom: 20px;
+}
+
+.productTitle {
+    font-size: 12pt !important;
+    color: #707070;
+}
+
+.productSubtitle {
+    font-size: 11pt !important;
+    font-weight: 300;
+    margin: 0 !important;
+}
+
+.icons {
+    margin-right: 10px;
+}
+
+.productPrice {
+    font-size: 14pt !important;
+    color: #707070;
+}
+
+.addProduct {
+    cursor: pointer;
+    font-size: 16pt;
+}
+
+.width {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+
+/* Sweetalert for making product */
+
+.sweetalert-makeProduct {
+    padding: 20px !important;
+}
+
+@media only screen and (min-width:769px) {
+    .sweetalert-makeProduct{
+        width: 50vw !important;
+    }
+}
+
+.sweetalert-makeProduct input{
+    margin-top: 0px !important;
+    margin-bottom: 20px !important;
+    margin-left: 5px !important;
+    text-align: left;
+}
+
+.sweetalert-makeProduct input[type=text], textarea {
+    width: 90% !important;
+    margin-bottom: 20px !important;
+    margin-left: 5px !important;
+}
+
+.sweetalert-makeProduct textarea {
+    height: 80px !important;
+    resize: none !important;
+}
+
+.sweetalert-makeProduct input[type=number], input[type=date], input[type=time]{
+    width: 200px !important;
+    margin-left: 5px !important;
+}
+
+.sweetalert-makeProduct h2 {
+    margin-bottom: 30px !important;
+    text-align: start !important;
+    text-transform: uppercase !important;
+}
+
+.sweetalert-makeProduct h3 {
+    text-align: start !important;
+}
+
+.subtext {
+    font-size: 11pt;
+    text-align: start;
+    color: #707070;
+}
+
+.half {
+    max-width: 100% !important;
+}
+
+.radiobutton {
+    margin: 0 !important;
+}
