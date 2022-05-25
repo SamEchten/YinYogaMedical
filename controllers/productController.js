@@ -3,6 +3,8 @@ const { handleUserErrors } = require("./errorHandler");
 const mollieClient = require("../mollie/mollieClient");
 const config = require("../config").config;
 const path = require("path");
+const Session = require("../models/Session");
+const User = require("../models/User");
 
 module.exports.get = async (req, res) => {
     const id = req.params.id;
@@ -56,11 +58,36 @@ module.exports.add = async (req, res) => {
 }
 
 module.exports.update = async (req, res) => {
+    const id = req.params.id;
+    const body = req.body;
+    try {
+        Product.findOne({ id }, async (err, product) => {
+            if (product) {
+                await Product.updateOne({ id }, { $set: body });
+                res.status(200).json({ productId: product.id });
+            } else {
+                res.status(404).json({ message: "Er is geen product gevonden met dit id" });
+            }
+        });
+    } catch (err) {
 
+    }
 }
 
 module.exports.delete = async (req, res) => {
-
+    const id = req.params.id;
+    try {
+        Product.findOne({ id }, (err, product) => {
+            if (product) {
+                product.delete();
+                res.status(200).json({ message: "Product is succesvol verwijderd" })
+            } else {
+                res.status(404).json({ message: "Er is geen product gevonden met dit id" });
+            }
+        });
+    } catch (err) {
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
+    }
 }
 
 module.exports.purchase = async (req, res) => {
@@ -89,14 +116,48 @@ module.exports.purchase = async (req, res) => {
 }
 
 module.exports.succes = async (req, res) => {
-    //Update User document
-    //Return status to user
-    res.send(req.params);
+
+}
+
+const addClassPass = async (user, product) => {
+    //Add to purchases array ->
+    const date = new Date();
+    const year = date.getFullYear() + product.validFor;
+    const month = date.getMonth();
+    const day = date.getDate();
+    const expireDate = new Date(year, month, day);
+    user.purchases.push({ productId: product.id, expireDate: expireDate })
+
+    //Add class pass hours to users class pass
+    if (product.amountOfHours) {
+        user.classPassHours += product.amountOfHours;
+    }
+
+    user.save();
 }
 
 module.exports.webHook = async (req, res) => {
-    console.log(req);
-    res.sendStatus(200);
+    const userId = req.body.userId;
+    const productId = req.params.id;
+    const succeed = true;
+    //Update User document
+    //Return status to user
+    if (succeed) {
+        res.send(req.params);
+        User.findOne({ id: userId }, (err, user) => {
+            if (user) {
+                Product.findOne({ id: productId }, (err, product) => {
+                    if (product) {
+                        addClassPass(user, product);
+                    } else {
+                        res.status(400).json({ message: "Geen product gevonden met dit id" });
+                    }
+                });
+            } else {
+                res.status(400).json({ message: "Geen gebruiker gevonden met dit id" })
+            }
+        });
+    }
 }
 
 module.exports.view = (req, res) => {

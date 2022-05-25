@@ -48,11 +48,9 @@ const userSchema = new mongoose.Schema({
     purchases: {
         type: Array
     },
-    classPass: {
-        type: Object,
-        default: {
-            amountOfHours: 0
-        }
+    classPassHours: {
+        type: Number,
+        default: 0
     }
 });
 

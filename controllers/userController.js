@@ -10,17 +10,31 @@ module.exports.get = async (req, res) => {
     if (id) {
         try {
             let user = await User.findOne({ id });
-            res.status(200).json(user);
+            if (user) {
+                res.status(200).json(user);
+            } else {
+                res.status(404).json({ message: "Geen user gevonden met dit id" });
+            }
         } catch (err) {
-            res.sendStatus(400);
         }
     } else {
         //Get all users ->
         try {
             let users = await User.find();
-            res.status(200).json(users);
+            let allUsers = [];
+            for (userIndex in users) {
+                let user = users[userIndex];
+                allUsers.push({
+                    id: user._id,
+                    fullName: user.fullName,
+                    email: user.email,
+                    phoneNumber: user.phoneNumber,
+                    notes: user.notes
+                });
+            }
+            res.status(200).json(allUsers);
         } catch (err) {
-            res.sendStatus(400);
+            res.status(400).json({ message: "Er is iets fout gegaan", error: err });
         }
     }
 }
@@ -84,15 +98,15 @@ module.exports.update = async (req, res) => {
                     req.sendStatus(404);
                 }
                 if (err) {
-                    res.sendStatus(400);
+                    res.status(400).json({ message: "Er is iets fout gegaan", error: err });
                 }
             });
         } catch (err) {
-            res.sendStatus(400);
+            res.status(400).json({ message: "Er is iets fout gegaan", error: err });
         }
     } else {
         //Id was not provided
-        res.sendStatus(400);
+        res.status(400).json({ message: "Er is geen id gevonden" });
     }
 }
 
