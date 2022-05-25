@@ -174,8 +174,8 @@ class ApiCaller {
         }
     }
 
-    static updateSession = async (data) => {
-        let url = "/api/session/";
+    static updateSession = async (data, sessionId) => {
+        let url = "/api/session/" + sessionId;
         let options = {
             method: 'PUT',
             headers: {
