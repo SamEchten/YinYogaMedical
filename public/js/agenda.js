@@ -153,7 +153,7 @@ function loadSessionItem(id, title, teacher, time, date, day) {
         <i class="bi bi-x-lg hiding removeSession"></i>
       </div>
       <div class="col-md-2 text-end">
-        <button type="submit" class="btn btn-primary yinStyle" id="subscribe">Inschrijven</button>
+        <button type="submit" class="btn btn-primary yinStyle subscribe">Inschrijven</button>
       </div>
     </div>`
 
@@ -184,7 +184,8 @@ function clickEvents() {
   {
     // Edit a session ->
     $(".editSession").on("click", function () {
-      console.log("EDIT SESSION");
+      const sessionId = $(this).parent().parent().attr("id");
+      editSession(sessionId);
     });
     // Remove a session ->
     $(".removeSession").on("click", function () {
@@ -198,6 +199,126 @@ function clickEvents() {
     });
   }
 
+}
+async function getAllUsers(){
+
+}
+
+// Edit session as admin ->
+async function editSession(sessionId) {
+  try {
+    let res = await ApiCaller.getSingleSession(sessionId); // Get all the infomation from the session
+    let json = await res.json();
+    let date = new Date(json.date);
+    
+    Swal.fire({
+      html: `
+      <h2>Wijzigen van ${json.title}</h2>
+      <hr>
+      <div class="row width">
+        <div class="col-md-6">
+          <h3 class="lead lbs"><b>Lesnaam:</b></h3>
+          <input id="lessonName" class="swal2-input" type="text">
+          <h3 class="lead lbs"><b>Beschrijving:</b></h3>
+          <textarea id="lessonDescription" class="swal2-input"></textarea>
+          <h3 class="lead lbs"><b>Locatie:</b></h3>
+          <input id="lessonLocation" class="swal2-input" type="text">
+          <h3 class="lead lbs"><b>Yogadocent:</b></h3>
+          <p>
+            <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
+            Natascha Puper
+          </p>
+        </div>
+        <div class="col-md-6">
+          <h3 class="lead lbs"><b>Dag:</b></h3>
+          <div class="row">
+            <div class="col-md-4">
+            <input id="lessonDay" class="swal2-input" type="date">
+            </div>
+          </div>
+          <h3 class="lead lbs"><b>Starttijd:</b></h3>
+          <div class="row">
+            <div class="col-md-4">
+              <input id="lessonTime" class="swal2-input" type="time">
+            </div>
+          </div>
+          <h3 class="lead"><b>Duur:</b></h3>
+          <p class="subtext">De duur van de les in minuten.</p>
+          <div class="row">
+            <div class="col-md-4">
+              <input id="lessonDuration" class="swal2-input" type="number" step="30" min="30">
+            </div>
+          </div>
+          <h3 class="lead"><b>Aantal deelnemers:</b></h3>
+          <p class="subtext">Het maximale aantal deelnemers dat mee kan doen.</p>
+          <div class="row">
+            <div class="col-md-4">
+              <input id="maxPeople" class="swal2-input" type="number" step="1" min="1">
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-warning errorBox" role="alert"></div>
+      </div>`,
+      customClass: 'sweetalert-makeLesson',
+      showCancelButton: true,
+      confirmButtonText: 'Update les',
+      confirmButtonColor: '#D5CA9B',
+      closeOnConfirm: false,
+      cancelButtonText: 'Terug',
+    }).then(async (result) => {
+      if(result.isConfirmed) {
+        let jsonData = {
+          "title": $("#lessonName").val(),
+          "location": $("#lessonLocation").val(),
+          "date": createDateString($("#lessonDay").val(), $("#lessonTime").val()),
+          "duration": $("#lessonDuration").val(),
+          "participants": [],
+          "teacher": "Natascha",
+          "description": $("#lessonDescription").val(),
+          "maxAmountOfParticipants": $("#maxPeople").val(),
+          "weekly": false
+        }  
+        console.log(jsonData)
+
+        try {
+          let resUpdate = await ApiCaller.updateSession(jsonData);
+          let resJson = await resUpdate.json();
+          if(resUpdate.status == 200) {
+            Swal.fire({
+              title : "Les" + $("#lessonName").val() + "is gewijzigd!" ,
+              icon: 'success',
+              text: "Er zal een Email gestuurd worden naar alle leden die ingeschreven staan voor deze les!",
+              showCloseButton: true,
+              confirmButtonColor: '#D5CA9B'
+            });
+          } else {
+            Swal.fire({
+              title :  "Oops!",
+              icon: 'warning',
+              text: resJson.message,
+              showCloseButton: true,
+              confirmButtonColor: '#D5CA9B'
+            });
+          }
+        } catch (err) {
+          console.log(err);
+        }
+
+      } else {
+
+      }
+    });
+
+    $("#lessonName").val(json.title);
+    $("#lessionDescription").val(json.description);
+    $("#lessonLocation").val(json.location);
+    $("#lessonDay").val(date.toISOString().split("T")[0]);
+    $("#lessonDuration").val(json.duration);
+    $("#maxPeople").val(json.maxAmountOfParticipants);
+    $("#lessonTime").val(dateFormat(json.date).time);
+  } catch(err) {
+    console.log(err)
+  }  
 }
 
 // Remove a session as Admin
@@ -394,9 +515,8 @@ async function addSession() {
 
 // TODO: Laat les zien waarvoor er ingeschreven wordt. ->
 function subscribeToSession() {
-  $("#subscribe").on("click", function () {
-    if (typeof user == 'undefined')
-    {
+  $(".subscribe").on("click", function() {
+    if(typeof user == 'undefined') {
       console.log("user not logged in");
       location.href = "/login";
     } else

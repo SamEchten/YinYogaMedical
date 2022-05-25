@@ -139,21 +139,21 @@ class ApiCaller {
         }
     }
 
-    // Remove a product -> *ADMIN*
-    // static removeProduct = async (productId) => {
-    //     let url = "/api/session/" + productId;
-    //     let options = {
-    //         method: 'DELETE',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         }
-    //     };
-    //     try {
-    //         let response = await fetch(url, options);
-    //         return response;
-    //     } catch (err) {
-    //         //error
-    //     }
-    // }
+    static updateSession = async (data) => {
+        let url = "/api/session/";
+        let options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
 
 }
