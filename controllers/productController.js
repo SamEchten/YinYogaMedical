@@ -2,6 +2,7 @@ const Product = require("../models/Product");
 const { handleUserErrors } = require("./errorHandler");
 const mollieClient = require("../mollie/mollieClient");
 const config = require("../config").config;
+const path = require("path");
 
 module.exports.get = async (req, res) => {
     const id = req.params.id;

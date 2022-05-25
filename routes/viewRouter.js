@@ -18,7 +18,7 @@ router.get("/agenda", sessionController.view);
 
 //Products ->
 //TODO: add jwt validation
-router.get("/product", productController.view);
+router.get("/producten", productController.view);
 
 //profile ->
 //TODO: add jwt validation
