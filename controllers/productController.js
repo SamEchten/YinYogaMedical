@@ -77,7 +77,7 @@ module.exports.update = async (req, res) => {
 module.exports.delete = async (req, res) => {
     const id = req.params.id;
     try {
-        Product.findOne({ id }, (err, product) => {
+        Product.findOne({ _id: id }, (err, product) => {
             if (product) {
                 product.delete();
                 res.status(200).json({ message: "Product is succesvol verwijderd" })
