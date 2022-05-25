@@ -7,10 +7,15 @@ let weekNumb = getCurrentWeekNumber();
 // Render lesrooster from apiCaller and format it on date ->
 $(async function () {
   setWeekData(weekNumb);
-
   const res = await (await ApiCaller.getAllSessions()).json();
   schedule = res;
   loadAgenda(weekNumb);
+  let d = new Date();
+  console.log(d.getDay());
+
+  $(".contentRow").animate({
+    scrollTop: $(".d" + d.getDay()).offset().top -150
+}, 1000);
 });
 
 // Loading agenda data per week ->
@@ -146,11 +151,18 @@ function loadSessionItem(id, title, teacher, time, date, day) {
       <div class="col-md-2">
         <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
       </div>
-      <div class="col-md-2 text-end">
-        <i class="bi bi-pencil hiding editSession"></i>
-      </div>
-      <div class="col-md-2 text-start ">
-        <i class="bi bi-x-lg hiding removeSession"></i>
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-4 text-end">
+            <i class="bi bi-pencil hiding editSession"></i>
+          </div>
+          <div class="col-md-4 text-center">
+            <i class="bi bi-x-lg hiding removeSession"></i>
+          </div>
+          <div class="col-md-4 text-start">
+            <i class="bi bi-person-plus hiding addUser"></i>
+          </div>
+        </div>       
       </div>
       <div class="col-md-2 text-end">
         <button type="submit" class="btn btn-primary yinStyle subscribe">Inschrijven</button>
@@ -184,16 +196,16 @@ function clickEvents() {
   {
     // Edit a session ->
     $(".editSession").on("click", function () {
-      const sessionId = $(this).parent().parent().attr("id");
+      const sessionId = $(this).parent().parent().parent().parent().attr("id");
       editSession(sessionId);
     });
     // Remove a session ->
     $(".removeSession").on("click", function () {
-      const sessionId = $(this).parent().parent().attr("id");
+      const sessionId = $(this).parent().parent().parent().parent().attr("id");
       removeSession(sessionId);
     });
     $(".subscribe").on("click", function () {
-      const sessionId = $(this).parent().parent().attr("id");
+      const sessionId = $(this).parent().parent().parent().parent().attr("id");
       console.log(sessionId, user.userId);
       // subscribe functon with @id and @userId
     });
@@ -325,8 +337,10 @@ async function editSession(sessionId) {
 // Remove a session as Admin
 async function removeSession(sessionId) {
   Swal.fire({
-    title: 'Weet u zeker dat u deze les wilt annuleren?',
+    title: 'Weet u zeker dat u deze les wilt verwijderen?',
+    icon: 'info',
     showCancelButton: true,
+    text: "Bij het verwijderen van een les zullen alle ingeschreven personen een e-mail ontvangen.",
     confirmButtonColor: '#D5CA9B',
     confirmButtonText: 'Annuleer',
   }).then(async (result) => {
@@ -343,8 +357,8 @@ async function removeSession(sessionId) {
         Swal.fire({
           title: "Les geannuleerd!",
           icon: 'success',
-          showCloseButton: true,
-          confirmButtonColor: '#D5CA9B'
+          showConfirmButton: false,
+          timer: 1000
         });
       } catch (err)
       {
@@ -450,21 +464,19 @@ $(".addLesson").on("click", async function () {
     cancelButtonText: 'Cancel',
     preConfirm: async () => {
       let add = await addSession();
-      if (add)
-      {
+      if (add) {
         error = true;
       }
     }
   }).then((result) => {
-    if (result.isConfirmed)
-    {
-      if (error)
-      {
+    if (result.isConfirmed) {
+      if (error) {
+        loadAndSetFullAgenda(weekNumb);
         Swal.fire({
           title: "Les aangemaakt!",
           icon: 'success',
-          showCloseButton: true,
-          confirmButtonColor: '#D5CA9B'
+          showConfirmButton: false,
+          timer: 1000
         });
       } else
       {
@@ -478,9 +490,9 @@ $(".addLesson").on("click", async function () {
     }
   });
 
-  $(function () {
-    $('[data-bs-toggle="tooltip"]').tooltip();
-  })
+  // $(function () {
+  //   $('[data-bs-toggle="tooltip"]').tooltip();
+  // })
 });
 
 
