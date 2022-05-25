@@ -138,6 +138,23 @@ class ApiCaller {
             //error
         }
     }
+    // Add a product -> *ADMIN*
+    static addProduct = async (data) => {
+        let url = "/api/product/";
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
 
     static updateSession = async (data) => {
         let url = "/api/session/";
@@ -147,6 +164,23 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    // Remove a product -> *ADMIN*
+    static removeProduct = async (productId) => {
+        let url = "/api/product/" + productId;
+        let options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         };
         try {
             let response = await fetch(url, options);
