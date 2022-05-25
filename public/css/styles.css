@@ -56,6 +56,10 @@ h4 {
     border-color: #D5CA9B !important;
 }
 
+.navbar-style {
+    background-color: white !important;
+}
+
 /* Global white box styling */
 .contentcontainer {
     background-color: #ffffffbd;
