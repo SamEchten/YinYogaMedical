@@ -25,7 +25,6 @@ function dateFormat(data) {
 
   // Get time ->
   const time = new Date(dateObj.getTime()- (2 * 60 * 60 * 1000)).toLocaleTimeString("en-GB");
-  console.log(time)
 
   // Get date ->
   var month = dateObj.getUTCMonth() + 1; //months from 1-12
@@ -90,6 +89,7 @@ function roleCheck() {
 function showOrhideElements() {
   if (roleCheck()) {
     $(".hiding").css("display", "block");
+    $(".subscribe").attr("disabled", true);
   }
 }
 

@@ -1,5 +1,3 @@
-
-
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber();
@@ -35,6 +33,7 @@ async function loadAgenda(weekNumber) {
           let sessionData = dayData[session];
           let { id, title, teacher, date } = sessionData;
           loadSessionItem(id, title, teacher, dateFormat(date).time, dateFormat(date).date, day);
+          showParticipantsIcon(id, sessionData.participates);
         }
       } else
       {
@@ -88,6 +87,15 @@ function getAllDaysOfWeek(data) {
 
 function addMinutes(date, minutes) {
   return new Date(date.getTime() + minutes * 60000);
+}
+
+//  Check if user is participates in the session and let client see status ->
+function showParticipantsIcon(id, participants) {
+  console.log(participants);
+  if(participants == true) {
+    let element = $("#" + id).children(".settings").children(".row").children(".participate");
+    element.append(`<img height="15px"src="./static/check.png">`);
+  }  
 }
 
 // Show all details per session ->
@@ -149,16 +157,19 @@ function loadSessionItem(id, title, teacher, time, date, day) {
       <div class="col-md-2">
         <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 settings">
         <div class="row">
-          <div class="col-md-4 text-end">
+          <div class="col-md-3 text-end">
             <i class="bi bi-pencil hiding editSession"></i>
           </div>
-          <div class="col-md-4 text-center">
+          <div class="col-md-3 text-center">
             <i class="bi bi-x-lg hiding removeSession"></i>
           </div>
-          <div class="col-md-4 text-start">
+          <div class="col-md-3 text-start">
             <i class="bi bi-person-plus hiding addUser"></i>
+          </div>
+          <div class="col-md-3 participate text-start">
+          
           </div>
         </div>       
       </div>
@@ -166,7 +177,7 @@ function loadSessionItem(id, title, teacher, time, date, day) {
         <button type="submit" class="btn btn-primary yinStyle subscribe">Inschrijven</button>
       </div>
     </div>`
-
+  
   $(itemLayout).appendTo("#" + day);
   addEventHandlersSession();
   subscribeToSession();
@@ -570,10 +581,11 @@ function subscribeToSession() {
             let jsonRes = await res.json();
             if (res.status == 200)
             {
+              loadAndSetFullAgenda(weekNumb);
               Swal.fire({
                 title: `U heeft zich ingeschreven voor ${lesson} .`,
                 icon: 'success',
-                text: `Wat leuk dat u zich hebt ingeschreven voor ${lesson}! Tot snel! `,
+                text: `Wat leuk dat u zich heeft ingeschreven voor ${lesson}! Tot snel! `,
                 showCloseButton: true,
                 confirmButtonColor: '#D5CA9B'
               });
