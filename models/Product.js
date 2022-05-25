@@ -19,6 +19,10 @@ const productSchema = mongoose.Schema({
     toSchedule: {
         type: Boolean,
         required: [true, "U bent vergeten aan te geven of dit product apart moet worden ingepland"]
+    },
+    validFor: {
+        type: Number,
+        required: [true, "De geldigheid van het product is verplicht"]
     }
 });
 

@@ -12,8 +12,9 @@ module.exports.get = async (req, res) => {
     if (req.cookies.user) {
         userId = JSON.parse(req.cookies.user).userId;
     }
-    //Get single session
+
     if (id) {
+        //Get single session
         try {
             const session = await Session.findOne({ _id: id });
             if (session) {
@@ -26,6 +27,7 @@ module.exports.get = async (req, res) => {
             res.status(404).json({ error: "Geen sessie gevonden met dit id" });
         }
     } else {
+        //Get all sessions
         try {
             const allSessions = await getAllSessions(userId);
             const sortedSessions = await sortSessions(allSessions, userId);
@@ -226,21 +228,26 @@ module.exports.signup = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
     const comingWith = req.body.comingWith;
+    const reqId = JSON.parse(req.cookies.user).userId;
 
-    if (sessionId) {
-        try {
-            const session = await Session.findOne({ _id: sessionId });
-            if (session) {
-                await session.addParticipants(sessionId, { userId, comingWith });
-                res.status(200).json({ message: "U bent succesvol aangemeld" });
-            } else {
-                res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
+    if (userId == reqId || reqId == isAdmin(reqId)) {
+        if (sessionId) {
+            try {
+                const session = await Session.findOne({ _id: sessionId });
+                if (session) {
+                    await session.addParticipants(sessionId, { userId, comingWith });
+                    res.status(200).json({ message: "U bent succesvol aangemeld" });
+                } else {
+                    res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
+                }
+            } catch (err) {
+                res.status(400).json({ message: err.message });
             }
-        } catch (err) {
-            res.status(400).json({ message: err.message });
+        } else {
+            res.status(400).json({ message: "Er is geen sessionId gegegeven" });
         }
     } else {
-        res.status(400).json({ message: "Er is geen sessionId gegegeven" });
+        res.status(400).json({ message: "U bent niet gemachtigd om deze persoon aan te melden" })
     }
 }
 
