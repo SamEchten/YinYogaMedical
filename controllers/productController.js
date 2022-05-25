@@ -97,3 +97,7 @@ module.exports.webHook = async (req, res) => {
     console.log(req);
     res.sendStatus(200);
 }
+
+module.exports.view = (req, res) => {
+    res.render(path.join(__dirname, "../views/products"));
+}
