@@ -47,7 +47,6 @@
 // }
 
 $(async function () {
-  
   const res = await (await ApiCaller.getAllSessions()).json();
   loadProducts();
 });
@@ -56,7 +55,6 @@ $(async function () {
 async function loadProducts() {
   const res = await (await ApiCaller.getAllProducts()).json();
   for(r in res){
-    console.log(res[r].price)
     let price = parseInt(res[r].price).toFixed(2).replace(".", ",");
     loadProductItem(res[r].id, res[r].productName, price);
   }
@@ -71,21 +69,21 @@ function loadProductItem(id, productName, price) {
         <h4 id="title" class="text-left lead fw-bold productTitle">${productName}</h4>
         <p id="subtitle" class="productSubtitle">Geldig tot 09/05/2023</p>
       </div>
-      <div class="col-md text-end ">
+      <div class="col-md text-end">
         <h4 id="price" class="text-left lead fw-bold productPrice">€${price}</h4>
+      </div>
+      <div class="col-md-1">
+        <div class="row">
+          <div class="col-md-8 text-end">
+            <i class="bi bi-pencil hiding editProduct icons"></i>
+          </div>
+          <div class="col-md-4 text-end">
+            <i class="bi bi-trash3 hiding removeProduct icons"></i>
+          </div>
+        </div>
       </div>
       <div class="col-md text-end">
         <button type="submit" class="btn btn-primary yinStyle" onclick="buyProduct()" id="BuyNow">+ Koop nu</button>
-      </div>
-      <div class="col-md-1 text-end">
-        <div class="row">
-          <div class="col-md-6 text-end">
-            <i class="bi bi-pencil hiding editSession icons"></i>
-          </div>
-          <div class="col-md-6 text-start">
-            <i class="bi bi-trash3 hiding removeSession icons"></i>
-          </div>
-        </div>
       </div>
     </div>`
 
@@ -114,33 +112,33 @@ function clickEvents() {
   }
 }
 
-// Remove a session as Admin
-// async function removeSession(sessionId) {
-//   Swal.fire({
-//     title: 'Weet u zeker dat u deze les wilt annuleren?',
-//     showCancelButton: true,
-//     confirmButtonColor: '#D5CA9B',
-//     confirmButtonText: 'Annuleer',
-//   }).then(async (result) => {
-//     /* Read more about isConfirmed, isDenied below */
-//     if (result.isConfirmed) {
-//       try {
-//         let res = await ApiCaller.removeSession(sessionId);
-//         if (res.status == 200) {
-//           loadAndSetFullAgenda();
-//         }
-//         Swal.fire({
-//           title: "Les geannuleerd!",
-//           icon: 'success',
-//           showCloseButton: true,
-//           confirmButtonColor: '#D5CA9B'
-//         });
-//       } catch (err) {
-//         console.log(err)
-//       }
-//     }
-//   });
-// }
+// Remove a product as Admin
+async function removeProduct(productId) {
+  Swal.fire({
+    title: 'Weet u zeker dat u dit product wilt verwijderen?',
+    showCancelButton: true,
+    confirmButtonColor: '#D5CA9B',
+    confirmButtonText: 'Annuleer',
+  }).then(async (result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      try {
+        let res = await ApiCaller.removeProduct(productId);
+        if (res.status == 200) {
+          loadProducts();
+        }
+        Swal.fire({
+          title: "Product verwijderd!",
+          icon: 'success',
+          showCloseButton: true,
+          confirmButtonColor: '#D5CA9B'
+        });
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  });
+}
 
 $(".addProduct").on("click", async function () {
   let error = false;
@@ -154,46 +152,14 @@ $(".addProduct").on("click", async function () {
         <input id="productName" class="swal2-input" type="text" placeholder="Productnaam">
         <h3 class="lead"><b>Beschrijving:</b></h3>
         <textarea id="productDescription" class="swal2-input" placeholder="Productbeschrijving"></textarea>
-        <div class="row width">
-          <div class="col-md-6">
-            <h3 class="lead"><b>Prijs:</b></h3>
-            <p class="subtext">De prijs van het product.</p>
-            <input id="productPrice" class="swal2-input half" type="number" step="0.5" min="0.5" value="0.5">
-          </div>
-          <div class="col-md-6">
-            <h3 class="lead"><b>Aantal uur:</b></h3>
-            <p class="subtext">Aantal uren op het product.</p>
-            <input id="productHours" class="swal2-input half" type="number" step="0.5" min="0.5" value="0.5">
-          </div>
-        </div>
       </div>
-      <div class="col-md-6 text-start">
-        <h3 class="lead"><b>Categorie:</b></h3>
-        <p class="radiobutton">
-          <input id="strippenkaarten" type="radio" name="category" checked="true" value="Strippenkaarten">
-          Strippenkaarten
-        </p>
-        <p class="radiobutton">
-          <input id="cadeaubonnen" type="radio" name="category" value="Cadeaubonnen">
-          Cadeaubonnen
-        </p>
-        <p class="radiobutton">
-          <input id="abonnementen" type="radio" name="category" value="Abonnementen">
-          Abonnementen
-        </p>
-        <h3 class="lead"><b>Hiermee te kopen:</b></h3>
-        <p class="radiobutton">
-          <input id="lessen" type="checkbox" name="buywith" value="Lessen">
-          Lessen
-        </p>
-        <p class="radiobutton">
-          <input id="massages" type="checkbox" name="buywith" value="Massages">
-          Massages
-        </p>
-        <p class="radiobutton">
-          <input id="videos" type="checkbox" name="buywith" value="Video's">
-          Video's
-        </p>
+      <div class="col-md-6">
+        <h3 class="lead"><b>Prijs:</b></h3>
+        <p class="subtext">De prijs van het product.</p>
+        <input id="productPrice" class="swal2-input half" type="number" step="0.5" min="0.5" value="0.5">
+        <h3 class="lead"><b>Aantal uur:</b></h3>
+        <p class="subtext">Aantal uren op het product.</p>
+        <input id="productHours" class="swal2-input half" type="number" step="0.5" min="0.5" value="0.5">
       </div>
       <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`,
