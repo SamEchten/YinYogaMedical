@@ -338,7 +338,6 @@ async function addSession() {
   }  
   try {
     let res = await ApiCaller.addSession(json);
-    console.log(res.status)
     if(res.status == 201) { 
       return true;
     } else { 

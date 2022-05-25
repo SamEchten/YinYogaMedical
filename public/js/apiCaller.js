@@ -105,9 +105,9 @@ class ApiCaller {
         }
     }
 
-    // Add a product -> *ADMIN*
-    static addProduct = async (data) => {
-        let url = "/api/product/";
+    // Add a user to a session with extra participants ->
+    static addUserToSession = async (data, sessionId) => {
+        let url = "/api/session/signup/" + sessionId;
         let options = {
             method: 'POST',
             headers: {
@@ -123,15 +123,13 @@ class ApiCaller {
         }
     }
 
-    // Add a user to a session with extra participants ->
-    static addUserToSession = async (data, sessionId) => {
-        let url = "/api/session/signup/" + sessionId;
+    static getAllProducts = async () => {
+        let url = "/api/product/";
         let options = {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
+            }
         };
         try {
             let response = await fetch(url, options);

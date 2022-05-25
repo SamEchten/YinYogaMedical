@@ -41,6 +41,7 @@ function dateFormat(data) {
 
 // returns the dcurrent week, in most cases the week is 1 week off so -1. ->
 function getCurrentWeekNumber() {
+
   currentDate = new Date();
   startDate = new Date(currentDate.getFullYear(), 0, 1);
   var days = Math.floor((currentDate - startDate) /

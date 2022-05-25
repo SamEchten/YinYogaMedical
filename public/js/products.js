@@ -46,27 +46,50 @@
 //     });
 // }
 
+$(async function () {
+  
+  const res = await (await ApiCaller.getAllSessions()).json();
+  loadProducts();
+});
+
+// Loading product data  ->
+async function loadProducts() {
+  const res = await (await ApiCaller.getAllProducts()).json();
+  for(r in res){
+    console.log(res[r].price)
+    let price = parseInt(res[r].price).toFixed(2).replace(".", ",");
+    loadProductItem(res[r].id, res[r].productName, price);
+  }
+  showOrhideElements();
+  clickEvents();
+}
+
 function loadProductItem(id, productName, price) {
   let itemLayout = `
     <div id="${id}" class="row ps-4 p-2 productItem align-items-center">
       <div class="col-md-8">
-        <h4 id="title" class="text-left lead fw-bold productTitle">Mantelzorgers strippenkaart</h4>
+        <h4 id="title" class="text-left lead fw-bold productTitle">${productName}</h4>
         <p id="subtitle" class="productSubtitle">Geldig tot 09/05/2023</p>
       </div>
       <div class="col-md text-end ">
-        <h4 id="price" class="text-left lead fw-bold productPrice">€100,-</h4>
+        <h4 id="price" class="text-left lead fw-bold productPrice">€${price}</h4>
       </div>
       <div class="col-md text-end">
         <button type="submit" class="btn btn-primary yinStyle" onclick="buyProduct()" id="BuyNow">+ Koop nu</button>
       </div>
       <div class="col-md-1 text-end">
-        <i class="bi bi-pencil hiding editSession icons"></i>
-        <i class="bi bi-trash3 hiding removeSession icons"></i>
+        <div class="row">
+          <div class="col-md-6 text-end">
+            <i class="bi bi-pencil hiding editSession icons"></i>
+          </div>
+          <div class="col-md-6 text-start">
+            <i class="bi bi-trash3 hiding removeSession icons"></i>
+          </div>
+        </div>
       </div>
     </div>`
 
   $(itemLayout).appendTo("#category");
-  addEventHandlersSession();
 }
 
 // Add eventlisteners for button that render in after dom has loaded ->
@@ -92,32 +115,32 @@ function clickEvents() {
 }
 
 // Remove a session as Admin
-  // async function removeSession(sessionId) {
-  //   Swal.fire({
-  //     title: 'Weet u zeker dat u deze les wilt annuleren?',
-  //     showCancelButton: true,
-  //     confirmButtonColor: '#D5CA9B',
-  //     confirmButtonText: 'Annuleer',
-  //   }).then(async (result) => {
-  //     /* Read more about isConfirmed, isDenied below */
-  //     if (result.isConfirmed) {
-  //       try {
-  //         let res = await ApiCaller.removeSession(sessionId);
-  //         if (res.status == 200) {
-  //           loadAndSetFullAgenda();
-  //         }
-  //         Swal.fire({
-  //           title: "Les geannuleerd!",
-  //           icon: 'success',
-  //           showCloseButton: true,
-  //           confirmButtonColor: '#D5CA9B'
-  //         });
-  //       } catch (err) {
-  //         console.log(err)
-  //       }
-  //     }
-  //   });
-  // }
+// async function removeSession(sessionId) {
+//   Swal.fire({
+//     title: 'Weet u zeker dat u deze les wilt annuleren?',
+//     showCancelButton: true,
+//     confirmButtonColor: '#D5CA9B',
+//     confirmButtonText: 'Annuleer',
+//   }).then(async (result) => {
+//     /* Read more about isConfirmed, isDenied below */
+//     if (result.isConfirmed) {
+//       try {
+//         let res = await ApiCaller.removeSession(sessionId);
+//         if (res.status == 200) {
+//           loadAndSetFullAgenda();
+//         }
+//         Swal.fire({
+//           title: "Les geannuleerd!",
+//           icon: 'success',
+//           showCloseButton: true,
+//           confirmButtonColor: '#D5CA9B'
+//         });
+//       } catch (err) {
+//         console.log(err)
+//       }
+//     }
+//   });
+// }
 
 $(".addProduct").on("click", async function () {
   let error = false;

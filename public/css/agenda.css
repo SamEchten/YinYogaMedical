@@ -27,8 +27,7 @@ body {
     cursor: pointer;
     animation-name: slide;
     animation-duration: 0.5s;
-    box-shadow: 0px 1px 5px -3px #272727;
-
+    /* box-shadow: 0px 1px 5px -3px #272727; */
 }
 
 .agendaItem:hover
@@ -104,7 +103,7 @@ body {
 
 .headerSchedule {
 
-    background: #D5CA9B;
+    background: #FFFFFF;
     border-radius: 10px 10px 0px 0px;
 }
 
