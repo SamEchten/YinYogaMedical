@@ -6,6 +6,7 @@ const authController = require("../controllers/authController");
 const sessionController = require("../controllers/sessionController");
 const userController = require("../controllers/userController");
 const profileController = require("../controllers/profileController");
+const productController = require("../controllers/productController");
 
 //Auth ->
 router.get("/login", authController.login_get);
@@ -16,9 +17,8 @@ router.get("/logout", authController.logout);
 router.get("/agenda", sessionController.view);
 
 //Products ->
-router.get("/products", validateJwt, (req, res) => {
-    res.render(path.join(__dirname, "../views/products"));
-});
+//TODO: add jwt validation
+router.get("/product", productController.view);
 
 //profile ->
 //TODO: add jwt validation
