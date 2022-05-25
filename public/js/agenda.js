@@ -281,11 +281,12 @@ async function editSession(sessionId) {
         console.log(jsonData)
 
         try {
-          let resUpdate = await ApiCaller.updateSession(jsonData);
+          let resUpdate = await ApiCaller.updateSession(jsonData, sessionId);
           let resJson = await resUpdate.json();
           if(resUpdate.status == 200) {
+            loadAndSetFullAgenda(weekNumb);
             Swal.fire({
-              title : "Les" + $("#lessonName").val() + "is gewijzigd!" ,
+              title : "Les " + $("#lessonName").val() + " is gewijzigd!" ,
               icon: 'success',
               text: "Er zal een Email gestuurd worden naar alle leden die ingeschreven staan voor deze les!",
               showCloseButton: true,
