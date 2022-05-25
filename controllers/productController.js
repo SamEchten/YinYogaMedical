@@ -61,7 +61,7 @@ module.exports.update = async (req, res) => {
     const id = req.params.id;
     const body = req.body;
     try {
-        Product.findOne({ id }, async (err, product) => {
+        Product.findOne({ _id: id }, async (err, product) => {
             if (product) {
                 await Product.updateOne({ id }, { $set: body });
                 res.status(200).json({ productId: product.id });
@@ -77,7 +77,7 @@ module.exports.update = async (req, res) => {
 module.exports.delete = async (req, res) => {
     const id = req.params.id;
     try {
-        Product.findOne({ id }, (err, product) => {
+        Product.findOne({ _id: id }, (err, product) => {
             if (product) {
                 product.delete();
                 res.status(200).json({ message: "Product is succesvol verwijderd" })
@@ -95,7 +95,7 @@ module.exports.purchase = async (req, res) => {
     const userId = req.body.userId;
 
     if (id && userId) {
-        Product.findOne({ id }, async (err, product) => {
+        Product.findOne({ _id: id }, async (err, product) => {
             if (product) {
                 const price = product.price;
                 const discription = product.productName;
@@ -144,9 +144,9 @@ module.exports.webHook = async (req, res) => {
     //Return status to user
     if (succeed) {
         res.send(req.params);
-        User.findOne({ id: userId }, (err, user) => {
+        User.findOne({ _id: userId }, (err, user) => {
             if (user) {
-                Product.findOne({ id: productId }, (err, product) => {
+                Product.findOne({ _id: productId }, (err, product) => {
                     if (product) {
                         addClassPass(user, product);
                     } else {

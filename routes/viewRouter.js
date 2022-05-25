@@ -9,6 +9,11 @@ const userController = require("../controllers/userController");
 const profileController = require("../controllers/profileController");
 const productController = require("../controllers/productController");
 
+//Tijdelijke test voor video
+router.get("/videos", validateJwt, (req, res) => {
+    res.render(path.join(__dirname, "../views/videotester"));
+});
+
 //Auth ->
 router.get("/login", authController.login_get);
 router.get("/signup", authController.signup_get);

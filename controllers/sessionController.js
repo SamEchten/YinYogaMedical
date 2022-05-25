@@ -194,7 +194,7 @@ module.exports.update = async (req, res) => {
     const body = req.body;
 
     try {
-        const session = await Session.findOne({ id });
+        const session = await Session.findOne({ _id: id });
         if (session) {
             await Session.updateOne({ id }, { $set: body });
             res.status(200).json({ id: session._id });

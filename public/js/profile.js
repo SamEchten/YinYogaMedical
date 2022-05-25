@@ -23,3 +23,35 @@ $(".setting").on("click", function () {
 // });
 // console.log()
 
+
+
+
+
+
+function changeName() {
+
+    let name = user.fullName;
+    console.log(this.name)
+
+    this.nameRow.innerHTML = `<input id = "nameChange" type = "text" value = "` + name + `"> 
+                                <i class="bi bi-check-circle"onclick="acceptName()"></i>
+                                <i class="bi bi-x-circle" onclick="denyName()"></i>`
+}
+
+function acceptName() {
+    let updatedName = document.getElementById("nameChange").value;
+    Swal.fire({
+        title: "Uw naam is geupdate naar " + updatedName,
+        icon: 'succes',
+        showCloseButton: true,
+        confirmButtonColor: '#D5CA9B'
+    });
+    $(".settingsContent").empty();
+    $(".settingsContent").load("profile/myProfile");
+}
+
+function denyName() {
+    $(".settingsContent").empty();
+    $(".settingsContent").load("profile/myProfile");
+}
+
