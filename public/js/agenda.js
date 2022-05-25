@@ -513,7 +513,7 @@ async function addSession() {
   }
 }
 
-// TODO: Laat les zien waarvoor er ingeschreven wordt. ->
+// subcribe to lesson ->
 function subscribeToSession() {
   $(".subscribe").on("click", function() {
     if(typeof user == 'undefined') {
