@@ -3,6 +3,7 @@ const { handleUserErrors } = require("./errorHandler");
 const mollieClient = require("../mollie/mollieClient");
 const config = require("../config").config;
 const path = require("path");
+const Session = require("../models/Session");
 
 module.exports.get = async (req, res) => {
     const id = req.params.id;
@@ -56,11 +57,36 @@ module.exports.add = async (req, res) => {
 }
 
 module.exports.update = async (req, res) => {
+    const id = req.params.id;
+    const body = req.body;
+    try {
+        Product.findOne({ id }, async (err, product) => {
+            if (product) {
+                await Product.updateOne({ id }, { $set: body });
+                res.status(200).json({ productId: product.id });
+            } else {
+                res.status(404).json({ message: "Er is geen product gevonden met dit id" });
+            }
+        });
+    } catch (err) {
 
+    }
 }
 
 module.exports.delete = async (req, res) => {
-
+    const id = req.params.id;
+    try {
+        Product.findOne({ id }, (err, product) => {
+            if (product) {
+                product.delete();
+                res.status(200).json({ message: "Product is succesvol verwijderd" })
+            } else {
+                res.status(404).json({ message: "Er is geen product gevonden met dit id" });
+            }
+        });
+    } catch (err) {
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
+    }
 }
 
 module.exports.purchase = async (req, res) => {

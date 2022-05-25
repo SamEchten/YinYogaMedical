@@ -12,8 +12,9 @@ module.exports.get = async (req, res) => {
     if (req.cookies.user) {
         userId = JSON.parse(req.cookies.user).userId;
     }
-    //Get single session
+
     if (id) {
+        //Get single session
         try {
             const session = await Session.findOne({ _id: id });
             if (session) {
@@ -26,6 +27,7 @@ module.exports.get = async (req, res) => {
             res.status(404).json({ error: "Geen sessie gevonden met dit id" });
         }
     } else {
+        //Get all sessions
         try {
             const allSessions = await getAllSessions(userId);
             const sortedSessions = await sortSessions(allSessions, userId);
