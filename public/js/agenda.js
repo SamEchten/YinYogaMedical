@@ -10,12 +10,10 @@ $(async function () {
   const res = await (await ApiCaller.getAllSessions()).json();
   schedule = res;
   loadAgenda(weekNumb);
-  let d = new Date();
-  console.log(d.getDay());
-
+  let today = new Date();
   $(".contentRow").animate({
-    scrollTop: $(".d" + d.getDay()).offset().top -150
-}, 1000);
+    scrollTop: $(".d" + today.getDay()).offset().top -120
+}, 1500);
 });
 
 // Loading agenda data per week ->
