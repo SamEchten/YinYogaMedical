@@ -196,7 +196,7 @@ module.exports.update = async (req, res) => {
     try {
         const session = await Session.findOne({ _id: id });
         if (session) {
-            await Session.updateOne({ id }, { $set: body });
+            await Session.updateOne({ _id: id }, { $set: body });
             res.status(200).json({ id: session._id });
         } else {
             res.status(404).json({ error: "Geen sessie gevonden met dit Id" })
