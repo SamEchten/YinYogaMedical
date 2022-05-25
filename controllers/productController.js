@@ -21,7 +21,7 @@ module.exports.get = async (req, res) => {
 
 const getSingleProduct = async (res, id) => {
     try {
-        Product.findOne({ id }, async (err, product) => {
+        Product.findOne({ _id: id }, async (err, product) => {
             if (product) {
                 res.status(200).json(product);
             } else {

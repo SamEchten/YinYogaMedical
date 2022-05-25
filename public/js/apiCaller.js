@@ -250,4 +250,21 @@ class ApiCaller {
         }
     }
 
+    // Gets one single product -> 
+    static getSingleProduct = async (productid) => {
+        let url = "/api/product/" + productid;
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
 }
