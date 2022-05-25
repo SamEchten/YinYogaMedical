@@ -11,10 +11,12 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try {
+        try
+        {
             let response = await fetch(url, options);
             return response;
-        } catch (err) {
+        } catch (err)
+        {
             //error
         }
     }
@@ -29,10 +31,12 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try {
+        try
+        {
             let response = await fetch(url, options);
             return response;
-        } catch (err) {
+        } catch (err)
+        {
             //error
         }
     }
@@ -45,10 +49,12 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try {
+        try
+        {
             let response = await fetch(url, options);
             return response;
-        } catch (err) {
+        } catch (err)
+        {
             //error
         }
     }
@@ -62,10 +68,12 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try {
+        try
+        {
             let response = await fetch(url, options);
             return response;
-        } catch (err) {
+        } catch (err)
+        {
             //error
         }
     }
@@ -79,10 +87,12 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try {
+        try
+        {
             let response = await fetch(url, options);
             return response;
-        } catch (err) {
+        } catch (err)
+        {
             //error
         }
     }
@@ -97,10 +107,12 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try {
+        try
+        {
             let response = await fetch(url, options);
             return response;
-        } catch (err) {
+        } catch (err)
+        {
             //error
         }
     }
@@ -115,10 +127,12 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try {
+        try
+        {
             let response = await fetch(url, options);
             return response;
-        } catch (err) {
+        } catch (err)
+        {
             //error
         }
     }
@@ -131,10 +145,31 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try {
+        try
+        {
             let response = await fetch(url, options);
             return response;
-        } catch (err) {
+        } catch (err)
+        {
+            //error
+        }
+    }
+    // Add a product -> *ADMIN*
+    static addProduct = async (data) => {
+        let url = "/api/product/";
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
             //error
         }
     }
@@ -148,10 +183,69 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try {
+        try
+        {
             let response = await fetch(url, options);
             return response;
-        } catch (err) {
+        } catch (err)
+        {
+            //error
+        }
+    }
+
+    // Remove a product -> *ADMIN*
+    static removeProduct = async (productId) => {
+        let url = "/api/product/" + productId;
+        let options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
+
+    // Gets the info of the user
+    static getUserInfo = async (id) => {
+        let url = "/api/user/" + id;
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
+
+    static updateUser = async (data, id) => {
+        let url = "/api/user/" + id;
+        let options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
             //error
         }
     }

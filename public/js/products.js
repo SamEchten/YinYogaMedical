@@ -54,7 +54,7 @@ $(async function () {
 // Loading product data  ->
 async function loadProducts() {
   const res = await (await ApiCaller.getAllProducts()).json();
-  for(r in res){
+  for (r in res) {
     let price = parseInt(res[r].price).toFixed(2).replace(".", ",");
     loadProductItem(res[r].id, res[r].productName, price);
   }
@@ -62,10 +62,22 @@ async function loadProducts() {
   clickEvents();
 }
 
+async function reloadProducts() {
+  $("#category").empty();
+  const res = await (await ApiCaller.getAllProducts()).json();
+  for (r in res) {
+    let price = parseInt(res[r].price).toFixed(2).replace(".", ",");
+    loadProductItem(res[r].id, res[r].productName, price);
+  }
+  showOrhideElements();
+  clickEvents();
+}
+
+
 function loadProductItem(id, productName, price) {
   let itemLayout = `
     <div id="${id}" class="row ps-4 p-2 productItem align-items-center">
-      <div class="col-md-8">
+      <div class="col-md-8" id="productNameText">
         <h4 id="title" class="text-left lead fw-bold productTitle">${productName}</h4>
         <p id="subtitle" class="productSubtitle">Geldig tot 09/05/2023</p>
       </div>
@@ -83,7 +95,7 @@ function loadProductItem(id, productName, price) {
         </div>
       </div>
       <div class="col-md text-end">
-        <button type="submit" class="btn btn-primary yinStyle" onclick="buyProduct()" id="BuyNow">+ Koop nu</button>
+        <button type="submit" class="btn btn-primary yinStyle" id="BuyNow">+ Koop nu</button>
       </div>
     </div>`
 
@@ -99,15 +111,13 @@ function clickEvents() {
     });
     // Remove a session ->
     $(".removeProduct").on("click", function () {
-      // const sessionId = $(this).parent().parent().attr("id");
-      // removeSession(sessionId);
-      console.log("REMOVE PRODUCT");
+      const productId = $(this).parent().parent().attr("id");
+      removeProduct(productId);
     });
-    $(".BuyNow").on("click", function () {
-      // const sessionId = $(this).parent().parent().attr("id");
-      // console.log(sessionId, user.userId);
+    $("#BuyNow").on("click", function () {
+      let product = $(this).parent().parent().children("#productNameText").children("h4").text();
       console.log("BUY PRODUCT");
-      // subscribe functon with @id and @userId
+      buyProduct(product);
     });
   }
 }
@@ -118,14 +128,14 @@ async function removeProduct(productId) {
     title: 'Weet u zeker dat u dit product wilt verwijderen?',
     showCancelButton: true,
     confirmButtonColor: '#D5CA9B',
-    confirmButtonText: 'Annuleer',
+    confirmButtonText: 'verwijder',
   }).then(async (result) => {
     /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
       try {
         let res = await ApiCaller.removeProduct(productId);
         if (res.status == 200) {
-          loadProducts();
+          reloadProducts();
         }
         Swal.fire({
           title: "Product verwijderd!",
@@ -156,7 +166,7 @@ $(".addProduct").on("click", async function () {
       <div class="col-md-6">
         <h3 class="lead"><b>Prijs:</b></h3>
         <p class="subtext">De prijs van het product.</p>
-        <input id="productPrice" class="swal2-input half" type="number" step="0.5" min="0.5" value="0.5">
+        <input id="productPrice" class="swal2-input half" type="number" step="1" min="1" value="1">
         <h3 class="lead"><b>Aantal uur:</b></h3>
         <p class="subtext">Aantal uren op het product.</p>
         <input id="productHours" class="swal2-input half" type="number" step="0.5" min="0.5" value="0.5">
@@ -167,24 +177,48 @@ $(".addProduct").on("click", async function () {
     showCancelButton: true,
     confirmButtonText: 'Voeg les toe',
     confirmButtonColor: '#D5CA9B',
-    closeOnConfirm: false,
     cancelButtonText: 'Cancel',
+    preConfirm: async () => {
+      let add = await addProduct();
+      if (add) {
+        error = true;
+      }
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      if (error) {
+        Swal.fire({
+          title: "Les aangemaakt!",
+          icon: 'success',
+          showCloseButton: true,
+          confirmButtonColor: '#D5CA9B'
+        });
+      } else {
+        Swal.fire({
+          title: "Velden niet correct ingevuld",
+          icon: 'warning',
+          showCloseButton: true,
+          confirmButtonColor: '#D5CA9B'
+        });
+      }
+    }
   });
 });
 
-// Add session call ->
+// Add product call ->
 async function addProduct() {
   let json = {
     "productName": $("#productName").val(),
     "price": $("#productPrice").val(),
     "discription": $("#productDescription").val(),
-    "amountOfHours": $("#productHours").val()
+    "amountOfHours": $("#productHours").val(),
+    "toSchedule": false,
+    "validFor": 1
   }
   try {
     let res = await ApiCaller.addProduct(json);
-    let json = await res.json();
-    console.log(json)
-    if (res.status == 201) {
+    if (res.status == 200 || res.status == 201) {
+      reloadProducts();
       return true;
     } else {
       return false;
@@ -195,12 +229,12 @@ async function addProduct() {
 }
 
 // TODO: Laat product zien welke gekocht wordt.
-function buyProduct() {
+function buyProduct(product) {
   Swal.fire({
     html: `
     <h2>Product kopen</h2>
     <hr>
-    <p>U wilt u het product (product) kopen. Klopt dit?</p>`,
+    <p>U wilt u het product <b>${product}</b> kopen. Klopt dit?</p>`,
     customClass: 'sweetalert-subscribe',
     showCancelButton: true,
     confirmButtonText: 'Koop product',
