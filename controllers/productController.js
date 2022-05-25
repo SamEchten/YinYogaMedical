@@ -1,6 +1,7 @@
 const Product = require("../models/Product");
 const { handleUserErrors } = require("./errorHandler");
 const mollieClient = require("../mollie/mollieClient");
+const config = require("../config").config;
 
 module.exports.get = async (req, res) => {
     const id = req.params.id;
@@ -70,10 +71,11 @@ module.exports.purchase = async (req, res) => {
             if (product) {
                 const price = product.price;
                 const discription = product.productName;
-                const redirectUrl = "https://78a5-2a02-a467-14f7-1-28f2-ec4f-48f9-c7fd.eu.ngrok.io/api/product/succes/" + product._id + "";
-                const webHookUrl = "https://78a5-2a02-a467-14f7-1-28f2-ec4f-48f9-c7fd.eu.ngrok.io/api/product/webhook";
+                const redirectUrl = config.ngrok.url + "/api/product/succes/" + product._id + "";
+                const webHookUrl = config.ngrok.url + "/api/product/webhook/";
+                const productId = product._id;
 
-                const payment = await mollieClient.createPayment(price, discription, redirectUrl, webHookUrl);
+                const payment = await mollieClient.createPayment(price, discription, redirectUrl, webHookUrl, productId);
                 let checkOutUrl = payment.getCheckoutUrl();
                 res.status(200).json({ redirectUrl: checkOutUrl });
             } else {
@@ -81,13 +83,8 @@ module.exports.purchase = async (req, res) => {
             }
         });
     } else {
-        res.status(400).json({ message: "Er is geen id meegegeven" });
+        res.status(400).json({ message: "Er mist een userId of productId" });
     }
-
-
-    //Create payment
-    //Redirect user to payment page
-    //User gets redirected to payment Succes
 }
 
 module.exports.succes = async (req, res) => {
@@ -97,6 +94,6 @@ module.exports.succes = async (req, res) => {
 }
 
 module.exports.webHook = async (req, res) => {
-    console.log(req.body);
+    console.log(req);
     res.sendStatus(200);
 }

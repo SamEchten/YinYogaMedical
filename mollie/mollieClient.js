@@ -3,7 +3,7 @@ const config = require("../config").config;
 
 const mollieClient = createMollieClient({ apiKey: config.mollie.testKey });
 
-module.exports.createPayment = async (amount, description, redirectUrl, webhookUrl) => {
+module.exports.createPayment = async (amount, description, redirectUrl, webhookUrl, productId) => {
     const payment = await mollieClient.payments.create({
         amount: {
             value: amount,
@@ -11,7 +11,10 @@ module.exports.createPayment = async (amount, description, redirectUrl, webhookU
         },
         description: description,
         redirectUrl: redirectUrl,
-        webhookUrl: webhookUrl
+        webhookUrl: webhookUrl,
+        metadata: {
+            productId: productId
+        }
     });
 
     return payment;

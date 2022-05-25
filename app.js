@@ -12,10 +12,6 @@ const { validateJwt } = require("./middleware/validator");
 const { validateAdmin } = require("./middleware/validator");
 const { validateJson } = require("./middleware/validator");
 
-// //Mollie ->
-// const mollieModule = require("./mollie/mollieClient");
-// mollieModule.createPayment("1.00", "test payment", "https://google.com");
-
 //Server port ->
 const port = 80;
 
@@ -32,7 +28,6 @@ app.set('view engine', 'ejs');
 const dbpass = config.database.password;
 const dbuser = config.database.user;
 const dburi = "mongodb://" + dbuser + ":" + dbpass + "@localhost:27017/YinYogaMedical";
-
 
 const server = https.createServer(httpsOptions, app);
 
