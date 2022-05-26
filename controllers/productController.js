@@ -100,10 +100,10 @@ module.exports.purchase = async (req, res) => {
                 const price = product.price;
                 const discription = product.productName;
                 const redirectUrl = config.ngrok.url + "/api/product/succes/" + product._id + "";
-                const webHookUrl = config.ngrok.url + "/api/product/webhook/";
-                const productId = product._id;
+                const webHookUrl = config.ngrok.url + "/api/product/webhook";
+                const productId = product.id;
 
-                const payment = await mollieClient.createPayment(price, discription, redirectUrl, webHookUrl, productId);
+                let payment = await mollieClient.createPayment(price, discription, redirectUrl, webHookUrl, productId);
                 let checkOutUrl = payment.getCheckoutUrl();
                 res.status(200).json({ redirectUrl: checkOutUrl });
             } else {
@@ -116,7 +116,7 @@ module.exports.purchase = async (req, res) => {
 }
 
 module.exports.succes = async (req, res) => {
-
+    res.send("succes!")
 }
 
 const addClassPass = async (user, product) => {
@@ -137,9 +137,11 @@ const addClassPass = async (user, product) => {
 }
 
 module.exports.webHook = async (req, res) => {
-    const userId = req.body.userId;
-    const productId = req.params.id;
-    const succeed = true;
+    console.log(req.body);
+    res.sendStatus(200);
+    //const userId = req.body.userId;
+    //const productId = req.params.id;
+    const succeed = false;
     //Update User document
     //Return status to user
     if (succeed) {

@@ -29,6 +29,6 @@ router.post("/purchase/:id", controller.purchase);
 //Succes page after payments is succesfull
 router.get("/succes/:id", controller.succes);
 //Webhook for mollie to send payment info to
-router.post("/webhook/:id", controller.webHook);
+router.post("/webhook", controller.webHook);
 
 module.exports = router;
