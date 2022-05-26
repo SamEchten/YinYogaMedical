@@ -1,17 +1,15 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber();
+let weekNumb = getCurrentWeekNumber() -1;
 
 // Render lesrooster from apiCaller and format it on date ->
+//  > Document.getready! first render. 
 $(async function () {
   setWeekData(weekNumb);
   const res = await (await ApiCaller.getAllSessions()).json();
   schedule = res;
   loadAgenda(weekNumb);
-  let today = new Date();
-  $(".contentRow").animate({
-    scrollTop: $(".d" + today.getDay()).offset().top -120
-}, 1500);
+  scrollDownToCurrDay();
 });
 
 // Loading agenda data per week ->
@@ -20,32 +18,30 @@ async function loadAgenda(weekNumber) {
   schedule = res;
   showOrhideElements();
   let week = schedule[weekNumber];
-  if (week != undefined)
-  {
-    for (day in week)
-    {
-      if (week[day].length > 0)
-      {
+  if (week != undefined) {
+    for (day in week) {
+      if (week[day].length > 0) {
         let dayData = week[day];
         clearAgenda(day)
-        for (session in dayData)
-        {
+        for (session in dayData) {
           let sessionData = dayData[session];
           let { id, title, teacher, date } = sessionData;
-          loadSessionItem(id, title, teacher, dateFormat(date).time, dateFormat(date).date, day);
-          showParticipantsIcon(id, sessionData.participates);
+          loadSessionItem(id, title, teacher, dateFormat(date).time, day);
+          addSubscribedItems(id, sessionData.participates);
         }
-      } else
-      {
+      } else {
         clearAgenda(day);
-        $("#" + day).append("<h4 class='lead p-3'>Geen lessen</h4>")
+        $("#" + day).append("<h4 class='lead p-3'>Geen lessen</h4>");
       }
     }
-  } else
-  {
+  } else {
     fullClear();
   }
-  showOrhideElements();
+
+  // Loading in all event handlers and other functions that run after the agenda has been FULLY loaded! ->
+  showOrhideElements(); // Hiding elements for non admin users ->
+  unsubcribeSession(); // loading in event handler for UNSUB button ->
+  subscribeToSession();// loading in event handler for SUB button ->
   clickEvents();
 }
 // Loads agenda items and sets the week dates on top of the agenda ->
@@ -53,7 +49,13 @@ function loadAndSetFullAgenda() {
   setWeekData(weekNumb);
   loadAgenda(weekNumb);
 }
-
+// scrolls down to the current day in the agenda
+function scrollDownToCurrDay() {
+  let today = new Date();
+  $(".contentRow").animate({
+    scrollTop: $(".d" + today.getDay()).offset().top -120
+  }, 1500);
+}
 // Clear one day
 function clearAgenda(day) {
   $("#" + day).empty();
@@ -61,9 +63,7 @@ function clearAgenda(day) {
 
 // Clear all days
 function fullClear() {
-  for (day in daysOfWeek)
-  {
-    console.log(day)
+  for (day in daysOfWeek) {
     $("#" + daysOfWeek[day]).empty();
     $("#" + daysOfWeek[day]).append("<h4 class='lead p-3'>Geen lessen</h4>")
   }
@@ -90,12 +90,21 @@ function addMinutes(date, minutes) {
 }
 
 //  Check if user is participates in the session and let client see status ->
-function showParticipantsIcon(id, participants) {
-  console.log(participants);
-  if(participants == true) {
+function addSubscribedItems(id, participates) {
+  let subcribeBtn = `<button type="submit" class="btn btn-primary yinStyle subscribe"><i class="bi bi-arrow-bar-right"></i> Inschrijven</button>`;
+  let unsubscribeBtn = `<button type="submit" class="btn btn-danger unSubStyle unsubscribe"><i class="bi bi-arrow-bar-left"></i> Uitschrijven</button>`;
+  let subCol = $("#" + id).children(".subscribeCol"); // subcribe col per ID, button is being pushed into this column
+
+  if(participates == undefined) {
+    subCol.empty();
+    subCol.append(subcribeBtn);
+  } else {
+    subCol.empty();
+    subCol.append(unsubscribeBtn)
+    //unsubcribeSession();
     let element = $("#" + id).children(".settings").children(".row").children(".participate");
     element.append(`<img height="15px"src="./static/check.png">`);
-  }  
+  }
 }
 
 // Show all details per session ->
@@ -144,8 +153,8 @@ function sessionDetails(data) {
       confirmButtonText: 'OK'
     });
 }
-
-function loadSessionItem(id, title, teacher, time, date, day) {
+// Loads all session items and puts them into the right day ->
+function loadSessionItem(id, title, teacher, time, day) {
   let itemLayout = `
     <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
@@ -173,14 +182,13 @@ function loadSessionItem(id, title, teacher, time, date, day) {
           </div>
         </div>       
       </div>
-      <div class="col-md-2 text-end">
-        <button type="submit" class="btn btn-primary yinStyle subscribe">Inschrijven</button>
+      <div class="col-md-2 subscribeCol text-end ">
+        
       </div>
     </div>`
   
   $(itemLayout).appendTo("#" + day);
   addEventHandlersSession();
-  subscribeToSession();
 }
 
 function addEventHandlersSession() {
@@ -200,6 +208,8 @@ function addEventHandlersSession() {
 }
 
 // Add eventlisteners for button that render in after dom has loaded ->
+//  > Edit session : Admin can edit a session
+//  > Remove session : Admin can delete/cancel a session
 function clickEvents() {
   if (roleCheck())
   {
@@ -212,11 +222,6 @@ function clickEvents() {
     $(".removeSession").on("click", function () {
       const sessionId = $(this).parent().parent().parent().parent().attr("id");
       removeSession(sessionId);
-    });
-    $(".subscribe").on("click", function () {
-      const sessionId = $(this).parent().parent().parent().parent().attr("id");
-      console.log(sessionId, user.userId);
-      // subscribe functon with @id and @userId
     });
   }
 
@@ -352,8 +357,8 @@ async function removeSession(sessionId) {
     text: "Bij het verwijderen van een les zullen alle ingeschreven personen een e-mail ontvangen.",
     confirmButtonColor: '#D5CA9B',
     confirmButtonText: 'Annuleer',
+    cancelButtonText: 'Terug'
   }).then(async (result) => {
-    /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed)
     {
       try
@@ -470,7 +475,7 @@ $(".addLesson").on("click", async function () {
     showCancelButton: true,
     focusConfirm: false,
     confirmButtonText: 'Voeg les toe',
-    cancelButtonText: 'Cancel',
+    cancelButtonText: 'Terug',
     preConfirm: async () => {
       let add = await addSession();
       if (add) {
@@ -518,23 +523,62 @@ async function addSession() {
     "maxAmountOfParticipants": $("#maxPeople").val(),
     "weekly": false
   }
-  try
-  {
+  try {
     let res = await ApiCaller.addSession(json);
-    if (res.status == 201)
-    {
+    if (res.status == 201) {
 
       return true;
-    } else
-    {
+    } else {
       return false;
     }
-  } catch (err)
-  {
+  } catch (err) {
     console.log(err);
   }
 }
-
+// Unsubscribe form a session ->
+function unsubcribeSession() {
+  $(".unsubscribe").on("click", function() {
+    let sessionId = $(this).parent().parent().attr("id");
+    
+    Swal.fire({
+      title: 'Weet u zeker dat u zich wilt uitschrijven voor deze les?',
+      icon: 'info',
+      showCancelButton: true,
+      text: "Na het uitschrijven ontvangt u het aantal uren die waren afgeschreven direct weer in uw account.",
+      confirmButtonColor: '#D5CA9B',
+      confirmButtonText: 'Uitschrijven',
+      cancelButtonText: 'Terug'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let data = {"userId": user.userId}
+        try {
+          let res = await ApiCaller.unsubscribeFormSession(data, sessionId);
+          let json = await res.json();
+          if (res.status == 200) { 
+            loadAndSetFullAgenda(weekNumb);
+            Swal.fire({
+              title: json.message,
+              icon: 'success',
+              text: "Tot de volgende keer!",
+              showConfirmButton: false,
+              timer: 2000
+            });
+          } else {
+            Swal.fire({
+              title: "Oops!",
+              icon: 'warning',
+              text: json.message,
+              showConfirmButton: false,
+              timer: 2000
+            });
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    });
+  });
+}
 // subcribe to lesson ->
 function subscribeToSession() {
   $(".subscribe").on("click", function() {
