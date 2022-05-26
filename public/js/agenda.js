@@ -10,6 +10,17 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
   scrollDownToCurrDay();
+  // New feature for alerts !!!!!
+  Swal.fire({
+    title: 'Agenda met succes geladen',
+    icon: "success",
+    target: '#custom-target',
+    toast: true,
+    position: 'bottom-right',
+    showConfirmButton: false,
+    timer: 2500
+  });
+  
 });
 
 // Loading agenda data per week ->

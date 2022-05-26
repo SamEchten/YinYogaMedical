@@ -2,6 +2,12 @@
     font-family: OpenSans;
     src: url(./open_sans);
 }
+/* Toast alert */
+#custom-target {
+    position: absolute;
+  }
+
+  
 .unSubStyle {
     color: #fff !important;
     background-color: #d5ca9b !important;
