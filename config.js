@@ -9,9 +9,9 @@ module.exports.config = {
         password: "YinYogaMedicalServer"
     },
     mollie: {
-        testKey: "test_S8PSzbrv35kNh3FasVgsUbRDU3gVPj",
+        testKey: "test_S8PSzbrv35kNh3FasVgsUbRDU3gVPj"
     },
     ngrok: {
-        url: "https://2377-194-171-182-60.eu.ngrok.io"
+        url: " https://5dbe-2a02-a467-14f7-1-45f7-cca2-7b17-e300.eu.ngrok.io"
     }
 }

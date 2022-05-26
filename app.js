@@ -6,7 +6,6 @@ const cookieParser = require("cookie-Parser");
 const config = require("./config").config;
 const https = require("https");
 const fs = require("fs");
-const bodyParser = require("body-parser");
 
 //Validator ->
 const { validateJwt } = require("./middleware/validator");
@@ -41,7 +40,7 @@ mongoose.connect(dburi, { useNewUrlParser: true, useUnifiedTopology: true }, () 
 
 //Middleware ->
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Serving css and js files -> 

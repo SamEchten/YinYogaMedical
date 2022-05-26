@@ -221,7 +221,7 @@ module.exports.delete = async (req, res) => {
             res.status(404).json({ message: "Geen sessie gevonden met dit Id" })
         }
     } catch (err) {
-        res.status(400).json({ message: "Er is iets fout gegaan" });
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
 }
 
@@ -236,12 +236,17 @@ module.exports.signup = async (req, res) => {
             try {
                 const session = await Session.findOne({ _id: sessionId });
                 if (session) {
-                    await session.addParticipants(sessionId, { userId, comingWith });
-                    res.status(200).json({ message: "U bent succesvol aangemeld" });
+                    if (session.date > new Date()) {
+                        await session.addParticipants(sessionId, { userId, comingWith });
+                        res.status(200).json({ message: "U bent succesvol aangemeld" });
+                    } else {
+                        res.status(400).json({ message: "Deze sessie is al geweest" });
+                    }
                 } else {
                     res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
                 }
             } catch (err) {
+                console.log(err);
                 res.status(400).json({ message: err.message });
             }
         } else {
@@ -260,7 +265,7 @@ module.exports.signout = async (req, res) => {
 
     if (sessionId) {
         try {
-            let session = await Session.findOne({ _id: sessionId });            
+            let session = await Session.findOne({ _id: sessionId });
             if (session) {
                 for (index in session.participants) {
                     let participant = session.participants[index];
