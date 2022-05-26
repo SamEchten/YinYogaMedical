@@ -2,6 +2,22 @@
     font-family: OpenSans;
     src: url(./open_sans);
 }
+/* Toast alert */
+#custom-target {
+    position: absolute;
+  }
+
+  
+.unSubStyle {
+    color: #fff !important;
+    background-color: #d5ca9b !important;
+    border-color: #b7b7b7 !important;
+} 
+.unSubStyle:hover {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
 
 .tooltip-inner {
     background-color: white !important;

@@ -255,16 +255,17 @@ module.exports.signup = async (req, res) => {
 module.exports.signout = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
+    const cookieUserId = JSON.parse(req.cookies.user).userId;
+    const cookieEmployee = JSON.parse(req.cookies.user).isEmployee;
 
     if (sessionId) {
         try {
-            let session = await Session.findOne({ sessionId });
-
+            let session = await Session.findOne({ _id: sessionId });            
             if (session) {
                 for (index in session.participants) {
                     let participant = session.participants[index];
                     if (participant.userId == userId) {
-                        if (req.cookies.userId == participant.userId || req.cookies.isEmployee == true) {
+                        if (cookieUserId == participant.userId || cookieEmployee == true) {
                             session.participants.splice(index, 1);
                             session.save();
                             res.status(200).json({ message: "Succesvol uitgeschreven" });
@@ -274,7 +275,7 @@ module.exports.signout = async (req, res) => {
                         }
                     }
                 }
-                res.status(400).json({ message: "Dit userID is niet gevonden" });
+                //res.status(400).json({ message: "Dit userID is niet gevonden" });
             } else {
                 res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
             }

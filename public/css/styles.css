@@ -52,8 +52,16 @@ h4 {
 
 /* Global button styling */
 .yinStyle {
+    /* background-color: #D5CA9B !important;
+    border-color: #D5CA9B !important; */
+    background-color: #d5ca9b00 !important;
+    color: #767676 !important;
+    border-color: #D5CA9B !important;
+}
+.yinStyle:hover {
     background-color: #D5CA9B !important;
     border-color: #D5CA9B !important;
+    color: white !important;
 }
 
 .navbar-style {

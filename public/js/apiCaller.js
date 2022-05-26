@@ -96,6 +96,25 @@ class ApiCaller {
             //error
         }
     }
+    // Update a sessions information -> *ADMIN*
+    static updateSession = async (data, sessionId) => {
+        let url = "/api/session/" + sessionId;
+        let options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
 
     // Add a session to the agenda -> *ADMIN*
     static addSession = async (data) => {
@@ -117,9 +136,28 @@ class ApiCaller {
         }
     }
 
-    // Add a user to a session with extra participants ->
+    // Add a user to a session with or without extra participants ->
     static addUserToSession = async (data, sessionId) => {
         let url = "/api/session/signup/" + sessionId;
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
+    // unscubscribe from a session ->
+    static unsubscribeFormSession = async (data, sessionId) => {
+        let url = "/api/session/signout/" + sessionId;
         let options = {
             method: 'POST',
             headers: {
@@ -159,25 +197,6 @@ class ApiCaller {
         let url = "/api/product/";
         let options = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        };
-        try
-        {
-            let response = await fetch(url, options);
-            return response;
-        } catch (err)
-        {
-            //error
-        }
-    }
-
-    static updateSession = async (data, sessionId) => {
-        let url = "/api/session/" + sessionId;
-        let options = {
-            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
