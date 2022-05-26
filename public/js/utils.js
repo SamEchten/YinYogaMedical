@@ -85,11 +85,17 @@ function roleCheck() {
   }
 }
 // Checks if the session is full or not ->
-function checkIfSessionIsFull(id, full) {
-  if (!roleCheck() && full) {
-    $("#" + id).css({ "opacity": 0.5,
+function checkIfSessionIsValid(id, maxAmountOfParticipants, amountOfParticipants, date) {
+  let today = new Date();
+  let sessionDay = new Date(date)
+
+  if (amountOfParticipants >= maxAmountOfParticipants || today > sessionDay) { 
+    if(!roleCheck()) {
+      $("#" + id).css({ "opacity": 0.5,
       "pointer-events": "none"})
+    }
   }
+  
 }
 
 // Hide elements for none admins else show them ->
@@ -98,6 +104,23 @@ function showOrhideElements() {
     $(".hiding").css("display", "block");
     $(".subscribe").attr("disabled", true);
   }
+}
+
+// Call this function to create toast pop up in the bottom right corner ->
+// @header -> title of the pop up
+// @icon -> "success", "warning", "info"
+// @text ->  message in the pop up
+function toastPopUp(header, icon, message) {
+  Swal.fire({
+    title: header,
+    icon: icon,
+    text: message,
+    target: '#custom-target',
+    toast: true,
+    position: 'bottom-right',
+    showConfirmButton: false,
+    timer: 3000
+  });
 }
 
 

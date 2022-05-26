@@ -10,16 +10,7 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
   scrollDownToCurrDay();
-  // New feature for alerts !!!!!
-  Swal.fire({
-    title: 'Agenda met succes geladen',
-    icon: "success",
-    target: '#custom-target',
-    toast: true,
-    position: 'bottom-right',
-    showConfirmButton: false,
-    timer: 2500
-  });
+  toastPopUp("Agenda", "success");
   
 });
 
@@ -36,8 +27,8 @@ async function loadAgenda(weekNumber) {
         clearAgenda(day)
         for (session in dayData) {
           let sessionData = dayData[session];
-          let { id, title, teacher, date } = sessionData;
-          loadSessionItem(id, title, teacher, true, dateFormat(date).time, day);
+          let { id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date } = sessionData;
+          loadSessionItem(id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date, day);
           addSubscribedItems(id, sessionData.participates);
         }
       } else {
@@ -48,7 +39,6 @@ async function loadAgenda(weekNumber) {
   } else {
     fullClear();
   }
-
   // Loading in all event handlers and other functions that run after the agenda has been FULLY loaded! ->
   showOrhideElements(); // Hiding elements for non admin users ->
   unsubcribeSession(); // loading in event handler for UNSUB button ->
@@ -165,11 +155,11 @@ function sessionDetails(data) {
     });
 }
 // Loads all session items and puts them into the right day ->
-function loadSessionItem(id, title, teacher, full, time, day) {
+function loadSessionItem(id, title, teacher, maxAmountOfParticipants ,amountOfParticipants, date, day) {
   let itemLayout = `
     <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
-        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${time}</h4>
+        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(date).time}</h4>
       </div>
       <div class="col-md-2 sessionDetails">
         <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
@@ -179,13 +169,16 @@ function loadSessionItem(id, title, teacher, full, time, day) {
       </div>
       <div class="col-md-4 settings">
         <div class="row">
-          <div class="col-md-3 text-end">
+          <div class="col-md-3 text-start">
+            ${amountOfParticipants} / ${maxAmountOfParticipants}
+          </div>
+          <div class="col-md-2 text-end">
             <i class="bi bi-pencil hiding editSession"></i>
           </div>
-          <div class="col-md-3 text-center">
+          <div class="col-md-2 text-center">
             <i class="bi bi-x-lg hiding removeSession"></i>
           </div>
-          <div class="col-md-3 text-start">
+          <div class="col-md-2 text-start">
             <i class="bi bi-person-plus hiding addUser"></i>
           </div>
           <div class="col-md-3 participate text-start">
@@ -200,7 +193,7 @@ function loadSessionItem(id, title, teacher, full, time, day) {
   
   $(itemLayout).appendTo("#" + day);
   addEventHandlersSession();
-  checkIfSessionIsFull(id, full);
+  checkIfSessionIsValid(id, maxAmountOfParticipants, amountOfParticipants, date);
 }
 
 function addEventHandlersSession() {
@@ -723,8 +716,3 @@ function setWeekData(week) {
 
   $(".week").html(fDay + " - " + lDay)
 }
-
-
-
-
-
