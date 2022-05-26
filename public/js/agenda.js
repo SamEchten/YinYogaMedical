@@ -26,7 +26,7 @@ async function loadAgenda(weekNumber) {
         for (session in dayData) {
           let sessionData = dayData[session];
           let { id, title, teacher, date } = sessionData;
-          loadSessionItem(id, title, teacher, dateFormat(date).time, day);
+          loadSessionItem(id, title, teacher, true, dateFormat(date).time, day);
           addSubscribedItems(id, sessionData.participates);
         }
       } else {
@@ -154,7 +154,7 @@ function sessionDetails(data) {
     });
 }
 // Loads all session items and puts them into the right day ->
-function loadSessionItem(id, title, teacher, time, day) {
+function loadSessionItem(id, title, teacher, full, time, day) {
   let itemLayout = `
     <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
@@ -189,6 +189,7 @@ function loadSessionItem(id, title, teacher, time, day) {
   
   $(itemLayout).appendTo("#" + day);
   addEventHandlersSession();
+  checkIfSessionIsFull(id, full);
 }
 
 function addEventHandlersSession() {
@@ -354,9 +355,9 @@ async function removeSession(sessionId) {
     title: 'Weet u zeker dat u deze les wilt verwijderen?',
     icon: 'info',
     showCancelButton: true,
-    text: "Bij het verwijderen van een les zullen alle ingeschreven personen een e-mail ontvangen.",
+    text: "Bij het verwijderen van een les uit het rooster zullen alle ingeschreven personen een e-mail ontvangen.",
     confirmButtonColor: '#D5CA9B',
-    confirmButtonText: 'Annuleer',
+    confirmButtonText: 'Verwijder',
     cancelButtonText: 'Terug'
   }).then(async (result) => {
     if (result.isConfirmed)
@@ -470,7 +471,6 @@ $(".addLesson").on("click", async function () {
     </div>`,
     customClass: 'sweetalert-makeLesson',
     confirmButtonColor: '#D5CA9B',
-    closeOnConfirm: false,
     showCloseButton: true,
     showCancelButton: true,
     focusConfirm: false,
