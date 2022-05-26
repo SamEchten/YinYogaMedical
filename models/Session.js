@@ -70,7 +70,7 @@ sessionSchema.methods.addParticipants = async function (id, info) {
         }
 
         const sessionAmount = await Session.getAmountOfParticipants(id);
-        const amountOfParticipants = session.participants.length + comingWithLength;
+        const amountOfParticipants = 1 + comingWithLength;
         const maxAmountOfParticipants = session.maxAmountOfParticipants;
 
         if (sessionAmount != maxAmountOfParticipants) {
