@@ -221,7 +221,7 @@ module.exports.delete = async (req, res) => {
             res.status(404).json({ message: "Geen sessie gevonden met dit Id" })
         }
     } catch (err) {
-        res.status(400).json({ message: "Er is iets fout gegaan" });
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
 }
 
@@ -246,6 +246,7 @@ module.exports.signup = async (req, res) => {
                     res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
                 }
             } catch (err) {
+                console.log(err);
                 res.status(400).json({ message: err.message });
             }
         } else {
