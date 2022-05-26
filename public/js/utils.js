@@ -86,7 +86,7 @@ function roleCheck() {
 }
 // Checks if the session is full or not ->
 function checkIfSessionIsFull(id, full) {
-  if(full) { 
+  if (!roleCheck() && full) {
     $("#" + id).css({ "opacity": 0.5,
       "pointer-events": "none"})
   }

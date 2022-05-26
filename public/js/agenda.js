@@ -596,7 +596,7 @@ function subscribeToSession() {
         <p>U wilt u inschrijven voor <b>${lesson}</b>.</p>
         <p><b> Hoeveel personen wilt u inschrijven?</b></p>
         <div class="row width">
-          <div class="col-md-3">
+          <div class="col-md-12 text-start">
             <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
           </div>
         </div>
