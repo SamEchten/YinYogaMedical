@@ -1,6 +1,6 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber() -1;
+let weekNumb = getCurrentWeekNumber() - 1;
 
 // Render lesrooster from apiCaller and format it on date ->
 //  > Document.getready! first render. 
@@ -20,7 +20,7 @@ $(async function () {
     showConfirmButton: false,
     timer: 2500
   });
-  
+
 });
 
 // Loading agenda data per week ->
@@ -37,7 +37,7 @@ async function loadAgenda(weekNumber) {
         for (session in dayData) {
           let sessionData = dayData[session];
           let { id, title, teacher, date } = sessionData;
-          loadSessionItem(id, title, teacher, true, dateFormat(date).time, day);
+          loadSessionItem(id, title, teacher, false, dateFormat(date).time, day);
           addSubscribedItems(id, sessionData.participates);
         }
       } else {
@@ -64,7 +64,7 @@ function loadAndSetFullAgenda() {
 function scrollDownToCurrDay() {
   let today = new Date();
   $(".contentRow").animate({
-    scrollTop: $(".d" + today.getDay()).offset().top -120
+    scrollTop: $(".d" + today.getDay()).offset().top - 120
   }, 1500);
 }
 // Clear one day
@@ -83,12 +83,9 @@ function fullClear() {
 // gets all day of the week and returns it in a array ->
 function getAllDaysOfWeek(data) {
   let days = [];
-  for (week in schedule)
-  {
-    for (day in schedule[week])
-    {
-      if (!days.includes(day))
-      {
+  for (week in schedule) {
+    for (day in schedule[week]) {
+      if (!days.includes(day)) {
         days.push(day);
       }
     }
@@ -106,7 +103,7 @@ function addSubscribedItems(id, participates) {
   let unsubscribeBtn = `<button type="submit" class="btn btn-danger unSubStyle unsubscribe"><i class="bi bi-arrow-bar-left"></i> Uitschrijven</button>`;
   let subCol = $("#" + id).children(".subscribeCol"); // subcribe col per ID, button is being pushed into this column
 
-  if(participates == undefined) {
+  if (participates == undefined) {
     subCol.empty();
     subCol.append(subcribeBtn);
   } else {
@@ -197,7 +194,7 @@ function loadSessionItem(id, title, teacher, full, time, day) {
         
       </div>
     </div>`
-  
+
   $(itemLayout).appendTo("#" + day);
   addEventHandlersSession();
   checkIfSessionIsFull(id, full);
@@ -205,14 +202,12 @@ function loadSessionItem(id, title, teacher, full, time, day) {
 
 function addEventHandlersSession() {
   $(".sessionDetails").on("click", async function () {
-    try
-    {
+    try {
       const id = $(this).parent().attr('id');
       const res = await ApiCaller.getSingleSession(id);
       const json = await res.json();
       sessionDetails(json);
-    } catch (err)
-    {
+    } catch (err) {
       console.log(err)
     }
   });
@@ -223,8 +218,7 @@ function addEventHandlersSession() {
 //  > Edit session : Admin can edit a session
 //  > Remove session : Admin can delete/cancel a session
 function clickEvents() {
-  if (roleCheck())
-  {
+  if (roleCheck()) {
     // Edit a session ->
     $(".editSession").on("click", function () {
       const sessionId = $(this).parent().parent().parent().parent().attr("id");
@@ -238,7 +232,7 @@ function clickEvents() {
   }
 
 }
-async function getAllUsers(){
+async function getAllUsers() {
 
 }
 
@@ -248,7 +242,7 @@ async function editSession(sessionId) {
     let res = await ApiCaller.getSingleSession(sessionId); // Get all the infomation from the session
     let json = await res.json();
     let date = new Date(json.date);
-    
+
     Swal.fire({
       html: `
       <h2>Wijzigen van ${json.title}</h2>
@@ -304,7 +298,7 @@ async function editSession(sessionId) {
       closeOnConfirm: false,
       cancelButtonText: 'Terug',
     }).then(async (result) => {
-      if(result.isConfirmed) {
+      if (result.isConfirmed) {
         let jsonData = {
           "title": $("#lessonName").val(),
           "location": $("#lessonLocation").val(),
@@ -315,16 +309,16 @@ async function editSession(sessionId) {
           "description": $("#lessonDescription").val(),
           "maxAmountOfParticipants": $("#maxPeople").val(),
           "weekly": false
-        }  
+        }
         console.log(jsonData)
 
         try {
           let resUpdate = await ApiCaller.updateSession(jsonData, sessionId);
           let resJson = await resUpdate.json();
-          if(resUpdate.status == 200) {
+          if (resUpdate.status == 200) {
             loadAndSetFullAgenda(weekNumb);
             Swal.fire({
-              title : "Les " + $("#lessonName").val() + " is gewijzigd!" ,
+              title: "Les " + $("#lessonName").val() + " is gewijzigd!",
               icon: 'success',
               text: "Er zal een Email gestuurd worden naar alle leden die ingeschreven staan voor deze les!",
               showCloseButton: true,
@@ -332,7 +326,7 @@ async function editSession(sessionId) {
             });
           } else {
             Swal.fire({
-              title :  "Oops!",
+              title: "Oops!",
               icon: 'warning',
               text: resJson.message,
               showCloseButton: true,
@@ -355,9 +349,9 @@ async function editSession(sessionId) {
     $("#lessonDuration").val(json.duration);
     $("#maxPeople").val(json.maxAmountOfParticipants);
     $("#lessonTime").val(dateFormat(json.date).time);
-  } catch(err) {
+  } catch (err) {
     console.log(err)
-  }  
+  }
 }
 
 // Remove a session as Admin
@@ -371,13 +365,10 @@ async function removeSession(sessionId) {
     confirmButtonText: 'Verwijder',
     cancelButtonText: 'Terug'
   }).then(async (result) => {
-    if (result.isConfirmed)
-    {
-      try
-      {
+    if (result.isConfirmed) {
+      try {
         let res = await ApiCaller.removeSession(sessionId);
-        if (res.status == 200)
-        {
+        if (res.status == 200) {
           loadAndSetFullAgenda();
         }
         Swal.fire({
@@ -386,8 +377,7 @@ async function removeSession(sessionId) {
           showConfirmButton: false,
           timer: 1000
         });
-      } catch (err)
-      {
+      } catch (err) {
         console.log(err)
       }
     }
@@ -397,24 +387,20 @@ async function removeSession(sessionId) {
 // loading prev and next week ->
 $(".prevWeek").on("click", function () {
   weekNumb--;
-  if (weekNumb < 1)
-  {
+  if (weekNumb < 1) {
     weekNumb = 52;
     loadAndSetFullAgenda();
-  } else
-  {
+  } else {
     loadAndSetFullAgenda();
   }
 });
 
 $(".nextWeek").on("click", function () {
   weekNumb++;
-  if (weekNumb > 52)
-  {
+  if (weekNumb > 52) {
     weekNumb = 1;
     loadAndSetFullAgenda();
-  } else
-  {
+  } else {
     loadAndSetFullAgenda();
   }
 });
@@ -503,8 +489,7 @@ $(".addLesson").on("click", async function () {
           showConfirmButton: false,
           timer: 1000
         });
-      } else
-      {
+      } else {
         Swal.fire({
           title: "Velden niet correct ingevuld",
           icon: 'warning',
@@ -548,9 +533,9 @@ async function addSession() {
 }
 // Unsubscribe form a session ->
 function unsubcribeSession() {
-  $(".unsubscribe").on("click", function() {
+  $(".unsubscribe").on("click", function () {
     let sessionId = $(this).parent().parent().attr("id");
-    
+
     Swal.fire({
       title: 'Weet u zeker dat u zich wilt uitschrijven voor deze les?',
       icon: 'info',
@@ -561,11 +546,11 @@ function unsubcribeSession() {
       cancelButtonText: 'Terug'
     }).then(async (result) => {
       if (result.isConfirmed) {
-        let data = {"userId": user.userId}
+        let data = { "userId": user.userId }
         try {
           let res = await ApiCaller.unsubscribeFormSession(data, sessionId);
           let json = await res.json();
-          if (res.status == 200) { 
+          if (res.status == 200) {
             loadAndSetFullAgenda(weekNumb);
             Swal.fire({
               title: json.message,
@@ -592,12 +577,11 @@ function unsubcribeSession() {
 }
 // subcribe to lesson ->
 function subscribeToSession() {
-  $(".subscribe").on("click", function() {
-    if(typeof user == 'undefined') {
+  $(".subscribe").on("click", function () {
+    if (typeof user == 'undefined') {
       console.log("user not logged in");
       location.href = "/login";
-    } else
-    {
+    } else {
       let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
       console.log(lesson)
       Swal.fire({
@@ -621,8 +605,7 @@ function subscribeToSession() {
         confirmButtonColor: '#D5CA9B',
         cancelButtonText: 'Cancel',
       }).then(async (result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           let sessionId = $(this).parent().parent().attr("id");
           let jsonData = {
             "userId": user.userId,
@@ -630,12 +613,10 @@ function subscribeToSession() {
           }
           console.log(sessionId)
           console.log(jsonData)
-          try
-          {
+          try {
             let res = await ApiCaller.addUserToSession(jsonData, sessionId);
             let jsonRes = await res.json();
-            if (res.status == 200)
-            {
+            if (res.status == 200) {
               loadAndSetFullAgenda(weekNumb);
               Swal.fire({
                 title: `U heeft zich ingeschreven voor ${lesson} .`,
@@ -644,8 +625,7 @@ function subscribeToSession() {
                 showCloseButton: true,
                 confirmButtonColor: '#D5CA9B'
               });
-            } else
-            {
+            } else {
               Swal.fire({
                 title: `Oops!`,
                 icon: 'warning',
@@ -654,8 +634,7 @@ function subscribeToSession() {
                 confirmButtonColor: '#D5CA9B'
               });
             }
-          } catch (err)
-          {
+          } catch (err) {
             console.log(err);
           }
         }
@@ -670,13 +649,10 @@ function sessionUserObject() {
   let array = [];
   let json = {};
 
-  if (val < 0)
-  {
+  if (val < 0) {
     return array;
-  } else
-  {
-    for (let i = 0; i <= val; i++)
-    {
+  } else {
+    for (let i = 0; i <= val; i++) {
 
       json["name"] = $(".name" + i).val();
       json["email"] = $(".emailAddress" + i).val()
@@ -692,10 +668,8 @@ function nrOfPeopleChanged() {
   let val = document.getElementById('nrOfPeople').value;
   let title = document.getElementById('extraPeopleTitle');
   let temporary = '';
-  if (val > 1)
-  {
-    for (let i = 0; i < val - 1; i++)
-    {
+  if (val > 1) {
+    for (let i = 0; i < val - 1; i++) {
       temporary += `
       <div class="row extraPerson width">
         <div class="col-md-6">
@@ -710,8 +684,7 @@ function nrOfPeopleChanged() {
     title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
     document.getElementById('allInputs').innerHTML = temporary;
   }
-  else
-  {
+  else {
     title.innerHTML = '';
     document.getElementById('allInputs').innerHTML = '';
   }

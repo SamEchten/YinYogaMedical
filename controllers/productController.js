@@ -3,7 +3,6 @@ const { handleUserErrors } = require("./errorHandler");
 const mollieClient = require("../mollie/mollieClient");
 const config = require("../config").config;
 const path = require("path");
-const Session = require("../models/Session");
 const User = require("../models/User");
 
 module.exports.get = async (req, res) => {
@@ -103,7 +102,7 @@ module.exports.purchase = async (req, res) => {
                 const webHookUrl = config.ngrok.url + "/api/product/webhook";
                 const productId = product.id;
 
-                let payment = await mollieClient.createPayment(price, discription, redirectUrl, webHookUrl, productId);
+                let payment = await mollieClient.createPayment(price, discription, redirectUrl, webHookUrl, productId, userId);
                 let checkOutUrl = payment.getCheckoutUrl();
                 res.status(200).json({ redirectUrl: checkOutUrl });
             } else {
@@ -119,14 +118,14 @@ module.exports.succes = async (req, res) => {
     res.send("succes!")
 }
 
-const addClassPass = async (user, product) => {
+const addClassPass = async (user, product, paymentId) => {
     //Add to purchases array ->
     const date = new Date();
     const year = date.getFullYear() + product.validFor;
     const month = date.getMonth();
     const day = date.getDate();
     const expireDate = new Date(year, month, day);
-    user.purchases.push({ productId: product.id, expireDate: expireDate })
+    user.purchases.push({ productId: product.id, expireDate: expireDate, paymentId: paymentId })
 
     //Add class pass hours to users class pass
     if (product.amountOfHours) {
@@ -137,29 +136,23 @@ const addClassPass = async (user, product) => {
 }
 
 module.exports.webHook = async (req, res) => {
-    console.log(req.body);
-    res.sendStatus(200);
-    //const userId = req.body.userId;
-    //const productId = req.params.id;
-    const succeed = false;
-    //Update User document
-    //Return status to user
-    if (succeed) {
-        res.send(req.params);
+    const paymentId = req.body.id;
+
+    const payment = await mollieClient.getPaymentInfo(paymentId);
+    const productId = payment.metadata.productId;
+    const userId = payment.metadata.userId;
+    if (payment.isPaid()) {
         User.findOne({ _id: userId }, (err, user) => {
             if (user) {
                 Product.findOne({ _id: productId }, (err, product) => {
                     if (product) {
-                        addClassPass(user, product);
-                    } else {
-                        res.status(400).json({ message: "Geen product gevonden met dit id" });
+                        addClassPass(user, product, paymentId);
                     }
                 });
-            } else {
-                res.status(400).json({ message: "Geen gebruiker gevonden met dit id" })
             }
         });
     }
+    res.sendStatus(200);
 }
 
 module.exports.view = (req, res) => {
