@@ -85,11 +85,11 @@ function roleCheck() {
   }
 }
 // Checks if the session is full or not ->
-function checkIfSessionIsValid(id, maxAmountOfParticipants, amountOfParticipants, date) {
+function checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date) {
   let today = new Date();
   let sessionDay = new Date(date)
 
-  if (amountOfParticipants >= maxAmountOfParticipants || today > sessionDay) { 
+  if ((amountOfParticipants >= maxAmountOfParticipants && !participates) || today > sessionDay) { 
     if(!roleCheck()) {
       $("#" + id).css({ "opacity": 0.5,
       "pointer-events": "none"})

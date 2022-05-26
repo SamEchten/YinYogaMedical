@@ -28,7 +28,7 @@ async function loadAgenda(weekNumber) {
         for (session in dayData) {
           let sessionData = dayData[session];
           let { id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date } = sessionData;
-          loadSessionItem(id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date, day);
+          loadSessionItem(id, title, teacher, sessionData.participates, maxAmountOfParticipants, amountOfParticipants, date, day);
           addSubscribedItems(id, sessionData.participates);
         }
       } else {
@@ -152,7 +152,7 @@ function sessionDetails(data) {
     });
 }
 // Loads all session items and puts them into the right day ->
-function loadSessionItem(id, title, teacher, maxAmountOfParticipants ,amountOfParticipants, date, day) {
+function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipants ,amountOfParticipants, date, day) {
   let itemLayout = `
     <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
@@ -190,7 +190,7 @@ function loadSessionItem(id, title, teacher, maxAmountOfParticipants ,amountOfPa
 
   $(itemLayout).appendTo("#" + day);
   addEventHandlersSession();
-  checkIfSessionIsValid(id, maxAmountOfParticipants, amountOfParticipants, date);
+  checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date);
 }
 
 function addEventHandlersSession() {
@@ -363,13 +363,8 @@ async function removeSession(sessionId) {
         let res = await ApiCaller.removeSession(sessionId);
         if (res.status == 200) {
           loadAndSetFullAgenda();
+          toastPopUp("Les geannuleerd", "success");
         }
-        Swal.fire({
-          title: "Les geannuleerd!",
-          icon: 'success',
-          showConfirmButton: false,
-          timer: 1000
-        });
       } catch (err) {
         console.log(err)
       }
@@ -403,8 +398,6 @@ $(".week").on("click", function () {
   weekNumb = getCurrentWeekNumber();
   loadAndSetFullAgenda();
 });
-
-
 
 $(".addLesson").on("click", async function () {
   let error = false;
@@ -476,12 +469,7 @@ $(".addLesson").on("click", async function () {
     if (result.isConfirmed) {
       if (error) {
         loadAndSetFullAgenda(weekNumb);
-        Swal.fire({
-          title: "Les aangemaakt!",
-          icon: 'success',
-          showConfirmButton: false,
-          timer: 1000
-        });
+        toastPopUp("Les aangemaakt", "success");
       } else {
         Swal.fire({
           title: "Velden niet correct ingevuld",
