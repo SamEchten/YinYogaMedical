@@ -1,3 +1,4 @@
+
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber() - 1;
@@ -280,10 +281,14 @@ function addUser(sessionId) {
         $("#" + userArray[item].id).on("click", function() {
           addUserToSessionAsAdmin(sessionId, this.id);
         });
+        $("." + userArray[item].id).on("click", function() {
+          removeUserFromSessionAsAdmin(sessionId, $(this).prop("className"))
+        });
       }
     }
   });
 }
+// subcribe a user to a session as admin ->
 async function addUserToSessionAsAdmin(sessionId, userId) {
   let data = {userId}
   console.log(data)
@@ -292,12 +297,43 @@ async function addUserToSessionAsAdmin(sessionId, userId) {
     let json = await res.json();
     if (res.status == 200) {
       toastPopUp(json.message, "success");
+      loadAndSetFullAgenda(weekNumb);
     } else {
       toastPopUp(json.message, "error");
     }
   } catch (err) {
     console.log(err);
   }
+}
+// Remove a user from a session as admin ->
+async function removeUserFromSessionAsAdmin(sessionId, userId) {
+  let data = {userId};
+  swal.fire({
+    title: "Weet u zeker dat u deze gebruiker wilt verwijderen uit de les?",
+    text: "Deze gebruiker zal een email ontvangen met daarin de wijziging.",
+    icon: "info",
+    showConfirmButton: true,
+    confirmButtonText: "Verwijderen",
+    confirmButtonColor: "#D5CA9B"
+  }).then(async (result) => {
+    if(result.isConfirmed) { 
+      try { 
+        console.log(data)
+        console.log(sessionId)
+        let res = await ApiCaller.unsubscribeFormSession(data, sessionId)
+        let json = await res.json();
+        
+        if(res.status == 200) {
+          toastPopUp(json.message, "success")
+          loadAndSetFullAgenda(weekNumb);
+        } else {
+          toastPopUp(json.message, "error");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  });
 }
 // Create userItem element 
 function createUserItem(fullName, email, phoneNumber,id) {
@@ -309,8 +345,9 @@ function createUserItem(fullName, email, phoneNumber,id) {
       <i class="bi bi-envelope pe-3"></i> ${email} <br>
       <i class="bi bi-telephone pe-3"></i> ${phoneNumber}<br>
       </p>
-      <div>
-        <i id=${id} class="bi bi-plus-lg float-end"></i>
+      <div class="${id}">
+        <i id=${id} class="bi bi-person-plus float-end"></i>
+        <i class="bi bi-person-dash pe-2 removeAsAdmin float-end"></i>
       </div>
     </div>
   </div>`
@@ -377,7 +414,6 @@ async function editSession(sessionId) {
       showCancelButton: true,
       confirmButtonText: 'Update les',
       confirmButtonColor: '#D5CA9B',
-      closeOnConfirm: false,
       cancelButtonText: 'Terug',
     }).then(async (result) => {
       if (result.isConfirmed) {

@@ -270,20 +270,25 @@ module.exports.signout = async (req, res) => {
         try {
             let session = await Session.findOne({ _id: sessionId });
             if (session) {
+                let check = false //check if user is found or not
                 for (index in session.participants) {
                     let participant = session.participants[index];
                     if (participant.userId == userId) {
-                        if (cookieUserId == participant.userId || cookieEmployee == true) {
-                            session.participants.splice(index, 1);
-                            session.save();
-                            res.status(200).json({ message: "Succesvol uitgeschreven" });
-                        }
-                        else {
-                            res.status(400).json({ message: "U bent niet gemachtigd deze persoon uit te schrijven" });
-                        }
+                        check = true;
                     }
                 }
-                //res.status(400).json({ message: "Dit userID is niet gevonden" });
+                if (check) {
+                    if (cookieUserId == userId || cookieEmployee == true) {
+                        session.participants.splice(index, 1);
+                        session.save();
+                        res.status(200).json({ message: "Succesvol uitgeschreven" });
+                    }
+                    else {
+                        res.status(400).json({ message: "U bent niet gemachtigd deze persoon uit te schrijven" });
+                    }
+                } else {
+                    res.status(400).json({ message: "Deze persoon is momenteel niet ingeschreven voor deze les" });
+                }
             } else {
                 res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
             }
