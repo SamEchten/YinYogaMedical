@@ -139,6 +139,7 @@ class ApiCaller {
     // Add a user to a session with or without extra participants ->
     static addUserToSession = async (data, sessionId) => {
         let url = "/api/session/signup/" + sessionId;
+        console.log(data);
         let options = {
             method: 'POST',
             headers: {
@@ -230,7 +231,26 @@ class ApiCaller {
             //error
         }
     }
-
+    
+    // Gets all users with information -> *ADMIN*
+    static getAllUsers = async () => {
+        let url = "/api/user/";
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
+    
     // Gets the info of the user
     static getUserInfo = async (id) => {
         let url = "/api/user/" + id;

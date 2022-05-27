@@ -230,8 +230,10 @@ module.exports.signup = async (req, res) => {
     const userId = req.body.userId;
     const comingWith = req.body.comingWith;
     const reqId = JSON.parse(req.cookies.user).userId;
+    const admin = await isAdmin(reqId);
 
-    if (userId == reqId || reqId == isAdmin(reqId)) {
+    console.log(userId)
+    if (userId == reqId || reqId == admin) {
         if (sessionId) {
             try {
                 const session = await Session.findOne({ _id: sessionId });

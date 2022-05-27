@@ -1,8 +1,10 @@
 let cookie = $.cookie("user");
+let allUsers;
 let user;
 
-$(function () {
+$(async function () {
   roleCheck();
+  getAndSetAllUsers();
   $(".userName").html(user.fullName);
 });
 
@@ -123,4 +125,31 @@ function toastPopUp(header, icon, message) {
   });
 }
 
+// Gets all users from the platform ->
+//  > returns : array
+async function getAndSetAllUsers() {
+  try {
+    let res = await ApiCaller.getAllUsers();
+    let json = await res.json();
+    console.log(json)
+    if(res.status == 200) {
+      allUsers = json;
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// Admin adds a user to a session instead of subcribing him self ->
+//  > returns a array with all elements found with filterValue in it.
+function filterData(filterValue) {
+  let filteredArray = [];
+  for (user in allUsers) {
+    let username = allUsers[user].fullName.toLowerCase();
+    if (username.includes(filterValue.toLowerCase())) {
+      filteredArray.push(allUsers[user]);
+    }
+  }
+  return filteredArray;
+}
 

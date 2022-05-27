@@ -10,7 +10,7 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
   scrollDownToCurrDay();
-  toastPopUp("Agenda", "success");
+  toastPopUp("Welkom "+ user.fullName , "info");
   
 });
 
@@ -54,7 +54,7 @@ function loadAndSetFullAgenda() {
 function scrollDownToCurrDay() {
   let today = new Date();
   $(".contentRow").animate({
-    scrollTop: $(".d" + today.getDay()).offset().top - 120
+    scrollTop: $(".d" + today.getDay()).offset().top
   }, 1500);
 }
 // Clear one day
@@ -222,11 +222,101 @@ function clickEvents() {
       const sessionId = $(this).parent().parent().parent().parent().attr("id");
       removeSession(sessionId);
     });
+    $(".addUser").on("click", function() { 
+      const sessionId = $(this).parent().parent().parent().parent().attr("id");
+      addUser(sessionId);
+    });
   }
 
 }
-async function getAllUsers() {
 
+function addUser(sessionId) {
+  Swal.fire({
+    html: `
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Gebruiker toevoegen</h2>
+              <hr>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <p>Zoek naar een gebruiker en klik vervolgens op toevoegen aan les.</p>
+            </div>
+          </div>
+          <div class="row align-items-center">
+            <div class="col-md-12 pb-3">
+              <input type="text" class="form-control" id="searchUser" placeholder="Zoeken..">
+            </div>
+          </div>
+          <div class="row userItemsRow">
+            <div class="col-md userItemCol">
+              <h4 class='lead'>Zoek naar een gebruiker</h4>
+            </div>
+          </div>
+        </div>  
+      </div>
+    </div> 
+    
+    `,
+    showCancelButton: true,
+    confirmButtonColor: '#D5CA9B',
+    confirmButtonText: 'Voeg toe',
+    cancelButtonText: 'Terug'
+  });
+
+  $("#searchUser").on("input", function() {
+    let userArray = filterData($(this).val());
+    console.log(userArray)
+    if (userArray.length <= 0) {
+      $(".userItemCol").empty();
+      $(".userItemCol").append("<h4 class='lead'>Geen resultaat</h4>")
+    } else {
+      $(".userItemCol").empty();
+      for (item in userArray) {
+        $(".userItemCol").append(createUserItem(userArray[item].fullName,userArray[item].email, userArray[item].phoneNumber,userArray[item].id));
+        $("#" + userArray[item].id).on("click", function() {
+          addUserToSessionAsAdmin(sessionId, this.id);
+        });
+      }
+    }
+  });
+}
+async function addUserToSessionAsAdmin(sessionId, userId) {
+  let data = {userId}
+  console.log(data)
+  try {
+    let res = await ApiCaller.addUserToSession(data, sessionId);
+    let json = await res.json();
+    if (res.status == 200) {
+      toastPopUp(json.message, "success");
+    } else {
+      toastPopUp(json.message, "error");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+// Create userItem element 
+function createUserItem(fullName, email, phoneNumber,id) {
+  let element = `
+  <div class="row pb-2">
+    <div class="col-md-12 p-2 lead userFilterItem text-start">
+      <h4>${fullName}</h4>
+      <p>
+      ${email} <br>
+      ${phoneNumber}<br>
+      </p>
+      <div>
+        <i id=${id} class="bi bi-plus-lg float-end"></i>
+      </div>
+    </div>
+  </div>`
+
+  return element;
 }
 
 // Edit session as admin ->

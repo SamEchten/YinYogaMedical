@@ -6,8 +6,24 @@
 #custom-target {
     position: absolute;
   }
+.userItemsRow {
+    height: 400px;
+    overflow: auto;
+}
+.userItemsRow::-webkit-scrollbar {
+    display: none;
+}
 
-  
+.userFilterItem {
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    border-left: 4px solid #d5ca9b;
+    transition: 0.5s;
+    cursor: pointer;
+}
+.userFilterItem:hover { 
+    background-color: #dfdfdf;
+}
 .unSubStyle {
     color: #fff !important;
     background-color: #d5ca9b !important;
