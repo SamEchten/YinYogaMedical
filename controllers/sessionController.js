@@ -228,11 +228,12 @@ module.exports.delete = async (req, res) => {
 module.exports.signup = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
+    console.log(req.body.userId);
+    
     const comingWith = req.body.comingWith;
     const reqId = JSON.parse(req.cookies.user).userId;
     const admin = await isAdmin(reqId);
 
-    console.log(userId)
     if (userId == reqId || reqId == admin) {
         if (sessionId) {
             try {

@@ -15,11 +15,10 @@
 }
 
 .userFilterItem {
-    background-color: #f9f9f9;
-    border-radius: 6px;
-    border-left: 4px solid #d5ca9b;
+    border-bottom: 2px solid #d5ca9b;
     transition: 0.5s;
     cursor: pointer;
+    font-size: 17px !important;
 }
 .userFilterItem:hover { 
     background-color: #dfdfdf;

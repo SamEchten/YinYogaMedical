@@ -263,8 +263,7 @@ function addUser(sessionId) {
     
     `,
     showCancelButton: true,
-    confirmButtonColor: '#D5CA9B',
-    confirmButtonText: 'Voeg toe',
+    showConfirmButton: false,
     cancelButtonText: 'Terug'
   });
 
@@ -305,10 +304,10 @@ function createUserItem(fullName, email, phoneNumber,id) {
   let element = `
   <div class="row pb-2">
     <div class="col-md-12 p-2 lead userFilterItem text-start">
-      <h4>${fullName}</h4>
-      <p>
-      ${email} <br>
-      ${phoneNumber}<br>
+      <h4><i class="bi bi-person pe-2"></i> ${fullName}</h4>
+      <p class="p-1">
+      <i class="bi bi-envelope pe-3"></i> ${email} <br>
+      <i class="bi bi-telephone pe-3"></i> ${phoneNumber}<br>
       </p>
       <div>
         <i id=${id} class="bi bi-plus-lg float-end"></i>
