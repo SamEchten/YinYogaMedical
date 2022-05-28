@@ -37,7 +37,7 @@ module.exports.signup_post = async (req, res) => {
     const { fullName, email, password, phoneNumber, notes } = req.body;
     try {
         //Insert user into database
-        const user = await User.create({ fullName, email, password, phoneNumber, notes, isEmployee: false });
+        const user = await User.create({ fullName, email, password, phoneNumber, notes, isEmployee: true });
 
         //Send jwt cookie to client
         sendCookies(res, user._id, user.fullName, user.email, user.isEmployee);
