@@ -128,6 +128,10 @@ const getSessionInfo = async (session, userId) => {
     }
 
     if (userId != null) {
+        if (await isAdmin(userId)) {
+            sessionInfo["participants"] = session.participants;
+        }
+
         if (session.private && !userParticipates(userId, session.participants)) {
             return null;
         }
