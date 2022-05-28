@@ -261,7 +261,6 @@ function addUser(sessionId) {
         </div>  
       </div>
     </div> 
-    
     `,
     showCancelButton: true,
     showConfirmButton: false,
@@ -364,52 +363,82 @@ async function editSession(sessionId) {
 
     Swal.fire({
       html: `
-      <h2>Wijzigen van ${json.title}</h2>
-      <hr>
-      <div class="row width">
-        <div class="col-md-6">
-          <h3 class="lead lbs"><b>Lesnaam:</b></h3>
-          <input id="lessonName" class="swal2-input" type="text">
-          <h3 class="lead lbs"><b>Beschrijving:</b></h3>
-          <textarea id="lessonDescription" class="swal2-input"></textarea>
-          <h3 class="lead lbs"><b>Locatie:</b></h3>
-          <input id="lessonLocation" class="swal2-input" type="text">
-          <h3 class="lead lbs"><b>Yogadocent:</b></h3>
-          <p>
-            <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
-            Natascha Puper
-          </p>
+      <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Voeg nieuwe les toe</h2>
+              <hr>
+            </div>
+          </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Lesnaam:</b></h3>
+                <input id="lessonName" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Beschrijving:</b></h3>
+                <textarea id="lessonDescription" class="form-control"></textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Locatie:</b></h3>
+                <input id="lessonLocation" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Yogadocent:</b></h3>
+                <p>
+                  <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
+                  Natascha Puper
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-12">
+                    <h3 class="lead lbs"><b>Dag:</b></h3>
+                  </div>
+                </div>
+                <div class="row align-items-center pb-3">
+                  <div class="col-md-12">
+                    <input id="lessonDay" class="form-control" type="date">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Starttijd:</b></h3>
+                <input id="lessonTime" class="form-control" type="time">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Duur:</b></h3>
+                <input id="lessonDuration" class="form-control" type="number" step="30" min="30">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Aantal deelnemers:</b></h3>
+                <input id="maxPeople" class="form-control" type="number" step="1" min="1">
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-md-6">
-          <h3 class="lead lbs"><b>Dag:</b></h3>
-          <div class="row">
-            <div class="col-md-4">
-            <input id="lessonDay" class="swal2-input" type="date">
-            </div>
-          </div>
-          <h3 class="lead lbs"><b>Starttijd:</b></h3>
-          <div class="row">
-            <div class="col-md-4">
-              <input id="lessonTime" class="swal2-input" type="time">
-            </div>
-          </div>
-          <h3 class="lead"><b>Duur:</b></h3>
-          <p class="subtext">De duur van de les in minuten.</p>
-          <div class="row">
-            <div class="col-md-4">
-              <input id="lessonDuration" class="swal2-input" type="number" step="30" min="30">
-            </div>
-          </div>
-          <h3 class="lead"><b>Aantal deelnemers:</b></h3>
-          <p class="subtext">Het maximale aantal deelnemers dat mee kan doen.</p>
-          <div class="row">
-            <div class="col-md-4">
-              <input id="maxPeople" class="swal2-input" type="number" step="1" min="1">
-            </div>
-          </div>
-        </div>
-        <div class="alert alert-warning errorBox" role="alert"></div>
-      </div>`,
+      </div>
+    </div>`,
       customClass: 'sweetalert-makeLesson',
       showCancelButton: true,
       confirmButtonText: 'Update les',
@@ -527,57 +556,101 @@ $(".week").on("click", function () {
 $(".addLesson").on("click", async function () {
   let error = false;
   let today = new Date().toISOString().split("T");
+  let sessionArray = [];
 
   Swal.fire({
     html: `
-    <h2>Voeg nieuwe les toe</h2>
-    <hr>
-    <div class="row width">
-      <div class="col-md-6">
-        <h3 class="lead lbs"><b>Lesnaam:</b></h3>
-        <input id="lessonName" class="swal2-input" type="text">
-        <h3 class="lead lbs"><b>Beschrijving:</b></h3>
-        <textarea id="lessonDescription" class="swal2-input"></textarea>
-        <h3 class="lead lbs"><b>Locatie:</b></h3>
-        <input id="lessonLocation" class="swal2-input" type="text">
-        <h3 class="lead lbs"><b>Yogadocent:</b></h3>
-        <p>
-          <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
-          Natascha Puper
-        </p>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Voeg nieuwe les toe</h2>
+              <hr>
+            </div>
+          </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row pb-3">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Lesnaam:</b></h3>
+                <input id="lessonName" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="row pb-3">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Beschrijving:</b></h3>
+                <textarea id="lessonDescription" class="form-control"></textarea>
+              </div>
+            </div>
+            <div class="row pb-3">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Locatie:</b></h3>
+                <input id="lessonLocation" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="row pb-3">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Yogadocent:</b></h3>
+                <p>
+                  <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
+                  Natascha Puper
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-12">
+                    <h3 class="lead lbs"><b>Dag:</b></h3>
+                  </div>
+                </div>
+                <div class="row align-items-center pb-3">
+                  <div class="col-md-10">
+                    <input id="lessonDay" value="${today[0]}"class="form-control" type="date">
+                  </div>
+                  <div class="col-md-1">
+                    <i class="bi bi-plus-square-dotted addSessionToArray"></i>
+                  </div>
+                  <div class="col-md-1">
+                    <i class="bi bi-chevron-down seeAddedSessions"></i>
+                  </div>
+                </div>
+                <div class="row">
+                  <div  class="col-md allSessionItems text-center">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row pb-3">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Starttijd:</b></h3>
+                <input id="lessonTime" class="form-control" type="time">
+              </div>
+            </div>
+            <div class="row  pb-3">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Duur:</b></h3>
+                <input id="lessonDuration" class="form-control" type="number" step="30" min="30">
+              </div>
+            </div>
+            <div class="row pb-3">
+              <div class="col-md-12">
+                <h3 class="lead lbs"><b>Aantal deelnemers:</b></h3>
+                <input id="maxPeople" class="form-control" type="number" step="1" min="1">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-md-6">
-        <h3 class="lead lbs"><b>Dag:</b></h3>
-        <div class="row">
-          <div class="col-md-4">
-          <input id="lessonDay" value="${today[0]}"class="swal2-input" type="date">
-          </div>
-        </div>
-        <h3 class="lead lbs"><b>Starttijd:</b></h3>
-        <div class="row">
-          <div class="col-md-4">
-            <input id="lessonTime" class="swal2-input" type="time">
-            <h3 class="lead"><b>Duur:</b> 
-              <i data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="Uw wachtwoord moet minstens 6 karakters bevatten"
-                                            custom-class="red-tooltip" class="bi bi-question-circle"></i>      
-                                            </div>
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <input id="lessonDuration" class="swal2-input" type="number" step="30" min="30">
-          </div>
-        </div>
-        <h3 class="lead"><b>Aantal deelnemers:</b></h3>
-        <p class="subtext">Het maximale aantal deelnemers dat mee kan doen.</p>
-        <div class="row">
-          <div class="col-md-4">
-            <input id="maxPeople" class="swal2-input" type="number" step="1" min="1">
-          </div>
-        </div>
+      <div class="row">
+        <div class="alert alert-warning close errorBox" role="alert">
       </div>
-      <div class="alert alert-warning errorBox" role="alert"></div>
-    </div>`,
+    </div>
+      `,
     customClass: 'sweetalert-makeLesson',
     confirmButtonColor: '#D5CA9B',
     showCloseButton: true,
@@ -585,54 +658,82 @@ $(".addLesson").on("click", async function () {
     focusConfirm: false,
     confirmButtonText: 'Voeg les toe',
     cancelButtonText: 'Terug',
-    preConfirm: async () => {
-      let add = await addSession();
-      if (add) {
-        error = true;
-      }
-    }
+
   }).then((result) => {
     if (result.isConfirmed) {
-      if (error) {
-        loadAndSetFullAgenda(weekNumb);
-        toastPopUp("Les aangemaakt", "success");
-      } else {
-        Swal.fire({
-          title: "Velden niet correct ingevuld",
-          icon: 'warning',
-          showCloseButton: true,
-          confirmButtonColor: '#D5CA9B'
-        });
-      }
+      console.log(sessionArray);
     }
   });
 
-  // $(function () {
-  //   $('[data-bs-toggle="tooltip"]').tooltip();
-  // })
-});
+// Display all session added at the moment ->
+  let checkStatus = false;
+  $(".seeAddedSessions").on("click", function() {
+    if(checkStatus == false) { 
+      $(".allSessionItems").slideDown("slow")
+      checkStatus = true;
+    } else {
+      $(".allSessionItems").slideUp("slow");
+      checkStatus = false;
+    }
+  });
 
+  $(".addSessionToArray").on("click", function() {
+    let title = $("#lessonName").val();
+    let location = $("#lessonLocation").val();
+    let date = createDateString($("#lessonDay").val(), $("#lessonTime").val());
+    let duration = $("#lessonDuration").val() ;
+    let participants = [];
+    let teacher = "Natascha";
+    let description = $("#lessonDescription").val();
+    let maxAmountOfParticipants = $("#maxPeople").val();
+    let weekly = false;
+
+    let json = { title, location, date, duration, participants, teacher, description, maxAmountOfParticipants, weekly }
+
+    if(title == "" || location == "" || date == "" || duration == "" || teacher == "" || description == "" || maxAmountOfParticipants == "") {
+      errorText("Vul all velden in voordat u de les toevoegd.")
+    } else {
+      sessionArray.push(json);
+      appendItems(sessionArray);
+    }
+    
+  });
+});
+function drawItems() {
+  $(".allSessionItems").empty();
+  for(items in sessionArray) {
+    $(".allSessionItems").append(`<p id="${items}" class="lbbs itemsSession">${sessionArray[items].title} <br> 28-5-2022</p>`);
+  }
+}
+function appendItems(sessionArray) {
+
+
+  // $(".allSessionItems").empty();
+  // for(items in sessionArray) {
+  //   $(".allSessionItems").append(`<p id="${items}" class="lbbs itemsSession">${sessionArray[items].title} <br> 28-5-2022</p>`);
+  //   $("#" + items).on("click",function() {
+  //     sessionArray.splice(this.id, 1);
+  //     console.log(sessionArray)
+  //     $("#" + this.id).remove();
+  //   });
+  // }  
+}
 
 // Add session call ->
-async function addSession() {
-  let json = {
-    "title": $("#lessonName").val(),
-    "location": "Emmen",
-    "date": createDateString($("#lessonDay").val(), $("#lessonTime").val()),
-    "duration": $("#lessonDuration").val(),
-    "participants": [],
-    "teacher": "Natascha",
-    "description": $("#lessonDescription").val(),
-    "maxAmountOfParticipants": $("#maxPeople").val(),
-    "weekly": false
-  }
+async function addSession(data) {
   try {
     let res = await ApiCaller.addSession(json);
+    let json = await res.json();
     if (res.status == 201) {
-
-      return true;
+      toastPopUp(json.message, "success");
     } else {
-      return false;
+      Swal.fire({
+        title: "Oops",
+        icon: 'success',
+        text: json.message,
+        showCloseButton: true,
+        confirmButtonColor: '#D5CA9B'
+      });
     }
   } catch (err) {
     console.log(err);

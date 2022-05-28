@@ -9,13 +9,16 @@ $(async function () {
 });
 
 // Error message : give the class "errorBox" to activate ->
-$(".errorBox").on("click", function () {
-  $(".errorBox").slideUp(300);
-});
+// $(".errorBox").on("click", function () {
+//   $(".errorBox").slideUp(300);
+// });
 
 function errorText(errMessage) {
   $(".errorBox").html(errMessage);
-  $(".errorBox").slideDown(200);
+  $(".errorBox").slideDown(400);
+  setTimeout(function() {
+    $(".errorBox").slideUp(400);
+  }, 3000)
 }
 
 // Date Time formatter  ->

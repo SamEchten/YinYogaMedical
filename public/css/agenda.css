@@ -6,6 +6,28 @@
 #custom-target {
     position: absolute;
   }
+.seeAddedSessions {
+    cursor: pointer;
+}
+.itemsSession {
+    padding: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.itemsSession:hover {
+    background-color: #f3f3f3;
+}
+.addSessionToArray { 
+    cursor: pointer;
+}
+.allSessionItems {
+    display: none;
+    height: 135px;
+    overflow: auto;
+}
+.allSessionItems p {
+    padding: 5px;
+}
 .userItemsRow {
     height: 400px;
     overflow: auto;
@@ -205,13 +227,12 @@ p {
 
 .sweetalert-makeLesson input {
     margin-top: 0px !important;
-    margin-bottom: 20px !important;
     margin-left: 5px !important;
 }
 
 .sweetalert-makeLesson input[type=text],
 textarea {
-    width: 90% !important;
+    width: 100% !important;
     margin-bottom: 20px !important;
 }
 
@@ -224,7 +245,6 @@ textarea {
 .sweetalert-makeLesson input[type=number],
 input[type=date],
 input[type=time] {
-    width: 200px !important;
     margin-left: 5px !important;
 }
 
