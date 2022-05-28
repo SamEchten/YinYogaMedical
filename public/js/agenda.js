@@ -670,7 +670,7 @@ $(".addLesson").on("click", async function () {
       console.log(sessionArray.length)
       if(sessionArray.length > 0) {
         for(item in sessionArray) {
-          addSession(sessionArray[items]);
+          addSession(sessionArray[item]);
         }
       } else { 
         let json =  {
@@ -728,7 +728,7 @@ async function addSession(sessionArray) {
     let res = await ApiCaller.addSession(sessionArray);
     let json = await res.json();
     if(res.status == 201) {
-      toastPopUp(json.message, "success");
+      toastPopUp("Les(sen) toegevoegd!", "success");
     } else {
       toastPopUp(json.message, "error");
     }
