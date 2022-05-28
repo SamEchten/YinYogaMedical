@@ -4,6 +4,13 @@ module.exports.config = {
         password: "EH4cSD4JSCbuDei4",
         user: "admin"
     },
+    server: {
+        password: "YinYogaMedicalServer",
+        github: {
+            user: "YinYogaMedicalServer",
+            password: "Yin!Yoga@Medical#Server?"
+        }
+    },
     email: {
         user: "yinyogamedical.server@gmail.com",
         password: "YinYogaMedicalServer"
