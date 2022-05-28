@@ -11,8 +11,8 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
   scrollDownToCurrDay();
-  toastPopUp("Welkom "+ user.fullName , "info");
-  
+  toastPopUp("Welkom " + user.fullName, "info");
+
 });
 
 // Loading agenda data per week ->
@@ -153,7 +153,7 @@ function sessionDetails(data) {
     });
 }
 // Loads all session items and puts them into the right day ->
-function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipants ,amountOfParticipants, date, day) {
+function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipants, amountOfParticipants, date, day) {
   let itemLayout = `
     <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
       <div class="col-md-2">
@@ -223,7 +223,7 @@ function clickEvents() {
       const sessionId = $(this).parent().parent().parent().parent().attr("id");
       removeSession(sessionId);
     });
-    $(".addUser").on("click", function() { 
+    $(".addUser").on("click", function () {
       const sessionId = $(this).parent().parent().parent().parent().attr("id");
       addUser(sessionId);
     });
@@ -267,7 +267,7 @@ function addUser(sessionId) {
     cancelButtonText: 'Terug'
   });
 
-  $("#searchUser").on("input", function() {
+  $("#searchUser").on("input", function () {
     let userArray = filterData($(this).val());
     console.log(userArray)
     if (userArray.length <= 0) {
@@ -276,11 +276,11 @@ function addUser(sessionId) {
     } else {
       $(".userItemCol").empty();
       for (item in userArray) {
-        $(".userItemCol").append(createUserItem(userArray[item].fullName,userArray[item].email, userArray[item].phoneNumber,userArray[item].id));
-        $("#" + userArray[item].id).on("click", function() {
+        $(".userItemCol").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
+        $("#" + userArray[item].id).on("click", function () {
           addUserToSessionAsAdmin(sessionId, this.id);
         });
-        $("." + userArray[item].id).on("click", function() {
+        $("." + userArray[item].id).on("click", function () {
           removeUserFromSessionAsAdmin(sessionId, $(this).prop("className"))
         });
       }
@@ -289,7 +289,7 @@ function addUser(sessionId) {
 }
 // subcribe a user to a session as admin ->
 async function addUserToSessionAsAdmin(sessionId, userId) {
-  let data = {userId}
+  let data = { userId }
   console.log(data)
   try {
     let res = await ApiCaller.addUserToSession(data, sessionId);
@@ -306,7 +306,7 @@ async function addUserToSessionAsAdmin(sessionId, userId) {
 }
 // Remove a user from a session as admin ->
 async function removeUserFromSessionAsAdmin(sessionId, userId) {
-  let data = {userId};
+  let data = { userId };
   swal.fire({
     title: "Weet u zeker dat u deze gebruiker wilt verwijderen uit de les?",
     text: "Deze gebruiker zal een email ontvangen met daarin de wijziging.",
@@ -315,14 +315,14 @@ async function removeUserFromSessionAsAdmin(sessionId, userId) {
     confirmButtonText: "Verwijderen",
     confirmButtonColor: "#D5CA9B"
   }).then(async (result) => {
-    if(result.isConfirmed) { 
-      try { 
+    if (result.isConfirmed) {
+      try {
         console.log(data)
         console.log(sessionId)
         let res = await ApiCaller.unsubscribeFormSession(data, sessionId)
         let json = await res.json();
-        
-        if(res.status == 200) {
+
+        if (res.status == 200) {
           toastPopUp(json.message, "success")
           loadAndSetFullAgenda(weekNumb);
         } else {
@@ -335,7 +335,7 @@ async function removeUserFromSessionAsAdmin(sessionId, userId) {
   });
 }
 // Create userItem element 
-function createUserItem(fullName, email, phoneNumber,id) {
+function createUserItem(fullName, email, phoneNumber, id) {
   let element = `
   <div class="row pb-2">
     <div class="col-md-12 p-2 lead userFilterItem text-start">
@@ -665,10 +665,10 @@ $(".addLesson").on("click", async function () {
     }
   });
 
-// Display all session added at the moment ->
+  // Display all session added at the moment ->
   let checkStatus = false;
-  $(".seeAddedSessions").on("click", function() {
-    if(checkStatus == false) { 
+  $(".seeAddedSessions").on("click", function () {
+    if (checkStatus == false) {
       $(".allSessionItems").slideDown("slow")
       checkStatus = true;
     } else {
@@ -677,11 +677,11 @@ $(".addLesson").on("click", async function () {
     }
   });
 
-  $(".addSessionToArray").on("click", function() {
+  $(".addSessionToArray").on("click", function () {
     let title = $("#lessonName").val();
     let location = $("#lessonLocation").val();
     let date = createDateString($("#lessonDay").val(), $("#lessonTime").val());
-    let duration = $("#lessonDuration").val() ;
+    let duration = $("#lessonDuration").val();
     let participants = [];
     let teacher = "Natascha";
     let description = $("#lessonDescription").val();
@@ -690,33 +690,30 @@ $(".addLesson").on("click", async function () {
 
     let json = { title, location, date, duration, participants, teacher, description, maxAmountOfParticipants, weekly }
 
-    if(title == "" || location == "" || date == "" || duration == "" || teacher == "" || description == "" || maxAmountOfParticipants == "") {
+    if (title == "" || location == "" || date == "" || duration == "" || teacher == "" || description == "" || maxAmountOfParticipants == "") {
       errorText("Vul all velden in voordat u de les toevoegd.")
     } else {
       sessionArray.push(json);
-      appendItems(sessionArray);
+      drawItems(sessionArray);
     }
-    
   });
 });
-function drawItems() {
-  $(".allSessionItems").empty();
-  for(items in sessionArray) {
-    $(".allSessionItems").append(`<p id="${items}" class="lbbs itemsSession">${sessionArray[items].title} <br> 28-5-2022</p>`);
+
+function drawItems(sessionArray) {
+  const sessionItems = $(".allSessionItems");
+  sessionItems.empty();
+
+  for (jsonIndex in sessionArray) {
+    const json = sessionArray[jsonIndex];
+    const item = $(`<p id="${jsonIndex}" class="lbbs itemsSession">${json.title} <br> 28-5-2022</p>`);
+    item.on("click", function () {
+      //Remove json object from array ->
+      sessionArray.splice(this.id, 1);
+      //Update session Items ->
+      drawItems(sessionArray);
+    });
+    sessionItems.append(item);
   }
-}
-function appendItems(sessionArray) {
-
-
-  // $(".allSessionItems").empty();
-  // for(items in sessionArray) {
-  //   $(".allSessionItems").append(`<p id="${items}" class="lbbs itemsSession">${sessionArray[items].title} <br> 28-5-2022</p>`);
-  //   $("#" + items).on("click",function() {
-  //     sessionArray.splice(this.id, 1);
-  //     console.log(sessionArray)
-  //     $("#" + this.id).remove();
-  //   });
-  // }  
 }
 
 // Add session call ->

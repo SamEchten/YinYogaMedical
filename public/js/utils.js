@@ -16,7 +16,7 @@ $(async function () {
 function errorText(errMessage) {
   $(".errorBox").html(errMessage);
   $(".errorBox").slideDown(400);
-  setTimeout(function() {
+  setTimeout(function () {
     $(".errorBox").slideUp(400);
   }, 3000)
 }
@@ -29,7 +29,7 @@ function dateFormat(data) {
   const dateObj = new Date(data);
 
   // Get time ->
-  const time = new Date(dateObj.getTime()- (2 * 60 * 60 * 1000)).toLocaleTimeString("en-GB");
+  const time = new Date(dateObj.getTime() - (2 * 60 * 60 * 1000)).toLocaleTimeString("en-GB");
 
   // Get date ->
   var month = dateObj.getUTCMonth() + 1; //months from 1-12
@@ -72,7 +72,7 @@ function getfirstAndlastDatesOfTheWeek(year, week) {
 
 function createDateString(date, time) {
   let string = date + "T" + time + ":00.000Z"
-  console.log(string)
+  //console.log(string)
   return string;
 }
 
@@ -95,13 +95,15 @@ function checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amount
   let sessionDay = new Date(date);
   const result = new Date(sessionDay.toISOString().slice(0, -1))
 
-  if ((amountOfParticipants >= maxAmountOfParticipants && !participates) || today > result) { 
-    if(!roleCheck()) {
-      $("#" + id).css({ "opacity": 0.5,
-      "pointer-events": "none"})
+  if ((amountOfParticipants >= maxAmountOfParticipants && !participates) || today > result) {
+    if (!roleCheck()) {
+      $("#" + id).css({
+        "opacity": 0.5,
+        "pointer-events": "none"
+      })
     }
   }
-  
+
 }
 
 // Hide elements for none admins else show them ->
@@ -136,7 +138,7 @@ async function getAndSetAllUsers() {
     let res = await ApiCaller.getAllUsers();
     let json = await res.json();
     console.log(json)
-    if(res.status == 200) {
+    if (res.status == 200) {
       allUsers = json;
     }
   } catch (err) {
