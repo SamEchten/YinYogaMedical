@@ -321,7 +321,3 @@ module.exports.signout = async (req, res) => {
 module.exports.view = (req, res) => {
     res.render(path.join(__dirname, "../views/agenda"), { isAdmin: false });
 }
-
-module.exports.adminview = (req, res) => {
-
-}
