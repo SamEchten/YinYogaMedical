@@ -171,32 +171,23 @@ const getFirstDayOfWeek = () => {
 
 module.exports.add = async (req, res) => {
     try {
-        let sessionIds = [];
-        for (sessionIndex in req.body) {
-            const { title, location, date, duration, participants, teacher,
-                description, maxAmountOfParticipants, weekly, private } = req.body[sessionIndex];
+        const { title, location, date, duration, participants, teacher,
+            description, maxAmountOfParticipants, weekly, private } = req.body;
 
-            const session = await Session.create({
-                title,
-                location,
-                date,
-                duration,
-                participants,
-                teacher,
-                description,
-                maxAmountOfParticipants,
-                weekly,
-                private
-            });
+        const session = await Session.create({
+            title,
+            location,
+            date,
+            duration,
+            participants,
+            teacher,
+            description,
+            maxAmountOfParticipants,
+            weekly,
+            private
+        });
 
-            sessionIds.push(session.id);
-        }
-
-        if (req.body.length > 1) {
-            res.status(201).json({ sessionIds });
-        } else {
-            res.status(201).json({ id: session.id });
-        }
+        res.status(201).json({ id: session.id });
     } catch (err) {
         let errors = handleSessionErrors(err);
         res.status(400).json(errors);
