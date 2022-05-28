@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
-const {isEmail} = require("validator");
+const { isEmail } = require("validator");
 const bcrypt = require("bcryptjs");
+
+const subscriptionSchema = mongoose.Schema({
+    id: String,
+    expireDate: Date
+});
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -33,27 +38,34 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: [true, "Uw niet aangegeven of de gebruiker een medewerker is"]
     },
-    subscription: Object,
+    subscription: {
+        type: subscriptionSchema,
+        default: {}
+    },
     familyMembers: {
         type: Array
     },
     purchases: {
         type: Array
+    },
+    classPassHours: {
+        type: Number,
+        default: 0
     }
 });
 
-userSchema.pre("save", async function(next) {
+userSchema.pre("save", async function (next) {
     let salt = await bcrypt.genSaltSync(10);
     this.password = await bcrypt.hashSync(this.password, salt);
     next();
 });
 
-userSchema.statics.login = async function(email, password) {
-    let user = await this.findOne({email});
+userSchema.statics.login = async function (email, password) {
+    let user = await this.findOne({ email });
     //User with given email exists ->
-    if(user) {
+    if (user) {
         let auth = await bcrypt.compareSync(password, user.password);
-        if(auth) {
+        if (auth) {
             return user;
         }
         throw Error(JSON.stringify({

@@ -1,15 +1,29 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/sessionController");
-
-router.use(express.json());
-
-router.post("/login", controller.login_post);
-router.post("/signup", controller.signup_post);
-router.get("/logout", controller.logout);
+const { validateJwt } = require("../middleware/validator");
 
 //TODO:
-//reset-password - reset password
-//forgot-password - return page
+//Add adminValidation to: add, update, delete
+
+//Get all sessions ->
+router.get("/", controller.get);
+//Get single session ->
+router.get("/:id", controller.get);
+//Add new session ->
+router.post("/", validateJwt, controller.add);
+//Signs a user in for a session ->
+router.post("/signup/:id", validateJwt, controller.signup);
+//Signs a user out for a session ->
+router.post("/signout/:id", validateJwt, controller.signout);
+//Updates a session ->
+router.put("/:id", validateJwt, controller.update);
+//Deletes a session ->
+router.delete("/:id", validateJwt, controller.delete);
+
+//Statistics routes ->
+//Get sessions ordered by how populair a session is->
+
+//Get sessions ordered by most populair day -> 
 
 module.exports = router;

@@ -10,5 +10,15 @@ module.exports.config = {
             user: "YinYogaMedicalServer",
             password: "Yin!Yoga@Medical#Server?"
         }
+    },
+    email: {
+        user: "yinyogamedical.server@gmail.com",
+        password: "YinYogaMedicalServer"
+    },
+    mollie: {
+        testKey: "test_S8PSzbrv35kNh3FasVgsUbRDU3gVPj"
+    },
+    ngrok: {
+        url: "https://2f8f-2a02-a467-14f7-1-3869-ca96-7a9a-fc76.eu.ngrok.io"
     }
 }

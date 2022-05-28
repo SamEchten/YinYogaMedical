@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollments</title>
+    <link rel="icon" type="image/png" href="./static/favicon.png" />
+    <link rel="stylesheet" href="static/profile.css">
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./bicons/bootstrap-icons.css">
+</head>
+
+<body>
+    <div class="container-fluid main-wrapper">
+        <div class="row">
+            <nav class="navbar navbar-expand-lg navbar-light navbar-style">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item text-center">
+                            <a class="nav-link" href="/home">Home</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link" href="lesrooster">Lesrooster</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link" href="/producten">Producten</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link" href="#">Media</a>
+                        </li>
+                        <li class="nav-item text-center active">
+                            <a class="nav-link currentNavItem" href="/profile/enrollments">Profiel</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="row pt-4">
+            <div class="col-md-10 offset-1 pb-3">
+                <h1>Profiel</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 offset-1">
+                <div class="row">
+                    <div class="col-md-12 options h-100">
+
+                        <ul class="ps-3">
+                            <li id="profiel" class="setting pt-4 pb-4"><i class="bi bi-person-circle"></i> Mijn profiel
+                            </li>
+                            <li id="product" class="setting pt-4 pb-4"><i class="bi bi-archive"></i> Mijn producten</li>
+                            <li id="video" class="setting pt-4 pb-4"><i class="bi bi-play-btn"></i> Mijn video's</li>
+                            <li id="podcast" class="setting pt-4 pb-4"><i class="bi bi-mic"></i> Mijn podcasts</li>
+                            <li id="enrollments" class="setting pt-4 pb-4"><i class="bi bi-pencil-square"></i>
+                                Inschrijvingen
+                            </li>
+                            <li id="instellingen" class="setting pt-4 pb-4"><i class=" bi bi-gear"></i> Instellingen
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7 offset-1 settingsContent mr-5">
+
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/utils.js"></script>
+    <script src="/static/profile.js"></script>
+
+
+</body>
+
+</html>

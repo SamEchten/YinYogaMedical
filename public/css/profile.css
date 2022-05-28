@@ -1,0 +1,70 @@
+@font-face {
+    font-family: Lato;
+    src: url(font_lato);
+}
+
+body {
+    background-image: url(./bg.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.main-wrapper {
+    height: calc(100vh -58px);
+}
+
+p {
+    font-family: 'Open Sans';
+}
+
+li {
+    font-size: 1.25rem;
+    font-family: 'Open Sans';
+    list-style: none;
+}
+
+.options {
+    background-color: #FFFFFF;
+    color: #000000;
+    border-radius: 4%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: inherit
+}
+
+h6 {
+    display: none;
+}
+
+option:focus-within {
+    border: none !important;
+    color: red !important;
+}
+
+.settingsContent {
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 2%;
+    overflow-y: auto;
+}
+
+.notes {
+    height: 7vh;
+    overflow-y: auto;
+}
+
+.descriptionText {
+    font-weight: 25px !important;
+    font-size: 0.8rem;
+}
+
+.video1 {
+    background-image: url(./video1.jpg);
+    height: 20vh;
+}
+
+.pf {
+    height: 100%;
+    width: 75%;
+}

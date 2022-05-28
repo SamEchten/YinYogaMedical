@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" type="image/png" href="./static/favicon.png" />
+    <link rel="stylesheet" href="static/login.css">
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./bicons/bootstrap-icons.css">
+</head>
+
+<body>
+    <div class="container-fluid main-wrapper">
+        <div class="row h-100">
+            <div class="col-md-6">
+                <div class="row h-100 align-items-center">
+                    <div class="col-md-12">
+                        <div class="loginContent">
+                            <div class="loginHeader">
+                                <h1 class="display-3">LOGIN</h1>
+                                <hr>
+                                <p class="lead">
+                                    Welkom terug!
+                                </p>
+                                <p class="lead">
+                                    Vul hieronder uw inloggegevens in.
+                                </p>
+                            </div>
+                            <form onsubmit="event.preventDefault();">
+                                <div class="form-group">
+                                    <label class="blockquote lbs" for="exampleInputEmail1">E-mail adres</label>
+                                    <input type="email" class="form-control emailInput" id="exampleInputEmail1"
+                                        aria-describedby="emailHelp" placeholder="E-mail">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="blockquote lbs" for="exampleInputPassword1">Wachtwoord</label>
+                                    <input type="password" class="form-control passwordInput" id="exampleInputPassword1"
+                                        placeholder="Wachtwoord">
+                                </div>
+                                <button type="submit" class="btn btn-primary yinStyle loginButton">Login</button>
+                            </form>
+                            <p class="loginFooterText pt-3">
+                                Geen account?
+                                <span>
+                                    <a href="/signup">Registreer</a>
+                                </span>
+                            </p>
+                            <div class="alert alert-warning close errorBox" role="alert">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6 imageHolder">
+
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="static/apiCaller.js"></script>
+    <script src="static/utils.js"></script>
+    <script src="static/login.js"></script>
+    
+
+</body>
+
+</html>

@@ -9,15 +9,14 @@ $(".loginButton").on("click", async function()
     try
     {
         const res = await ApiCaller.loginUser(data);
-    
         if(res.status == 200) 
         {
             console.log("logged in")
-            $(".imageHolder").slideUp(700);
-            $(".loginContent").slideUp(700, function()
+            $(".imageHolder").slideUp(400);
+            $(".loginContent").slideUp(400, function()
             {
                 // Go to home/lesrooster
-                location.href = "/home";
+                location.href = "/agenda";
             });
         
         } else 

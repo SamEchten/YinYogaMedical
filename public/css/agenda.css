@@ -1,0 +1,336 @@
+@font-face {
+    font-family: OpenSans;
+    src: url(./open_sans);
+}
+/* Toast alert */
+#custom-target {
+    position: absolute;
+  }
+.seeAddedSessions {
+    cursor: pointer;
+}
+.itemsSession {
+    padding: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.itemsSession:hover {
+    background-color: #f3f3f3;
+}
+.addSessionToArray { 
+    cursor: pointer;
+}
+.allSessionItems {
+    display: none;
+    height: 135px;
+    overflow: auto;
+    
+}
+.allSessionItems p {
+    padding: 7px;
+    padding-left: 28px;
+    background: #d5ca9b40;
+    margin-bottom: 2px;
+}
+.userItemsRow {
+    height: 400px;
+    overflow: auto;
+}
+.userItemsRow::-webkit-scrollbar {
+    display: none;
+}
+
+.userFilterItem {
+    border-bottom: 2px solid #d5ca9b;
+    transition: 0.5s;
+    cursor: pointer;
+    font-size: 17px !important;
+}
+.userFilterItem:hover { 
+    background-color: #dfdfdf;
+}
+.unSubStyle {
+    color: #fff !important;
+    background-color: #d5ca9b !important;
+    border-color: #b7b7b7 !important;
+} 
+.unSubStyle:hover {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.tooltip-inner {
+    background-color: white !important;
+    border: 1px solid #D5CA9B !important;
+    opacity: 1 !important;
+    color: black !important;
+}
+
+.tooltip.bs-tooltip-right .tooltip-arrow::before {
+    border-right-color: #D5CA9B !important;
+}
+
+.tooltip.bs-tooltip-left .tooltip-arrow::before {
+    border-left-color: #D5CA9B !important;
+}
+
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: #D5CA9B !important;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: #D5CA9B !important;
+}
+
+.tooltip.bs-tooltip-top .arrow:before {
+    border-top-color: #ff0000 !important;
+}
+
+.main-wrapper {
+    height: calc(100vh - 58px);
+}
+
+body {
+    background-image: url("./background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.headerRow {
+    height: 10%;
+}
+
+.agendaItem {
+    margin: 4px;
+    border-radius: 5px;
+    transition: 0.2s;
+    cursor: pointer;
+    animation-name: slide;
+    animation-duration: 0.5s;
+    /* box-shadow: 0px 1px 5px -3px #272727; */
+}
+
+.agendaItem:hover {
+    margin-left: 0.5px;
+    background-color: #e9e9e9;
+}
+
+.contentRow {
+    height: 90%;
+    background-color: white;
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+    overflow: auto;
+    border-radius: 10px 10px 0px 0px;
+    border: 1px solid #eeeeee;
+}
+
+.contentRow::-webkit-scrollbar {
+    display: none;
+}
+
+.schedule {
+    border: 1px solid black;
+    border-radius: 1px 1px 1px 1px;
+    background-color: white;
+    height: 100%;
+    padding: 20px;
+    overflow: auto;
+}
+
+.alertscreen {
+    align-items: flex-start;
+    width: 250px;
+}
+
+.headerText {
+    padding: 10px;
+    font-weight: 600 !important;
+}
+
+.width {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+
+.week {
+    cursor: pointer;
+}
+
+.hiding {
+    display: none;
+}
+
+.prevWeek {
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nextWeek {
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nextWeek:hover {
+    margin-left: 3px;
+}
+
+.prevWeek:hover {
+    margin-right: 3px;
+}
+
+.headerSchedule {
+
+    background: #FFFFFF;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.addLesson {
+    font-size: 20pt;
+    cursor: pointer;
+}
+
+/* Sweetalert for subscribing to a lesson */
+
+.sweetalert-subscribe h2,
+p {
+    margin-bottom: 20px;
+    text-align: start;
+}
+
+.sweetalert-subscribe input {
+    margin-left: 5px;
+}
+
+.sweetalert-subscribe input[type=number] {
+    width: 100px !important;
+    margin-bottom: 50px !important;
+}
+
+.sweetalert-subscribe input[type=text] {
+    width: 100%;
+    margin: 5px;
+}
+
+/* Sweetalert for making lesson */
+
+.sweetalert-makeLesson {
+    padding: 20px !important;
+}
+
+@media only screen and (min-width:769px) {
+    .sweetalert-makeLesson {
+        width: 60vw !important;
+    }
+}
+
+.sweetalert-makeLesson input {
+    margin-top: 0px !important;
+    margin-left: 5px !important;
+}
+
+.sweetalert-makeLesson input[type=text],
+textarea {
+    width: 100% !important;
+    margin-bottom: 20px !important;
+}
+
+.sweetalert-makeLesson textarea {
+    height: 80px !important;
+    margin-left: 5px !important;
+    resize: none !important;
+}
+
+.sweetalert-makeLesson input[type=number],
+input[type=date],
+input[type=time] {
+    margin-left: 5px !important;
+}
+
+.sweetalert-makeLesson h2 {
+    margin-bottom: 30px !important;
+    text-align: start !important;
+    text-transform: uppercase !important;
+}
+
+.sweetalert-makeLesson h3 {
+    text-align: start !important;
+}
+
+.subtext {
+    font-size: 11pt;
+    color: #707070;
+}
+
+/* Sweetalert for info about a lesson */
+
+.alerttitle {
+    margin-bottom: 20px !important;
+    text-align: start !important;
+}
+
+.sweetalert-seelesson h3 {
+    text-align: start !important;
+    text-transform: uppercase !important;
+    font-size: 14pt !important;
+    margin-bottom: 10px !important;
+    color: #707070;
+}
+
+.sweetalert-seelesson p {
+    font-family: 'OpenSans', 'Segoe UI' !important;
+    font-size: 14pt !important;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    font-weight: 300;
+    text-align: start !important;
+    color: #707070;
+    text-transform: initial !important;
+}
+
+.icon {
+    margin-right: 10px;
+}
+
+/* KEYFRAMES ANIMATION */
+
+@keyframes slide {
+    0% {
+        position: relative;
+        left: -100%;
+        opacity: 0;
+    }
+
+    100% {
+        position: relative;
+        left: 0%;
+        opacity: 1;
+    }
+}
+
+@keyframes slideRemove {
+    0% {
+        position: relative;
+        left: 0%;
+    }
+
+    100% {}
+}
+
+/* MEDIA QUERIES */
+@media only screen and (max-width: 600px) {
+    .week {
+        font-size: 15px !important;
+    }
+
+    .contentRow {
+        height: 100%;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+}

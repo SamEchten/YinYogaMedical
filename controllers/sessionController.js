@@ -1,93 +1,314 @@
+const Session = require("../models/Session");
 const User = require("../models/User");
-const jwt = require("jsonwebtoken");
 const path = require("path");
-const secret = require("../config").config.secret;
-const {handleErrors} = require("./errorHandler");
-const maxAge = 24 * 60 * 60;
+const { handleSessionErrors } = require("./errorHandler");
+const userController = require("./userController");
+
+//TODO: only show non private session
+//do show if req was made by admin or participants
+module.exports.get = async (req, res) => {
+    const { id } = req.params;
+    let userId;
+    if (req.cookies.user) {
+        userId = JSON.parse(req.cookies.user).userId;
+    }
+
+    if (id) {
+        //Get single session
+        try {
+            const session = await Session.findOne({ _id: id });
+            if (session) {
+                const sessionInfo = await getSingleSessionInfo(session, userId);
+                res.status(200).json(sessionInfo);
+            } else {
+                res.status(404).json({ message: "Geen sessie gevonden met dit id" })
+            }
+        } catch (err) {
+            res.status(404).json({ error: "Geen sessie gevonden met dit id" });
+        }
+    } else {
+        //Get all sessions
+        try {
+            const allSessions = await getAllSessions(userId);
+            const sortedSessions = await sortSessions(allSessions, userId);
+            res.status(200).json(sortedSessions);
+        } catch (err) {
+            res.status(400).json({ message: "Er is iets fout gegaan", error: err.message });
+        }
+    }
+}
+
+const getSingleSessionInfo = async (session, userId) => {
+    if (session) {
+        if (await isAdmin(userId)) {
+            return session;
+        } else {
+            return {
+                id: session._id,
+                title: session.title,
+                location: session.location,
+                date: session.date,
+                duration: session.duration,
+                teacher: session.teacher,
+                description: session.description,
+                maxAmountOfParticipants: session.maxAmountOfParticipants,
+                amountOfParticipants: await Session.getAmountOfParticipants(session._id)
+            }
+        }
+    }
+}
+
+const isAdmin = async (userId) => {
+    const user = await User.findOne({ _id: userId });
+    if (user) {
+        if (user.isEmployee) {
+            return true;
+        }
+        return false;
+    } else {
+        return false;
+    }
+}
+
+//Gets all sessions sorted by week and day
+const getAllSessions = async () => {
+    const firstDayOfWeek = getFirstDayOfWeek();
+
+    const sessions = await Session.find({
+        date: {
+            $gte: firstDayOfWeek
+        }
+    }).sort({ date: 1 });
+
+    return sessions;
+}
 
 
-//Login_post
-//Endpoint to login a user
-//Succes -> 200 OK + user info object
-//Error -> 400 Bad Request + error object
-module.exports.login_post = async (req, res) => {
-    let { email, password } = req.body;
+const sortSessions = async (sessions, userId) => {
+    const daysOfWeek = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
+    let allSessions = {};
+    let weekInfo = {
+        zondag: [], maandag: [], dinsdag: [], woensdag: [],
+        donderdag: [], vrijdag: [], zaterdag: []
+    };
+
+    for (index in sessions) {
+        let session = await getSessionInfo(sessions[index], userId);
+        if (session != null) {
+            const dayNr = session.date.getDay();
+            const weekNr = session.date.getWeekNumber();
+            const day = daysOfWeek[dayNr];
+
+            if (allSessions[weekNr] != null) {
+                weekInfo = allSessions[weekNr];
+            }
+            weekInfo[day].push(session);
+            allSessions[weekNr] = weekInfo;
+            weekInfo = {
+                zondag: [], maandag: [], dinsdag: [], woensdag: [],
+                donderdag: [], vrijdag: [], zaterdag: []
+            }
+        }
+    }
+
+    return allSessions;
+}
+
+const getSessionInfo = async (session, userId) => {
+    let sessionInfo = {
+        id: session._id,
+        title: session.title,
+        location: session.location,
+        date: session.date,
+        duration: session.duration,
+        amountOfParticipants: await Session.getAmountOfParticipants(session._id),
+        maxAmountOfParticipants: session.maxAmountOfParticipants,
+        teacher: session.teacher,
+        description: session.description
+    }
+
+    if (userId != null) {
+        if (await isAdmin(userId)) {
+            sessionInfo["participants"] = session.participants;
+        }
+
+        if (session.private && !userParticipates(userId, session.participants)) {
+            return null;
+        }
+
+        if (userParticipates(userId, session.participants)) {
+            sessionInfo["participates"] = true;
+        }
+    }
+
+    return sessionInfo;
+}
+
+const userParticipates = (userId, participants) => {
+    if (participants.some(e => e.userId == userId)) {
+        return true;
+    }
+    return false;
+}
+
+Date.prototype.getWeekNumber = function () {
+    var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    var dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+};
+
+const getFirstDayOfWeek = () => {
+    const date = new Date();
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+
+    let result = new Date(date.setDate(diff));
+    result = result.toISOString().split("T")[0] + "T00:00:00.000Z";
+    return result;
+}
+
+module.exports.add = async (req, res) => {
     try {
-        let user = await User.login(email, password);
+        const { title, location, date, duration, participants, teacher,
+            description, maxAmountOfParticipants, weekly, private } = req.body;
 
-        //Send jwt token to client ->
-        sendJwtCookie(res, user._id, user.fullName, user.isEmployee);
-
-        //Send user info to client ->
-        res.status(200).json({
-            "id": user._id,
-            "fullName": user.fullName
+        const session = await Session.create({
+            title,
+            location,
+            date,
+            duration,
+            participants,
+            teacher,
+            description,
+            maxAmountOfParticipants,
+            weekly,
+            private
         });
-    } catch(err) {
-        let errors = handleErrors(err);
+
+        res.status(201).json({ id: session.id });
+    } catch (err) {
+        let errors = handleSessionErrors(err);
         res.status(400).json(errors);
     }
 }
 
-//Signup_post
-//Endpoint for signing up users
-//Succes -> 201 Created + user info object
-//Error -> 400 Bad Request + error object
-module.exports.signup_post = async (req, res) => {
-    const {fullName, email, password, phoneNumber, notes} = req.body;
+module.exports.update = async (req, res) => {
+    const { id } = req.params;
+    const body = req.body;
+
     try {
-        //Insert user into database
-        const user = await User.create({fullName, email, password, phoneNumber, notes, isEmployee: true});
-
-        //Send jwt cookie to client
-        sendJwtCookie(res, user._id, user.fullName, user.isEmployee);
-
-        //Send user info back to client
-        res.status(201).json({
-            "id": user._id,
-            "fullName": user.fullName
-        });
-    } catch(err) {
-        let errors = handleErrors(err);
-        res.status(400).json(errors);
+        const session = await Session.findOne({ _id: id });
+        if (session) {
+            await Session.updateOne({ _id: id }, { $set: body });
+            res.status(200).json({ id: session._id });
+        } else {
+            res.status(404).json({ error: "Geen sessie gevonden met dit Id" })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
 }
 
-//SendJwtCookie
-//Params:   res
-//          id
-//          fullName
-//          isEmployee
-//Creates a token and sends it to the client via the response
-//Cookie is valid for 1 day and is httpOnly
-const sendJwtCookie = (res, id, fullName, isEmployee) => {
-    let token = createToken(id, fullName, isEmployee);
-    res.cookie("jwt", token, {
-        expiresIn: maxAge * 1000,
-        httpOnly: true
-    });
+module.exports.delete = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const session = await Session.findOne({ _id: id });
+        if (session) {
+            session.remove();
+            //Send email to participants
+            //Set back hours of participants
+            res.status(200).json({ message: "Sessie is verwijderd" });
+        } else {
+            res.status(404).json({ message: "Geen sessie gevonden met dit Id" })
+        }
+    } catch (err) {
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
+    }
 }
 
-//createToken
-//Params:   id
-//          fullName
-//          isEmployee
-//Creates a jwt token using the given paramaters, expires in 1 day
-const createToken = (id, fullName, isEmployee) => {
-    return jwt.sign({id, fullName, isEmployee}, secret, {
-        expiresIn: maxAge
-    });
+module.exports.signup = async (req, res) => {
+    const sessionId = req.params.id;
+    const userId = req.body.userId;
+
+    const comingWith = req.body.comingWith;
+    const reqId = JSON.parse(req.cookies.user).userId;
+    const admin = await isAdmin(reqId);
+
+    if (userId == reqId || admin) {
+        if (sessionId) {
+            try {
+                const session = await Session.findOne({ _id: sessionId });
+                if (session) {
+                    const sessionDate = new Date(session.date.toISOString().slice(0, -1));
+                    if (sessionDate > new Date()) {
+                        await session.addParticipants(sessionId, { userId, comingWith });
+                        res.status(200).json({ message: "U bent succesvol aangemeld" });
+                    } else {
+                        res.status(400).json({ message: "Deze sessie is al geweest" });
+                    }
+                } else {
+                    res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
+                }
+            } catch (err) {
+                console.log(err);
+                res.status(400).json({ message: err.message });
+            }
+        } else {
+            res.status(400).json({ message: "Er is geen sessionId gegegeven" });
+        }
+    } else {
+        res.status(400).json({ message: "U bent niet gemachtigd om deze persoon aan te melden" })
+    }
 }
 
-module.exports.login_get = (req, res) => {
-    res.render(path.join(__dirname, "../public/html/login"));
+const deleteUser = (e, session, userId) => {
+    if (e.userId == userId) {
+        const index = session.participants.indexOf(e);
+        session.participants.splice(index, 1)
+        session.save();
+    }
 }
 
-module.exports.signup_get = (req, res) => {
-    res.render(path.join(__dirname, "../public/html/register"));
+module.exports.signout = async (req, res) => {
+    const sessionId = req.params.id;
+    const userId = req.body.userId;
+    const cookieUserId = JSON.parse(req.cookies.user).userId;
+    const cookieEmployee = JSON.parse(req.cookies.user).isEmployee;
+
+    if (sessionId) {
+        try {
+            let session = await Session.findOne({ _id: sessionId });
+            if (session) {
+                if (userParticipates(userId, session.participants)) {
+                    if (cookieUserId == userId || cookieEmployee == true) {
+                        session.participants.some(e => deleteUser(e, session, userId));
+                        res.status(200).json({ message: "Succesvol uitgeschreven" });
+                    }
+                    else {
+                        res.status(400).json({ message: "U bent niet gemachtigd deze persoon uit te schrijven" });
+                    }
+                } else {
+                    res.status(400).json({ message: "Deze persoon is momenteel niet ingeschreven voor deze les" });
+                }
+            } else {
+                res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
+            }
+        }
+        catch (err) {
+            console.log(err);
+            res.status(400).json({ message: err.message });
+        }
+    }
+    else {
+        res.status(400).json({ message: "Er is geen sessionId gegegeven" });
+    }
+
 }
 
-module.exports.logout = (req, res) => {
-    res.clearCookie("jwt");
-    res.redirect("/login");
+module.exports.view = (req, res) => {
+    res.render(path.join(__dirname, "../views/agenda"), { isAdmin: false });
 }
