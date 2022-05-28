@@ -29,7 +29,7 @@ async function loadAgenda(weekNumber) {
           let sessionData = dayData[session];
           let { id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date } = sessionData;
           loadSessionItem(id, title, teacher, sessionData.participates, maxAmountOfParticipants, amountOfParticipants, date, day);
-          addSubscribedItems(id, sessionData.participates);
+          addSubscribedItems(id, sessionData.participates);  
         }
       } else {
         clearAgenda(day);
@@ -44,6 +44,7 @@ async function loadAgenda(weekNumber) {
   unsubcribeSession(); // loading in event handler for UNSUB button ->
   subscribeToSession();// loading in event handler for SUB button ->
   clickEvents();
+  addEventHandlersSession();
 }
 // Loads agenda items and sets the week dates on top of the agenda ->
 function loadAndSetFullAgenda() {
@@ -189,7 +190,7 @@ function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipan
     </div>`
 
   $(itemLayout).appendTo("#" + day);
-  addEventHandlersSession();
+
   checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date);
 }
 
@@ -550,7 +551,7 @@ $(".nextWeek").on("click", function () {
 
 // Go to current week ->
 $(".week").on("click", function () {
-  weekNumb = getCurrentWeekNumber();
+  weekNumb = getCurrentWeekNumber() - 1;
   loadAndSetFullAgenda();
 });
 
