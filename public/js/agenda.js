@@ -718,7 +718,7 @@ $(".addLesson").on("click", async function () {
       errorText("Vul all velden in voordat u de les toevoegd.")
     } else {
       sessionArray.push(json);
-      drawItems(sessionArray, $("#lessonDay").val());
+      drawItems(sessionArray);
     }
   });
 });
@@ -728,7 +728,7 @@ async function addSession(sessionArray) {
     let res = await ApiCaller.addSession(sessionArray);
     let json = await res.json();
     if(res.status == 201) {
-      toastPopUp(json.message, "success");
+      toastPopUp("Les(sen) toegevoegd", "success");
     } else {
       toastPopUp(json.message, "error");
     }
