@@ -14,8 +14,10 @@ const validateJwt = (req, res, next) => {
     if (token) {
         const decodedToken = verifyJwt(token);
         if (decodedToken != null) {
-            //Valid token ->
-            req.body.userId = decodedToken.id;
+            if (!decodedToken.isEmployee) {
+                //Valid token ->
+                req.body.userId = decodedToken.id;
+            }
             next();
         } else {
             res.redirect("/login");
