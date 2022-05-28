@@ -1,6 +1,6 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber() - 1;
+let weekNumb = getCurrentWeekNumber();
 
 // Render lesrooster from apiCaller and format it on date ->
 //  > Document.getready! first render. 
@@ -92,7 +92,7 @@ function addMinutes(date, minutes) {
 function addSubscribedItems(id, participates) {
   let subcribeBtn = `<button type="submit" class="btn btn-primary yinStyle subscribe"><i class="bi bi-arrow-bar-right"></i> Inschrijven</button>`;
   let unsubscribeBtn = `<button type="submit" class="btn btn-danger unSubStyle unsubscribe"><i class="bi bi-arrow-bar-left"></i> Uitschrijven</button>`;
-  let subCol = $("#" + id).children(".subscribeCol"); // subcribe col per ID, button is being pushed into this column
+  let subCol = $("#" + id).children(".subscribeCol"); // subscribe col per ID, button is being pushed into this column
 
   if (participates == undefined) {
     subCol.empty();
@@ -108,45 +108,10 @@ function addSubscribedItems(id, participates) {
 
 // Show all details per session ->
 function sessionDetails(data) {
+  let html = templateLoadSessionDetails(data)
   Swal.fire(
     {
-      html: `
-      <div class="alerttitle">
-        <h2>${data.title}<h2>
-        <hr/>
-      </div>
-      <div class="test">
-        <div class="row width">
-          <div class="col-md-7">          
-            <h3 class="lbs">Beschrijving</h3>
-            <p>${data.description}<p>
-          </div>
-          <div class="col-md-5">
-            <h3 class="lbs">Datum</h3> 
-            <p>${dateFormat(data.date).date}</p>
-          </div>
-        </div>
-        <div class="row width">
-          <div class="col-md-7">
-            <h3 class="lbs">Locatie</h3>
-            <p>${data.location}</p>
-          </div>
-          <div class="col-md-5">
-            <h3 class="lbs">Starttijd</h3>
-            <p>${dateFormat(data.date).time}<p>
-          </div>
-        </div>
-        <div class="row width">
-          <div class="col-md-7">
-            <h3 class="lbs">Docent</h3>
-            <p><i class="bi bi-person-circle icon"></i>${data.teacher}<p>
-          </div>
-          <div class="col-md-5">
-            <h3 class="lbs">Eindtijd</h3> 
-            <p>${dateFormat(addMinutes(new Date(data.date), data.duration)).time}</p>
-          </div>
-        </div>
-      </div>`,
+      html: html,
       customClass: 'sweetalert-seelesson',
       confirmButtonColor: '#D5CA9B',
       confirmButtonText: 'OK'
@@ -154,40 +119,7 @@ function sessionDetails(data) {
 }
 // Loads all session items and puts them into the right day ->
 function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipants, amountOfParticipants, date, day) {
-  let itemLayout = `
-    <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
-      <div class="col-md-2">
-        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(date).time}</h4>
-      </div>
-      <div class="col-md-2 sessionDetails">
-        <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
-      </div>
-      <div class="col-md-2">
-        <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
-      </div>
-      <div class="col-md-4 settings">
-        <div class="row">
-          <div class="col-md-3 text-start">
-            ${amountOfParticipants} / ${maxAmountOfParticipants}
-          </div>
-          <div class="col-md-2 text-end">
-            <i class="bi bi-pencil hiding editSession"></i>
-          </div>
-          <div class="col-md-2 text-center">
-            <i class="bi bi-x-lg hiding removeSession"></i>
-          </div>
-          <div class="col-md-2 text-start">
-            <i class="bi bi-person-plus hiding addUser"></i>
-          </div>
-          <div class="col-md-3 participate text-start">
-          
-          </div>
-        </div>       
-      </div>
-      <div class="col-md-2 subscribeCol text-end ">
-        
-      </div>
-    </div>`
+  let itemLayout = templateLoadSession(id, date, title, teacher, amountOfParticipants, maxAmountOfParticipants);
 
   $(itemLayout).appendTo("#" + day);
 
@@ -205,7 +137,6 @@ function addEventHandlersSession() {
       console.log(err)
     }
   });
-
 }
 
 // Add eventlisteners for button that render in after dom has loaded ->
@@ -232,62 +163,38 @@ function clickEvents() {
 }
 
 function addUser(sessionId) {
-  Swal.fire({
-    html: `
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <h2>Gebruiker toevoegen</h2>
-              <hr>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <p>Zoek naar een gebruiker en klik vervolgens op toevoegen aan les.</p>
-            </div>
-          </div>
-          <div class="row align-items-center">
-            <div class="col-md-12 pb-3">
-              <input type="text" class="form-control" id="searchUser" placeholder="Zoeken..">
-            </div>
-          </div>
-          <div class="row userItemsRow">
-            <div class="col-md userItemCol">
-              <h4 class='lead'>Zoek naar een gebruiker</h4>
-            </div>
-          </div>
-        </div>  
-      </div>
-    </div> 
-    `,
-    showCancelButton: true,
-    showConfirmButton: false,
-    cancelButtonText: 'Terug'
-  });
+  //loading in the swal templates from agendaSwalItems.js
+  swalItemAddUser();
+
+  // show all users at the begin of loading the pop up
+  $(".userItemCol").empty();
+  loopAndAddElements(filterData(""), sessionId);
 
   $("#searchUser").on("input", function () {
     let userArray = filterData($(this).val());
-    console.log(userArray)
+
     if (userArray.length <= 0) {
       $(".userItemCol").empty();
       $(".userItemCol").append("<h4 class='lead'>Geen resultaat</h4>")
     } else {
       $(".userItemCol").empty();
-      for (item in userArray) {
-        $(".userItemCol").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
-        $("#" + userArray[item].id).on("click", function () {
-          console.log("adding session")
-          addUserToSessionAsAdmin(sessionId, this.id);
-        });
-        $("#_" + userArray[item].id).on("click", function () {
-          console.log("removing")
-          removeUserFromSessionAsAdmin(sessionId, this.id.substring(1));
-        });
-      }
+      loopAndAddElements(userArray, sessionId);
     }
   });
+}
+
+function loopAndAddElements(userArray, sessionId) {
+  for (item in userArray) {
+    $(".userItemCol").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
+    $("#" + userArray[item].id).on("click", function () {
+      console.log("adding session")
+      addUserToSessionAsAdmin(sessionId, this.id);
+    });
+    $("#_" + userArray[item].id).on("click", function () {
+      console.log("removing")
+      removeUserFromSessionAsAdmin(sessionId, this.id.substring(1));
+    });
+  }
 }
 // subcribe a user to a session as admin ->
 async function addUserToSessionAsAdmin(sessionId, userId) {
@@ -362,85 +269,10 @@ async function editSession(sessionId) {
     let res = await ApiCaller.getSingleSession(sessionId); // Get all the infomation from the session
     let json = await res.json();
     let date = new Date(json.date);
+    let html = swalItemEditSession();
 
     Swal.fire({
-      html: `
-      <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <h2>Voeg nieuwe les toe</h2>
-              <hr>
-            </div>
-          </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Lesnaam:</b></h3>
-                <input id="lessonName" class="form-control" type="text">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Beschrijving:</b></h3>
-                <textarea id="lessonDescription" class="form-control"></textarea>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Locatie:</b></h3>
-                <input id="lessonLocation" class="form-control" type="text">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Yogadocent:</b></h3>
-                <p>
-                  <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
-                  Natascha Puper
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-12">
-                    <h3 class="lead lbs"><b>Dag:</b></h3>
-                  </div>
-                </div>
-                <div class="row align-items-center pb-3">
-                  <div class="col-md-12">
-                    <input id="lessonDay" class="form-control" type="date">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Starttijd:</b></h3>
-                <input id="lessonTime" class="form-control" type="time">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Duur:</b></h3>
-                <input id="lessonDuration" class="form-control" type="number" step="30" min="30">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Aantal deelnemers:</b></h3>
-                <input id="maxPeople" class="form-control" type="number" step="1" min="1">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>`,
+      html: html,
       customClass: 'sweetalert-makeLesson',
       showCancelButton: true,
       confirmButtonText: 'Update les',
@@ -459,8 +291,6 @@ async function editSession(sessionId) {
           "maxAmountOfParticipants": $("#maxPeople").val(),
           "weekly": false
         }
-        console.log(jsonData)
-
         try {
           let resUpdate = await ApiCaller.updateSession(jsonData, sessionId);
           let resJson = await resUpdate.json();
@@ -551,115 +381,16 @@ $(".nextWeek").on("click", function () {
 
 // Go to current week ->
 $(".week").on("click", function () {
-  weekNumb = getCurrentWeekNumber() - 1;
+  weekNumb = getCurrentWeekNumber();
   loadAndSetFullAgenda();
 });
 
 $(".addLesson").on("click", async function () {
-  let error = false;
-  let today = new Date().toISOString().split("T");
   let sessionArray = [];
+  let html = swalItemAddSession();
 
   Swal.fire({
-    html: `
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <h2>Voeg nieuwe les toe</h2>
-              <hr>
-            </div>
-          </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Lesnaam:</b></h3>
-                <input id="lessonName" class="form-control" type="text">
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Beschrijving:</b></h3>
-                <textarea id="lessonDescription" class="form-control"></textarea>
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Locatie:</b></h3>
-                <input id="lessonLocation" class="form-control" type="text">
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Yogadocent:</b></h3>
-                <p>
-                  <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
-                  Natascha Puper
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-12">
-                    <h3 class="lead lbs"><b>Dag:</b></h3>
-                  </div>
-                </div>
-                <div class="row align-items-center pb-3">
-                  <div class="col-md-10">
-                    <input id="lessonDay" value="${today[0]}"class="form-control" type="date">
-                  </div>
-                  <div class="col-md-1">
-                    <i class="bi bi-plus-square-dotted addSessionToArray"></i>
-                  </div>
-                  <div class="col-md-1">
-                    
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-8 text-center">
-                    <p class="lead">Toegevoegde dagen <i class="bi bi-chevron-down seeAddedSessions"></i></p>
-                  </div>
-                  <div class="col-md-4 text-center">
-                    
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12 allSessionItems text-center">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Starttijd:</b></h3>
-                <input id="lessonTime" class="form-control" type="time">
-              </div>
-            </div>
-            <div class="row  pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Duur:</b></h3>
-                <input id="lessonDuration" class="form-control" type="number" step="30" min="30">
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Aantal deelnemers:</b></h3>
-                <input id="maxPeople" class="form-control" type="number" step="1" min="1">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="alert alert-warning close errorBox" role="alert">
-      </div>
-    </div>
-      `,
+    html: html,
     customClass: 'sweetalert-makeLesson',
     confirmButtonColor: '#D5CA9B',
     showCloseButton: true,
@@ -714,6 +445,8 @@ $(".addLesson").on("click", async function () {
     let description = $("#lessonDescription").val();
     let maxAmountOfParticipants = $("#maxPeople").val();
     let weekly = false;
+    $(".allSessionItems").slideDown(200);
+    checkStatus = true;
 
     let json = { title, location, date, duration, participants, teacher, description, maxAmountOfParticipants, weekly }
 
@@ -732,6 +465,7 @@ async function addSession(sessionArray) {
     let json = await res.json();
     if(res.status == 201) {
       toastPopUp("Les(sen) toegevoegd!", "success");
+      loadAndSetFullAgenda(weekNumb);
     } else {
       toastPopUp(json.message, "error");
     }
@@ -757,31 +491,10 @@ function drawItems(sessionArray) {
   }
 }
 
-// Add session call ->
-// async function addSession(data) {
-//   try {
-//     let res = await ApiCaller.addSession(json);
-//     let json = await res.json();
-//     if (res.status == 201) {
-//       toastPopUp(json.message, "success");
-//     } else {
-//       Swal.fire({
-//         title: "Oops",
-//         icon: 'success',
-//         text: json.message,
-//         showCloseButton: true,
-//         confirmButtonColor: '#D5CA9B'
-//       });
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
 // Unsubscribe form a session ->
 function unsubcribeSession() {
   $(".unsubscribe").on("click", function () {
     let sessionId = $(this).parent().parent().attr("id");
-
     Swal.fire({
       title: 'Weet u zeker dat u zich wilt uitschrijven voor deze les?',
       icon: 'info',
@@ -821,30 +534,19 @@ function unsubcribeSession() {
     });
   });
 }
+
 // subcribe to lesson ->
 function subscribeToSession() {
+  
   $(".subscribe").on("click", function () {
+    let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
+    let html = swalItemSubscribeToSession(lesson);
     if (typeof user == 'undefined') {
       console.log("user not logged in");
       location.href = "/login";
     } else {
-      let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
-      console.log(lesson)
       Swal.fire({
-        html: `
-        <h2>Inschrijven</h2>
-        <hr>
-        <p>U wilt u inschrijven voor <b>${lesson}</b>.</p>
-        <p><b> Hoeveel personen wilt u inschrijven?</b></p>
-        <div class="row width">
-          <div class="col-md-12 text-start">
-            <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
-          </div>
-        </div>
-        <p><b id="extraPeopleTitle"></b></p>
-        <div id="allInputs">
-
-        </div>`,
+        html: html,
         customClass: 'sweetalert-subscribe',
         showCancelButton: true,
         confirmButtonText: 'Schrijf mij in',
