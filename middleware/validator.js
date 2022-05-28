@@ -72,7 +72,6 @@ const verifyJwt = (token) => {
     return decodedToken;
 }
 
-=======
 //validateJson
 //Params:   req
 //          res
