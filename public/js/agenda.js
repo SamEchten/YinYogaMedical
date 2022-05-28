@@ -277,10 +277,12 @@ function addUser(sessionId) {
       for (item in userArray) {
         $(".userItemCol").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
         $("#" + userArray[item].id).on("click", function () {
+          console.log("adding session")
           addUserToSessionAsAdmin(sessionId, this.id);
         });
-        $("." + userArray[item].id).on("click", function () {
-          removeUserFromSessionAsAdmin(sessionId, $(this).prop("className"))
+        $("#_" + userArray[item].id).on("click", function () {
+          console.log("removing")
+          removeUserFromSessionAsAdmin(sessionId, this.id.substring(1));
         });
       }
     }
@@ -343,9 +345,9 @@ function createUserItem(fullName, email, phoneNumber, id) {
       <i class="bi bi-envelope pe-3"></i> ${email} <br>
       <i class="bi bi-telephone pe-3"></i> ${phoneNumber}<br>
       </p>
-      <div class="${id}">
+      <div>
         <i id=${id} class="bi bi-person-plus float-end"></i>
-        <i class="bi bi-person-dash pe-2 removeAsAdmin float-end"></i>
+        <i id="_${id}"class="bi bi-person-dash pe-2 removeAsAdmin float-end"></i>
       </div>
     </div>
   </div>`
@@ -718,7 +720,7 @@ $(".addLesson").on("click", async function () {
       errorText("Vul all velden in voordat u de les toevoegd.")
     } else {
       sessionArray.push(json);
-      drawItems(sessionArray, $("#lessonDay").val());
+      drawItems(sessionArray);
     }
   });
 });
