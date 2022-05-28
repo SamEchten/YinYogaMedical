@@ -526,6 +526,7 @@ $(".week").on("click", function () {
 
 $(".addLesson").on("click", async function () {
   let error = false;
+  let today = new Date().toISOString().split("T");
 
   Swal.fire({
     html: `
@@ -549,7 +550,7 @@ $(".addLesson").on("click", async function () {
         <h3 class="lead lbs"><b>Dag:</b></h3>
         <div class="row">
           <div class="col-md-4">
-          <input id="lessonDay" class="swal2-input" type="date">
+          <input id="lessonDay" value="${today[0]}"class="swal2-input" type="date">
           </div>
         </div>
         <h3 class="lead lbs"><b>Starttijd:</b></h3>
