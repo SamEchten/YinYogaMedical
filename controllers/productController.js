@@ -124,7 +124,7 @@ const addClassPass = async (user, product, paymentId) => {
     const year = date.getFullYear() + product.validFor;
     const month = date.getMonth();
     const day = date.getDate();
-    const expireDate = new Date(year, month, day);
+    const expireDate = new Date(year, month, day, 2);
     user.purchases.push({ productId: product.id, expireDate: expireDate, paymentId: paymentId })
 
     //Add class pass hours to users class pass
