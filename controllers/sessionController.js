@@ -12,7 +12,7 @@ module.exports.get = async (req, res) => {
     if (req.cookies.user) {
         userId = JSON.parse(req.cookies.user).userId;
     }
-
+  
     if (id) {
         //Get single session
         try {
@@ -162,8 +162,7 @@ Date.prototype.getWeekNumber = function () {
 const getFirstDayOfWeek = () => {
     const date = new Date();
     const day = date.getDay();
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1)
     let result = new Date(date.setDate(diff));
     result = result.toISOString().split("T")[0] + "T00:00:00.000Z";
     return result;
