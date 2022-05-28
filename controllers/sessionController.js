@@ -166,23 +166,33 @@ const getFirstDayOfWeek = () => {
 }
 
 module.exports.add = async (req, res) => {
-    const { title, location, date, duration, participants, teacher,
-        description, maxAmountOfParticipants, weekly, private } = req.body;
-
     try {
-        const session = await Session.create({
-            title,
-            location,
-            date,
-            duration,
-            participants,
-            teacher,
-            description,
-            maxAmountOfParticipants,
-            weekly,
-            private
-        });
-        res.status(201).json({ id: session.id });
+        let sessionIds = [];
+        for (sessionIndex in req.body) {
+            const { title, location, date, duration, participants, teacher,
+                description, maxAmountOfParticipants, weekly, private } = req.body[sessionIndex];
+
+            const session = await Session.create({
+                title,
+                location,
+                date,
+                duration,
+                participants,
+                teacher,
+                description,
+                maxAmountOfParticipants,
+                weekly,
+                private
+            });
+
+            sessionIds.push(session.id);
+        }
+
+        if (req.body.length > 1) {
+            res.status(201).json({ sessionIds });
+        } else {
+            res.status(201).json({ id: session.id });
+        }
     } catch (err) {
         let errors = handleSessionErrors(err);
         res.status(400).json(errors);
@@ -228,18 +238,18 @@ module.exports.delete = async (req, res) => {
 module.exports.signup = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
-    console.log(req.body.userId);
-    
+
     const comingWith = req.body.comingWith;
     const reqId = JSON.parse(req.cookies.user).userId;
     const admin = await isAdmin(reqId);
 
-    if (userId == reqId || reqId == admin) {
+    if (userId == reqId || admin) {
         if (sessionId) {
             try {
                 const session = await Session.findOne({ _id: sessionId });
                 if (session) {
-                    if (session.date > new Date()) {
+                    const sessionDate = new Date(session.date.toISOString().slice(0, -1));
+                    if (sessionDate > new Date()) {
                         await session.addParticipants(sessionId, { userId, comingWith });
                         res.status(200).json({ message: "U bent succesvol aangemeld" });
                     } else {
@@ -260,6 +270,14 @@ module.exports.signup = async (req, res) => {
     }
 }
 
+const deleteUser = (e, session, userId) => {
+    if (e.userId == userId) {
+        const index = session.participants.indexOf(e);
+        session.participants.splice(index, 1)
+        session.save();
+    }
+}
+
 module.exports.signout = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
@@ -270,17 +288,9 @@ module.exports.signout = async (req, res) => {
         try {
             let session = await Session.findOne({ _id: sessionId });
             if (session) {
-                let check = false //check if user is found or not
-                for (index in session.participants) {
-                    let participant = session.participants[index];
-                    if (participant.userId == userId) {
-                        check = true;
-                    }
-                }
-                if (check) {
+                if (userParticipates(userId, session.participants)) {
                     if (cookieUserId == userId || cookieEmployee == true) {
-                        session.participants.splice(index, 1);
-                        session.save();
+                        session.participants.some(e => deleteUser(e, session, userId));
                         res.status(200).json({ message: "Succesvol uitgeschreven" });
                     }
                     else {
@@ -294,6 +304,7 @@ module.exports.signout = async (req, res) => {
             }
         }
         catch (err) {
+            console.log(err);
             res.status(400).json({ message: err.message });
         }
     }
