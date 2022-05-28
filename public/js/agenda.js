@@ -1,4 +1,3 @@
-
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber() - 1;
@@ -615,12 +614,19 @@ $(".addLesson").on("click", async function () {
                     <i class="bi bi-plus-square-dotted addSessionToArray"></i>
                   </div>
                   <div class="col-md-1">
-                    <i class="bi bi-chevron-down seeAddedSessions"></i>
+                    
                   </div>
                 </div>
                 <div class="row">
-                  <div  class="col-md allSessionItems text-center">
+                  <div class="col-md-8 text-center">
+                    <p class="lead">Toegevoegde dagen <i class="bi bi-chevron-down seeAddedSessions"></i></p>
+                  </div>
+                  <div class="col-md-4 text-center">
                     
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12 allSessionItems text-center">
                   </div>
                 </div>
               </div>
@@ -659,9 +665,27 @@ $(".addLesson").on("click", async function () {
     confirmButtonText: 'Voeg les toe',
     cancelButtonText: 'Terug',
 
-  }).then((result) => {
+  }).then(async (result) => {
     if (result.isConfirmed) {
-      console.log(sessionArray);
+      console.log(sessionArray.length)
+      if(sessionArray.length > 0) {
+        for(item in sessionArray) {
+          addSession(sessionArray[items]);
+        }
+      } else { 
+        let json =  {
+          title: $("#lessonName").val() ,
+          location: $("#lessonLocation").val(),
+          date: createDateString($("#lessonDay").val(), $("#lessonTime").val()),
+          duration: $("#lessonDuration").val(),
+          participants: [],
+          teacher: "Natascha",
+          description: $("#lessonDescription").val(),
+          maxAmountOfParticipants: $("#maxPeople").val(),
+          weekly: false
+        }
+        addSession(json);
+      }
     }
   });
 
@@ -669,10 +693,10 @@ $(".addLesson").on("click", async function () {
   let checkStatus = false;
   $(".seeAddedSessions").on("click", function () {
     if (checkStatus == false) {
-      $(".allSessionItems").slideDown("slow")
+      $(".allSessionItems").slideDown(200)
       checkStatus = true;
     } else {
-      $(".allSessionItems").slideUp("slow");
+      $(".allSessionItems").slideUp(200);
       checkStatus = false;
     }
   });
@@ -694,10 +718,24 @@ $(".addLesson").on("click", async function () {
       errorText("Vul all velden in voordat u de les toevoegd.")
     } else {
       sessionArray.push(json);
-      drawItems(sessionArray);
+      drawItems(sessionArray, $("#lessonDay").val());
     }
   });
 });
+// add a session as admin ->
+async function addSession(sessionArray) {
+  try {
+    let res = await ApiCaller.addSession(sessionArray);
+    let json = await res.json();
+    if(res.status == 201) {
+      toastPopUp(json.message, "success");
+    } else {
+      toastPopUp(json.message, "error");
+    }
+  } catch(err){
+    console.log(err)
+  }
+}
 
 function drawItems(sessionArray) {
   const sessionItems = $(".allSessionItems");
@@ -705,7 +743,7 @@ function drawItems(sessionArray) {
 
   for (jsonIndex in sessionArray) {
     const json = sessionArray[jsonIndex];
-    const item = $(`<p id="${jsonIndex}" class="lbbs itemsSession">${json.title} <br> 28-5-2022</p>`);
+    const item = $(`<p id="${jsonIndex}" class="lbs itemsSession"><b>${json.title}</b><br> ${dateFormat(json.date).date}</p>`);
     item.on("click", function () {
       //Remove json object from array ->
       sessionArray.splice(this.id, 1);
@@ -717,25 +755,25 @@ function drawItems(sessionArray) {
 }
 
 // Add session call ->
-async function addSession(data) {
-  try {
-    let res = await ApiCaller.addSession(json);
-    let json = await res.json();
-    if (res.status == 201) {
-      toastPopUp(json.message, "success");
-    } else {
-      Swal.fire({
-        title: "Oops",
-        icon: 'success',
-        text: json.message,
-        showCloseButton: true,
-        confirmButtonColor: '#D5CA9B'
-      });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-}
+// async function addSession(data) {
+//   try {
+//     let res = await ApiCaller.addSession(json);
+//     let json = await res.json();
+//     if (res.status == 201) {
+//       toastPopUp(json.message, "success");
+//     } else {
+//       Swal.fire({
+//         title: "Oops",
+//         icon: 'success',
+//         text: json.message,
+//         showCloseButton: true,
+//         confirmButtonColor: '#D5CA9B'
+//       });
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 // Unsubscribe form a session ->
 function unsubcribeSession() {
   $(".unsubscribe").on("click", function () {

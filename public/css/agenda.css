@@ -24,9 +24,13 @@
     display: none;
     height: 135px;
     overflow: auto;
+    
 }
 .allSessionItems p {
-    padding: 5px;
+    padding: 7px;
+    padding-left: 28px;
+    background: #d5ca9b40;
+    margin-bottom: 2px;
 }
 .userItemsRow {
     height: 400px;
