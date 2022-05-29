@@ -10,7 +10,12 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
   //scrollDownToCurrDay();
-  toastPopUp("Welkom " + user.fullName, "info");
+  try {
+    toastPopUp("Welkom " + user.fullName, "info");
+  } catch (err) {
+
+  }
+  
 
 });
 
@@ -128,7 +133,13 @@ function sessionDetails(data) {
       }
     });
     //load all participants into correct div
-    showAllParticipants(data.participants);
+    if(roleCheck()) {
+      showAllParticipants(data.participants);
+    } else {
+      $(".usersPerSessionRow").addClass("d-none");
+    }
+    
+    
 
 }
 

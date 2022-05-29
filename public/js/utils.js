@@ -5,7 +5,12 @@ let user;
 $(async function () {
   roleCheck();
   getAndSetAllUsers();
-  $(".userName").html(user.fullName);
+  try {
+    $(".userName").html(user.fullName);
+  } catch (err) {
+
+  }
+  
 });
 
 // Error message : give the class "errorBox" to activate ->
