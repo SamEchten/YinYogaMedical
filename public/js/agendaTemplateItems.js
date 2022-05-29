@@ -52,7 +52,7 @@ function  swalItemEditSession () {
             <hr>
           </div>
         </div>
-      <div class="row">
+      <div class="row slide-in-blurred-top">
         <div class="col-md-6">
           <div class="row h-25 pb-4">
             <div class="col-md-12">
@@ -136,7 +136,7 @@ function swalItemAddSession(){
               <hr>
             </div>
           </div>
-        <div class="row">
+        <div class="row slide-in-blurred-top">
           <div class="col-md-6">
             <div class="row pb-5">
               <div class="col-md-12">
@@ -254,7 +254,7 @@ function swalItemSubscribeToSession(lesson) {
 function templateLoadSession(id,date, title, teacher, amountOfParticipants,  maxAmountOfParticipants) {
     let template = 
     `
-    <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
+    <div id="${id}" class="row ps-4 p-2 agendaItem swing-in-top-fwd align-items-center">
       <div class="col-md-2">
         <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(date).time}</h4>
       </div>

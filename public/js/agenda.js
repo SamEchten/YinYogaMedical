@@ -246,7 +246,7 @@ async function removeUserFromSessionAsAdmin(sessionId, userId) {
 // Create userItem element 
 function createUserItem(fullName, email, phoneNumber, id) {
   let element = `
-  <div class="row pb-2">
+  <div class="row pb-2 slide-in-blurred-top">
     <div class="col-md-12 p-2 lead userFilterItem text-start">
       <h4><i class="bi bi-person pe-2"></i> ${fullName}</h4>
       <p class="p-1">

@@ -108,8 +108,8 @@ body {
     border-radius: 5px;
     transition: 0.2s;
     cursor: pointer;
-    animation-name: slide;
-    animation-duration: 0.5s;
+    /* animation-name: slide;
+    animation-duration: 0.5s; */
     /* box-shadow: 0px 1px 5px -3px #272727; */
 }
 
