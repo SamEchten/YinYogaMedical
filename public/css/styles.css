@@ -7,6 +7,7 @@
     font-family: OpenSans;
     src: url(./open_sans);
 }
+
 input {
     box-shadow: none !important;
 }
@@ -14,6 +15,10 @@ input {
     border: none !important;
     border-bottom: 1px solid #d5ca9b !important;
     border-radius: 0px !important;
+}
+.showOrHide {
+    opacity: 0.5 !important;
+    pointer-events: none;
 }
 
 b { 
@@ -104,23 +109,31 @@ h4 {
 .currentNavItem:hover {
     border-bottom: 2px solid #d5ca9b48;
 }
+
 .tracking-in-contract {
-	-webkit-animation: tracking-in-contract 1.0s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
-	        animation: tracking-in-contract 1.0s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+-webkit-animation: tracking-in-contract 1.0s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+animation: tracking-in-contract 1.0s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
 }
 .slide-in-blurred-top {
-	-webkit-animation: slide-in-blurred-top 0.5s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
-	        animation: slide-in-blurred-top 0.5s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
+-webkit-animation: slide-in-blurred-top 0.5s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
+        animation: slide-in-blurred-top 0.5s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
 }
 .slide-in-elliptic-top-fwd {
-	-webkit-animation: slide-in-elliptic-top-fwd 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-	        animation: slide-in-elliptic-top-fwd 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+-webkit-animation: slide-in-elliptic-top-fwd 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+        animation: slide-in-elliptic-top-fwd 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 .swing-in-top-fwd {
-	-webkit-animation: swing-in-top-fwd 0.9s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
-	        animation: swing-in-top-fwd 0.9s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+-webkit-animation: swing-in-top-fwd 0.9s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+        animation: swing-in-top-fwd 0.9s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
 }
-
+.slide-out-elliptic-top-bck {
+-webkit-animation: slide-out-elliptic-top-bck 0.7s ease-in both;
+animation: slide-out-elliptic-top-bck 0.7s ease-in both;
+}
+.slide-out-top {
+-webkit-animation: slide-out-top 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+animation: slide-out-top 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
 /* MEDIA QUERIES */
 @media only screen and (max-width: 600px) {
     .rbs {
@@ -260,5 +273,65 @@ h4 {
       opacity: 1;
     }
   }
+@-webkit-keyframes slide-out-elliptic-top-bck {
+
+  0% {
+    -webkit-transform: translateY(0) rotateX(0) scale(1);
+            transform: translateY(0) rotateX(0) scale(1);
+    -webkit-transform-origin: 50% 1400px;
+            transform-origin: 50% 1400px;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateY(-600px) rotateX(-30deg) scale(0);
+            transform: translateY(-600px) rotateX(-30deg) scale(0);
+    -webkit-transform-origin: 50% 100%;
+            transform-origin: 50% 100%;
+    opacity: 1;
+  }
+}
+@keyframes slide-out-elliptic-top-bck {
+  0% {
+    -webkit-transform: translateY(0) rotateX(0) scale(1);
+            transform: translateY(0) rotateX(0) scale(1);
+    -webkit-transform-origin: 50% 1400px;
+            transform-origin: 50% 1400px;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateY(-600px) rotateX(-30deg) scale(0);
+            transform: translateY(-600px) rotateX(-30deg) scale(0);
+    -webkit-transform-origin: 50% 100%;
+            transform-origin: 50% 100%;
+    opacity: 1;
+  }
+}
+
+ @-webkit-keyframes slide-out-top {
+        0% {
+          -webkit-transform: translateY(0);
+                  transform: translateY(0);
+          opacity: 1;
+        }
+        100% {
+          -webkit-transform: translateY(-1000px);
+                  transform: translateY(-1000px);
+          opacity: 0;
+        }
+      }
+      @keyframes slide-out-top {
+        0% {
+          -webkit-transform: translateY(0);
+                  transform: translateY(0);
+          opacity: 1;
+        }
+        100% {
+          -webkit-transform: translateY(-1000px);
+                  transform: translateY(-1000px);
+          opacity: 0;
+        }
+      }
+      
+
   
   

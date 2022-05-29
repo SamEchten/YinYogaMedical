@@ -97,10 +97,7 @@ function checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amount
 
   if ((amountOfParticipants >= maxAmountOfParticipants && !participates) || today > result) {
     if (!roleCheck()) {
-      $("#" + id).css({
-        "opacity": 0.5,
-        "pointer-events": "none"
-      })
+      $("#" + id).addClass("showOrHide");
     }
   }
 

@@ -348,7 +348,10 @@ async function removeSession(sessionId) {
       try {
         let res = await ApiCaller.removeSession(sessionId);
         if (res.status == 200) {
-          loadAndSetFullAgenda();
+          $("#" + sessionId).addClass("slide-out-top");
+          $("#" + sessionId).slideUp(500);
+
+          //loadAndSetFullAgenda();
           toastPopUp("Les geannuleerd", "success");
         }
       } catch (err) {
