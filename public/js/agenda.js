@@ -1,6 +1,6 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber();
+let weekNumb = getCurrentWeekNumber() -1;
 
 // Render lesrooster from apiCaller and format it on date ->
 //  > Document.getready! first render. 
@@ -9,7 +9,7 @@ $(async function () {
   const res = await (await ApiCaller.getAllSessions()).json();
   schedule = res;
   loadAgenda(weekNumb);
-  scrollDownToCurrDay();
+  //scrollDownToCurrDay();
   toastPopUp("Welkom " + user.fullName, "info");
 
 });
@@ -398,6 +398,7 @@ $(".addLesson").on("click", async function () {
     focusConfirm: false,
     confirmButtonText: 'Voeg les toe',
     cancelButtonText: 'Terug',
+    allowOutsideClick: false
 
   }).then(async (result) => {
     if (result.isConfirmed) {

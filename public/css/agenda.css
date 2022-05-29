@@ -24,7 +24,6 @@
     display: none;
     height: 135px;
     overflow: auto;
-    
 }
 .allSessionItems p {
     padding: 7px;
@@ -46,7 +45,6 @@
     font-size: 17px !important;
     border-radius: 7px;
     border: 1px solid #e0e0e0;
-    pointer-events: none;
 }
 
 .userFilterItem:hover { 
@@ -240,11 +238,10 @@ p {
 .sweetalert-makeLesson input[type=text],
 textarea {
     width: 100% !important;
-    margin-bottom: 20px !important;
+    /* margin-bottom: 20px !important; */
 }
 
 .sweetalert-makeLesson textarea {
-    height: 80px !important;
     margin-left: 5px !important;
     resize: none !important;
 }

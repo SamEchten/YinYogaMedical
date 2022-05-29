@@ -7,6 +7,14 @@
     font-family: OpenSans;
     src: url(./open_sans);
 }
+input {
+    box-shadow: none !important;
+}
+.inputStyle {
+    border: none !important;
+    border-bottom: 1px solid #d5ca9b !important;
+    border-radius: 0px !important;
+}
 
 b { 
     font-weight: bold !important;

@@ -22,7 +22,7 @@ function swalItemAddUser(){
               </div>
               <div class="row align-items-center">
                 <div class="col-md-12 pb-3">
-                  <input type="text" class="form-control" id="searchUser" placeholder="Zoeken..">
+                  <input type="text" class="form-control inputStyle" id="searchUser" placeholder="Zoeken..">
                 </div>
               </div>
               <div class="row userItemsRow">
@@ -54,25 +54,25 @@ function  swalItemEditSession () {
         </div>
       <div class="row">
         <div class="col-md-6">
-          <div class="row">
+          <div class="row h-25 pb-4">
             <div class="col-md-12">
               <h3 class="lead lbs"><b>Lesnaam:</b></h3>
               <input id="lessonName" class="form-control" type="text">
             </div>
           </div>
-          <div class="row">
+          <div class="row h-25 pb-4">
             <div class="col-md-12">
               <h3 class="lead lbs"><b>Beschrijving:</b></h3>
               <textarea id="lessonDescription" class="form-control"></textarea>
             </div>
           </div>
-          <div class="row">
+          <div class="row h-25 pb-4">
             <div class="col-md-12">
               <h3 class="lead lbs"><b>Locatie:</b></h3>
               <input id="lessonLocation" class="form-control" type="text">
             </div>
           </div>
-          <div class="row">
+          <div class="row h-25 pb-4">
             <div class="col-md-12">
               <h3 class="lead lbs"><b>Yogadocent:</b></h3>
               <p>
@@ -83,33 +83,33 @@ function  swalItemEditSession () {
           </div>
         </div>
         <div class="col-md-6">
-          <div class="row">
+          <div class="row h-25 pb-4">
             <div class="col-md-12">
               <div class="row">
                 <div class="col-md-12">
                   <h3 class="lead lbs"><b>Dag:</b></h3>
                 </div>
               </div>
-              <div class="row align-items-center pb-3">
+              <div class="row align-items-center pb-5">
                 <div class="col-md-12">
                   <input id="lessonDay" class="form-control" type="date">
                 </div>
               </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row h-25 pb-4">
             <div class="col-md-12">
               <h3 class="lead lbs"><b>Starttijd:</b></h3>
               <input id="lessonTime" class="form-control" type="time">
             </div>
           </div>
-          <div class="row">
+          <div class="row h-25 pb-4">
             <div class="col-md-12">
               <h3 class="lead lbs"><b>Duur:</b></h3>
               <input id="lessonDuration" class="form-control" type="number" step="30" min="30">
             </div>
           </div>
-          <div class="row">
+          <div class="row h-25 pb-4">
             <div class="col-md-12">
               <h3 class="lead lbs"><b>Aantal deelnemers:</b></h3>
               <input id="maxPeople" class="form-control" type="number" step="1" min="1">
@@ -132,30 +132,31 @@ function swalItemAddSession(){
           <div class="row">
             <div class="col-md-12">
               <h2>Voeg nieuwe les toe</h2>
+              <p>Plan hier u les, navigeer naar het plus icoontje aan de rechter kant van het datum veld, zo kunt u meerdere lessen tegelijk plannen.</p>
               <hr>
             </div>
           </div>
         <div class="row">
           <div class="col-md-6">
-            <div class="row pb-3">
+            <div class="row pb-5">
               <div class="col-md-12">
                 <h3 class="lead lbs"><b>Lesnaam:</b></h3>
-                <input id="lessonName" class="form-control" type="text">
+                <input id="lessonName" class="form-control inputStyle" placeholder="Lesnaam..." type="text">
               </div>
             </div>
-            <div class="row pb-3">
+            <div class="row pb-5">
               <div class="col-md-12">
                 <h3 class="lead lbs"><b>Beschrijving:</b></h3>
-                <textarea id="lessonDescription" class="form-control"></textarea>
+                <textarea id="lessonDescription" class="form-control inputStyle" placeholder="Beschrijving..."></textarea>
               </div>
             </div>
-            <div class="row pb-3">
+            <div class="row pb-5">
               <div class="col-md-12">
                 <h3 class="lead lbs"><b>Locatie:</b></h3>
-                <input id="lessonLocation" class="form-control" type="text">
+                <input id="lessonLocation" class="form-control inputStyle" placeholder="Locatie..." type="text">
               </div>
             </div>
-            <div class="row pb-3">
+            <div class="row pb-5">
               <div class="col-md-12">
                 <h3 class="lead lbs"><b>Yogadocent:</b></h3>
                 <p>
@@ -173,9 +174,9 @@ function swalItemAddSession(){
                     <h3 class="lead lbs"><b>Dag:</b></h3>
                   </div>
                 </div>
-                <div class="row align-items-center pb-3">
+                <div class="row align-items-center pb-2">
                   <div class="col-md-10">
-                    <input id="lessonDay" value="${today[0]}"class="form-control" type="date">
+                    <input id="lessonDay" value="${today[0]}"class="form-control inputStyle" type="date">
                   </div>
                   <div class="col-md-1">
                     <i class="bi bi-plus-square-dotted addSessionToArray"></i>
@@ -198,22 +199,22 @@ function swalItemAddSession(){
                 </div>
               </div>
             </div>
-            <div class="row pb-3">
+            <div class="row pb-5">
               <div class="col-md-12">
                 <h3 class="lead lbs"><b>Starttijd:</b></h3>
-                <input id="lessonTime" class="form-control" type="time">
+                <input id="lessonTime" class="form-control inputStyle" type="time">
               </div>
             </div>
-            <div class="row  pb-3">
+            <div class="row  pb-5">
               <div class="col-md-12">
                 <h3 class="lead lbs"><b>Duur:</b></h3>
-                <input id="lessonDuration" class="form-control" type="number" step="30" min="30">
+                <input id="lessonDuration" class="form-control inputStyle" placeholder="Lengte van een les..." type="number" step="30" min="30">
               </div>
             </div>
-            <div class="row pb-3">
+            <div class="row pb-5">
               <div class="col-md-12">
                 <h3 class="lead lbs"><b>Aantal deelnemers:</b></h3>
-                <input id="maxPeople" class="form-control" type="number" step="1" min="1">
+                <input id="maxPeople" class="form-control inputStyle" placeholder="Aantal deelnemers..." type="number" step="1" min="1">
               </div>
             </div>
           </div>
