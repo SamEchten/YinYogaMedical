@@ -41,11 +41,14 @@
 }
 
 .userFilterItem {
-    border-bottom: 2px solid #d5ca9b;
     transition: 0.5s;
     cursor: pointer;
     font-size: 17px !important;
+    border-radius: 7px;
+    border: 1px solid #e0e0e0;
+    pointer-events: none;
 }
+
 .userFilterItem:hover { 
     background-color: #dfdfdf;
 }
