@@ -108,7 +108,8 @@ function addSubscribedItems(id, participates) {
 
 // Show all details per session ->
 function sessionDetails(data) {
-  let html = templateLoadSessionDetails(data)
+  let html = templateLoadSessionDetails(data);
+  let check = false;
   Swal.fire(
     {
       html: html,
@@ -116,6 +117,26 @@ function sessionDetails(data) {
       confirmButtonColor: '#D5CA9B',
       confirmButtonText: 'OK'
     });
+    //handle the dropdown effect
+    $(".dropDownUsers").on("click", function() {
+      if (check) {
+        $(".sessionUsers").slideUp("slow");
+        check = false;
+      } else {
+        $(".sessionUsers").slideDown("slow");
+        check = true;
+      }
+    });
+    //load all participants into correct div
+    showAllParticipants(data.participants);
+
+}
+
+function showAllParticipants(data) {
+  for(users in data) {
+    // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT  
+    $(".sessionUsers").append(`<p id="" class="lead">${data[users].userId}<p>`)
+  }
 }
 // Loads all session items and puts them into the right day ->
 function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipants, amountOfParticipants, date, day) {
@@ -632,7 +653,7 @@ function nrOfPeopleChanged() {
         </div> 
       </div>`;
 
-    }
+    }G
     title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
     document.getElementById('allInputs').innerHTML = temporary;
   }

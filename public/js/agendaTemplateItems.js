@@ -329,6 +329,12 @@ function templateLoadSessionDetails(data) {
             <p>${dateFormat(addMinutes(new Date(data.date), data.duration)).time}</p>
           </div>
         </div>
+        <div class="row w-100 ">
+          <h3>Ingeschreven leden <i class="bi bi-chevron-down dropDownUsers"></i><h3>
+          <div class="col-md-12 sessionUsers">
+
+          </div>
+        </div>
       </div>`
 
       return template;
