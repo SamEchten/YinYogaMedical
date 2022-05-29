@@ -52,7 +52,7 @@ function  swalItemEditSession () {
             <hr>
           </div>
         </div>
-      <div class="row slide-in-blurred-top">
+      <div class="row">
         <div class="col-md-6">
           <div class="row h-25 pb-4">
             <div class="col-md-12">
@@ -136,7 +136,7 @@ function swalItemAddSession(){
               <hr>
             </div>
           </div>
-        <div class="row slide-in-blurred-top">
+        <div class="row">
           <div class="col-md-6">
             <div class="row pb-5">
               <div class="col-md-12">

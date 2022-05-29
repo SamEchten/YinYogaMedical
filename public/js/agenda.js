@@ -481,7 +481,7 @@ function drawItems(sessionArray) {
 
   for (jsonIndex in sessionArray) {
     const json = sessionArray[jsonIndex];
-    const item = $(`<p id="${jsonIndex}" class="lbs itemsSession"><b>${json.title}</b><br> ${dateFormat(json.date).date}</p>`);
+    const item = $(`<p id="${jsonIndex}" class="lbs itemsSession slide-in-blurred-top"><b>${json.title}</b><br> ${dateFormat(json.date).date}</p>`);
     item.on("click", function () {
       //Remove json object from array ->
       sessionArray.splice(this.id, 1);
