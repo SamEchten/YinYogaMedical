@@ -2,7 +2,6 @@ const Session = require("../models/Session");
 const User = require("../models/User");
 const path = require("path");
 const { handleSessionErrors } = require("./errorHandler");
-const userController = require("./userController");
 
 //TODO: only show non private session
 //do show if req was made by admin or participants
@@ -12,7 +11,7 @@ module.exports.get = async (req, res) => {
     if (req.cookies.user) {
         userId = JSON.parse(req.cookies.user).userId;
     }
-  
+
     if (id) {
         //Get single session
         try {
@@ -127,17 +126,21 @@ const getSessionInfo = async (session, userId) => {
         description: session.description
     }
 
-    if (userId != null) {
-        if (await isAdmin(userId)) {
-            sessionInfo["participants"] = session.participants;
-        }
+    if (session.private) {
+        if (userId != null) {
+            if (!userParticipates(userId, session.participants)) {
+                return null;
+            }
 
-        if (session.private && !userParticipates(userId, session.participants)) {
+            if (await isAdmin(userId)) {
+                sessionInfo["participants"] = session.participants;
+            }
+
+            if (userParticipates(userId, session.participants)) {
+                sessionInfo["participates"] = true;
+            }
+        } else {
             return null;
-        }
-
-        if (userParticipates(userId, session.participants)) {
-            sessionInfo["participates"] = true;
         }
     }
 
@@ -234,6 +237,8 @@ module.exports.signup = async (req, res) => {
     const userId = req.body.userId;
 
     const comingWith = req.body.comingWith;
+    const comingWithAmount = comingWith ? comingWith.length : null;
+    console.log(comingWithAmount);
     const reqId = JSON.parse(req.cookies.user).userId;
     const admin = await isAdmin(reqId);
 
@@ -242,18 +247,32 @@ module.exports.signup = async (req, res) => {
             try {
                 const session = await Session.findOne({ _id: sessionId });
                 if (session) {
-                    const sessionDate = new Date(session.date.toISOString().slice(0, -1));
-                    if (sessionDate > new Date()) {
-                        await session.addParticipants(sessionId, { userId, comingWith });
-                        res.status(200).json({ message: "U bent succesvol aangemeld" });
-                    } else {
-                        res.status(400).json({ message: "Deze sessie is al geweest" });
-                    }
+                    User.findOne({ _id: userId }, async (err, user) => {
+                        if (user) {
+                            const sessionDate = new Date(session.date.toISOString().slice(0, -1));
+                            if (sessionDate > new Date()) {
+                                if (checkUserBalance(user, session, comingWithAmount)) {
+                                    try {
+                                        await session.addParticipants(sessionId, { userId, comingWith });
+                                        await updateUserHours(user, session, comingWithAmount);
+                                        res.status(200).json({ message: "U bent succesvol aangemeld" });
+                                    } catch (err) {
+                                        res.status(400).json({ message: err.message });
+                                    }
+                                } else {
+                                    res.status(400).json({ message: "Deze gebruiker heeft niet genoeg saldo" });
+                                }
+                            } else {
+                                res.status(400).json({ message: "Deze sessie is al geweest" });
+                            }
+                        } else {
+                            res.status(400).json({ message: "Er is geen gebruiker gevonden met dit id" });
+                        }
+                    });
                 } else {
                     res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
                 }
             } catch (err) {
-                console.log(err);
                 res.status(400).json({ message: err.message });
             }
         } else {
@@ -262,6 +281,29 @@ module.exports.signup = async (req, res) => {
     } else {
         res.status(400).json({ message: "U bent niet gemachtigd om deze persoon aan te melden" })
     }
+}
+
+const updateUserHours = async (user, session, comingWithAmount) => {
+    const classPassHours = user.classPassHours;
+    let sessionDuration = session.duration;
+    sessionDuration /= 60;
+    const sessionCost = sessionDuration * comingWithAmount;
+
+    user.classPassHours -= sessionCost;
+    await user.save();
+}
+
+const checkUserBalance = (user, session, comingWithAmount) => {
+    const classPassHours = user.classPassHours;
+    let sessionDuration = session.duration;
+    sessionDuration /= 60;
+    const sessionCost = sessionDuration * comingWithAmount;
+
+    if (classPassHours >= sessionCost) {
+        return true
+    }
+
+    return false;
 }
 
 const deleteUser = (e, session, userId) => {
@@ -288,10 +330,10 @@ module.exports.signout = async (req, res) => {
                         res.status(200).json({ message: "Succesvol uitgeschreven" });
                     }
                     else {
-                        res.status(400).json({ message: "U bent niet gemachtigd deze persoon uit te schrijven" });
+                        res.status(400).json({ message: "U bent niet gemachtigd deze gebruiker uit te schrijven" });
                     }
                 } else {
-                    res.status(400).json({ message: "Deze persoon is momenteel niet ingeschreven voor deze les" });
+                    res.status(400).json({ message: "Deze gebruiker is momenteel niet ingeschreven voor deze les" });
                 }
             } else {
                 res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });

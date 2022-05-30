@@ -2,6 +2,7 @@ const User = require("../models/User");
 const { handleUserErrors } = require("./errorHandler");
 const bcrypt = require("bcryptjs");
 const path = require("path");
+const mollieClient = require("../mollie/mollieClient");
 
 module.exports.get = async (req, res) => {
     const { id } = req.params;
@@ -137,4 +138,13 @@ module.exports.delete = async (req, res) => {
         //Id was not provided ->
         res.sendStatus(400);
     }
+}
+
+module.exports.purchaseHistory = async (req, res) => {
+    const id = req.params.id;
+
+    User.findOne({ _id: id }, async (err, user) => {
+        const purchases = user.purchases;
+
+    });
 }
