@@ -26,6 +26,7 @@ async function loadAgenda(weekNumber) {
   schedule = res;
   showOrhideElements();
   let week = schedule[weekNumber];
+  console.log(schedule)
   if (week != undefined) {
     for (day in week) {
       if (week[day].length > 0) {
@@ -33,6 +34,7 @@ async function loadAgenda(weekNumber) {
         clearAgenda(day)
         for (session in dayData) {
           let sessionData = dayData[session];
+          
           let { id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date } = sessionData;
           loadSessionItem(id, title, teacher, sessionData.participates, maxAmountOfParticipants, amountOfParticipants, date, day);
           addSubscribedItems(id, sessionData.participates);  
@@ -467,12 +469,15 @@ $(".addLesson").on("click", async function () {
           teacher: "Natascha",
           description: $("#lessonDescription").val(),
           maxAmountOfParticipants: $("#maxPeople").val(),
-          weekly: false
+          weekly: false,
+          private: $(".lessonPrive").is(":checked")
+
         }
         addSession(json);
       }
     }
   });
+
 
   // Display all session added at the moment ->
   let checkStatus = false;

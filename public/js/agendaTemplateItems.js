@@ -165,6 +165,20 @@ function swalItemAddSession(){
                 </p>
               </div>
             </div>
+            <div class="row pb-5">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md  test">
+                    <h3 class="lead lbs"><b>Prive les</b></h3>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md text-start">
+                    <input class="form-check-input p-2 lessonPrive" type="checkbox" id="flexCheckDefault">
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="col-md-6">
             <div class="row">
