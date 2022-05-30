@@ -9,9 +9,15 @@ module.exports.get = async (req, res) => {
     //Get single user by given Id ->
     if (id) {
         try {
-            let user = await User.findOne({ id });
+            let user = await User.findOne({ _id: id });
             if (user) {
-                res.status(200).json(user);
+                res.status(200).json({
+                    id: user.id,
+                    fullName: user.fullName,
+                    email: user.email,
+                    phoneNumber: user.phoneNumber,
+                    notes: user.notes
+                });
             } else {
                 res.status(404).json({ message: "Geen user gevonden met dit id" });
             }

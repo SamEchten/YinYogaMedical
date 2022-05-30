@@ -43,7 +43,7 @@ const sessionSchema = mongoose.Schema({
 });
 
 sessionSchema.statics.getAmountOfParticipants = async function (id) {
-    const session = await Session.findOne({ id });
+    const session = await Session.findOne({ _id: id });
     const participants = session.participants;
     let amountOfParticipants = 0;
 
@@ -70,14 +70,13 @@ sessionSchema.methods.addParticipants = async function (id, info) {
         }
 
         const sessionAmount = await Session.getAmountOfParticipants(id);
-        const amountOfParticipants = session.participants.length + comingWithLength;
+        const amountOfParticipants = 1 + comingWithLength;
         const maxAmountOfParticipants = session.maxAmountOfParticipants;
 
         if (sessionAmount != maxAmountOfParticipants) {
             if (sessionAmount + amountOfParticipants <= maxAmountOfParticipants) {
-                const user = await User.find({ _id: userId });
+                const user = await User.findOne({ id: userId });
                 if (user) {
-                    userFound = true;
                     //Check if user is already signedup for this session ->
                     if (!session.participants.some(e => e.userId == userId)) {
                         //Add user to participants / save document ->

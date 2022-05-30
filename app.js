@@ -40,6 +40,7 @@ mongoose.connect(dburi, { useNewUrlParser: true, useUnifiedTopology: true }, () 
 
 //Middleware ->
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Serving css and js files -> 

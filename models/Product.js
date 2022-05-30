@@ -14,7 +14,7 @@ const productSchema = mongoose.Schema({
     },
     amountOfHours: {
         type: Number,
-        required: [true, "Het aantal uren is verplicht"]
+        required: false
     },
     toSchedule: {
         type: Boolean,

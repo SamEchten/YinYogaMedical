@@ -16,7 +16,7 @@ $(".loginButton").on("click", async function()
             $(".loginContent").slideUp(400, function()
             {
                 // Go to home/lesrooster
-                location.href = "/home";
+                location.href = "/agenda";
             });
         
         } else 

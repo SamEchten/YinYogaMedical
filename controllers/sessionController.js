@@ -12,7 +12,7 @@ module.exports.get = async (req, res) => {
     if (req.cookies.user) {
         userId = JSON.parse(req.cookies.user).userId;
     }
-
+  
     if (id) {
         //Get single session
         try {
@@ -128,6 +128,10 @@ const getSessionInfo = async (session, userId) => {
     }
 
     if (userId != null) {
+        if (await isAdmin(userId)) {
+            sessionInfo["participants"] = session.participants;
+        }
+
         if (session.private && !userParticipates(userId, session.participants)) {
             return null;
         }
@@ -158,18 +162,17 @@ Date.prototype.getWeekNumber = function () {
 const getFirstDayOfWeek = () => {
     const date = new Date();
     const day = date.getDay();
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1)
     let result = new Date(date.setDate(diff));
     result = result.toISOString().split("T")[0] + "T00:00:00.000Z";
     return result;
 }
 
 module.exports.add = async (req, res) => {
-    const { title, location, date, duration, participants, teacher,
-        description, maxAmountOfParticipants, weekly, private } = req.body;
-
     try {
+        const { title, location, date, duration, participants, teacher,
+            description, maxAmountOfParticipants, weekly, private } = req.body;
+
         const session = await Session.create({
             title,
             location,
@@ -182,6 +185,7 @@ module.exports.add = async (req, res) => {
             weekly,
             private
         });
+
         res.status(201).json({ id: session.id });
     } catch (err) {
         let errors = handleSessionErrors(err);
@@ -221,27 +225,35 @@ module.exports.delete = async (req, res) => {
             res.status(404).json({ message: "Geen sessie gevonden met dit Id" })
         }
     } catch (err) {
-        res.status(400).json({ message: "Er is iets fout gegaan" });
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
 }
 
 module.exports.signup = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
+
     const comingWith = req.body.comingWith;
     const reqId = JSON.parse(req.cookies.user).userId;
+    const admin = await isAdmin(reqId);
 
-    if (userId == reqId || reqId == isAdmin(reqId)) {
+    if (userId == reqId || admin) {
         if (sessionId) {
             try {
                 const session = await Session.findOne({ _id: sessionId });
                 if (session) {
-                    await session.addParticipants(sessionId, { userId, comingWith });
-                    res.status(200).json({ message: "U bent succesvol aangemeld" });
+                    const sessionDate = new Date(session.date.toISOString().slice(0, -1));
+                    if (sessionDate > new Date()) {
+                        await session.addParticipants(sessionId, { userId, comingWith });
+                        res.status(200).json({ message: "U bent succesvol aangemeld" });
+                    } else {
+                        res.status(400).json({ message: "Deze sessie is al geweest" });
+                    }
                 } else {
                     res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
                 }
             } catch (err) {
+                console.log(err);
                 res.status(400).json({ message: err.message });
             }
         } else {
@@ -252,34 +264,41 @@ module.exports.signup = async (req, res) => {
     }
 }
 
+const deleteUser = (e, session, userId) => {
+    if (e.userId == userId) {
+        const index = session.participants.indexOf(e);
+        session.participants.splice(index, 1)
+        session.save();
+    }
+}
+
 module.exports.signout = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
+    const cookieUserId = JSON.parse(req.cookies.user).userId;
+    const cookieEmployee = JSON.parse(req.cookies.user).isEmployee;
 
     if (sessionId) {
         try {
-            let session = await Session.findOne({ sessionId });
-
+            let session = await Session.findOne({ _id: sessionId });
             if (session) {
-                for (index in session.participants) {
-                    let participant = session.participants[index];
-                    if (participant.userId == userId) {
-                        if (req.cookies.userId == participant.userId || req.cookies.isEmployee == true) {
-                            session.participants.splice(index, 1);
-                            session.save();
-                            res.status(200).json({ message: "Succesvol uitgeschreven" });
-                        }
-                        else {
-                            res.status(400).json({ message: "U bent niet gemachtigd deze persoon uit te schrijven" });
-                        }
+                if (userParticipates(userId, session.participants)) {
+                    if (cookieUserId == userId || cookieEmployee == true) {
+                        session.participants.some(e => deleteUser(e, session, userId));
+                        res.status(200).json({ message: "Succesvol uitgeschreven" });
                     }
+                    else {
+                        res.status(400).json({ message: "U bent niet gemachtigd deze persoon uit te schrijven" });
+                    }
+                } else {
+                    res.status(400).json({ message: "Deze persoon is momenteel niet ingeschreven voor deze les" });
                 }
-                res.status(400).json({ message: "Dit userID is niet gevonden" });
             } else {
                 res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
             }
         }
         catch (err) {
+            console.log(err);
             res.status(400).json({ message: err.message });
         }
     }
@@ -291,8 +310,4 @@ module.exports.signout = async (req, res) => {
 
 module.exports.view = (req, res) => {
     res.render(path.join(__dirname, "../views/agenda"), { isAdmin: false });
-}
-
-module.exports.adminview = (req, res) => {
-
 }

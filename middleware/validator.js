@@ -14,8 +14,10 @@ const validateJwt = (req, res, next) => {
     if (token) {
         const decodedToken = verifyJwt(token);
         if (decodedToken != null) {
-            //Valid token ->
-            req.body.userId = decodedToken.id;
+            if (!decodedToken.isEmployee) {
+                //Valid token ->
+                req.body.userId = decodedToken.id;
+            }
             next();
         } else {
             res.redirect("/login");
@@ -70,6 +72,11 @@ const verifyJwt = (token) => {
     return decodedToken;
 }
 
+//validateJson
+//Params:   req
+//          res
+//          next
+//Validates the given json with the 
 const validateJson = async (req, res, next) => {
     const origin = req.originalUrl.replace("/api", "");
     const json = req.body;

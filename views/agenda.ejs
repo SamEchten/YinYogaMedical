@@ -16,6 +16,7 @@
 </head>
 
 <body>
+  <div id="custom-target"></div>
   <nav class="navbar navbar-expand-lg navbar-light navbar-style">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,6 +56,7 @@
           <div class="col-md agendaCol">
             <div class="row align-items-center headerSchedule">
               <div class="col text-start">
+                
               </div>
               <div class="col text-end">
                 <i class="bi bi-chevron-left prevWeek "></i>
@@ -70,7 +72,7 @@
                 <i class="bi bi-plus-circle hiding addLesson"></i>
               </div>
             </div>
-            <div class="row agendaItemDay">
+            <div class="row agendaItemDay d1">
               <div class="col-md p-4">
                 <h2 class="lbs maandag lead">Maandag</h2>
                 <hr>
@@ -79,7 +81,7 @@
                 </div>
               </div>
             </div>
-            <div class="row agendaItemDay">
+            <div class="row agendaItemDay d2">
               <div class="col-md p-4">
                 <h2 class="lbs dinsdag lead">Dinsdag</h2>
                 <hr>
@@ -88,16 +90,16 @@
                 </div>
               </div>
             </div>
-            <div class="row agendaItemDay">
+            <div class="row agendaItemDay d3">
               <div class="col-md p-4">
-                <h2 class="lbs woesndag lead">Woensdag</h2>
+                <h2 class="lbs woesndag  lead">Woensdag</h2>
                 <hr>
                 <div id="woensdag">
                   <h4 class="lead p-3">Geen lessen</h4>
                 </div>
               </div>
             </div>
-            <div class="row agendaItemDay">
+            <div class="row agendaItemDay d4">
               <div class="col-md p-4">
                 <h2 class="lbs donderdag lead">Donderdag</h2>
                 <hr>
@@ -106,7 +108,7 @@
                 </div>
               </div>
             </div>
-            <div class="row agendaItemDay">
+            <div class="row agendaItemDay  d5">
               <div class="col-md p-4">
                 <h2 class="lbs vrijdag lead">Vrijdag</h2>
                 <hr>
@@ -115,7 +117,7 @@
                 </div>
               </div>
             </div>
-            <div class="row agendaItemDay">
+            <div class="row agendaItemDay  d6">
               <div class="col-md p-4">
                 <h2 class="lbs zaterdag lead">Zaterdag</h2>
                 <hr>
@@ -124,7 +126,7 @@
                 </div>
               </div>
             </div>
-            <div class="row agendaItemDay">
+            <div class="row agendaItemDay d0">
               <div class="col-md p-4">
                 <h2 class="lbs zondag lead">Zondag</h2>
                 <hr>
@@ -148,6 +150,7 @@
   <script src="./js/bootstrap.min.js"></script>
   <script src="sweetalert"></script>
   <script src="static/utils.js"></script>
+  <script src="static/agendaTemplateItems.js"></script>
   <script src="static/agenda.js"></script>
   <script src="static/apiCaller.js"></script>
 </body>

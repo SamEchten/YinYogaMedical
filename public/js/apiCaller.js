@@ -96,6 +96,25 @@ class ApiCaller {
             //error
         }
     }
+    // Update a sessions information -> *ADMIN*
+    static updateSession = async (data, sessionId) => {
+        let url = "/api/session/" + sessionId;
+        let options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
 
     // Add a session to the agenda -> *ADMIN*
     static addSession = async (data) => {
@@ -117,9 +136,29 @@ class ApiCaller {
         }
     }
 
-    // Add a user to a session with extra participants ->
+    // Add a user to a session with or without extra participants ->
     static addUserToSession = async (data, sessionId) => {
         let url = "/api/session/signup/" + sessionId;
+        console.log(data);
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
+    // unscubscribe from a session ->
+    static unsubscribeFormSession = async (data, sessionId) => {
+        let url = "/api/session/signout/" + sessionId;
         let options = {
             method: 'POST',
             headers: {
@@ -174,25 +213,6 @@ class ApiCaller {
         }
     }
 
-    static updateSession = async (data, sessionId) => {
-        let url = "/api/session/" + sessionId;
-        let options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        };
-        try
-        {
-            let response = await fetch(url, options);
-            return response;
-        } catch (err)
-        {
-            //error
-        }
-    }
-
     // Remove a product -> *ADMIN*
     static removeProduct = async (productId) => {
         let url = "/api/product/" + productId;
@@ -211,7 +231,26 @@ class ApiCaller {
             //error
         }
     }
-
+    
+    // Gets all users with information -> *ADMIN*
+    static getAllUsers = async () => {
+        let url = "/api/user/";
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
+    
     // Gets the info of the user
     static getUserInfo = async (id) => {
         let url = "/api/user/" + id;

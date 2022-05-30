@@ -2,6 +2,69 @@
     font-family: OpenSans;
     src: url(./open_sans);
 }
+/* Toast alert */
+#custom-target {
+    position: absolute;
+  }
+.seeAddedSessions {
+    cursor: pointer;
+}
+.itemsSession {
+    padding: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.itemsSession:hover {
+    background-color: #f3f3f3;
+}
+.addSessionToArray { 
+    cursor: pointer;
+}
+.allSessionItems {
+    display: none;
+    height: 135px;
+    overflow: auto;
+}
+.allSessionItems p {
+    padding: 7px;
+    padding-left: 28px;
+    background: #d5ca9b40;
+    margin-bottom: 2px;
+}
+.userItemsRow {
+    height: 400px;
+    overflow: auto;
+}
+.userItemsRow::-webkit-scrollbar {
+    display: none;
+}
+
+.userFilterItem {
+    transition: 0.5s;
+    cursor: pointer;
+    font-size: 17px !important;
+    border-radius: 7px;
+    border: 1px solid #e0e0e0;
+}
+.sessionUsers {
+    height: 200px;
+    overflow: auto;
+    display: none;
+}
+
+.userFilterItem:hover { 
+    background-color: #dfdfdf;
+}
+.unSubStyle {
+    color: #fff !important;
+    background-color: #d5ca9b !important;
+    border-color: #b7b7b7 !important;
+} 
+.unSubStyle:hover {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
 
 .tooltip-inner {
     background-color: white !important;
@@ -50,8 +113,8 @@ body {
     border-radius: 5px;
     transition: 0.2s;
     cursor: pointer;
-    animation-name: slide;
-    animation-duration: 0.5s;
+    /* animation-name: slide;
+    animation-duration: 0.5s; */
     /* box-shadow: 0px 1px 5px -3px #272727; */
 }
 
@@ -174,18 +237,16 @@ p {
 
 .sweetalert-makeLesson input {
     margin-top: 0px !important;
-    margin-bottom: 20px !important;
     margin-left: 5px !important;
 }
 
 .sweetalert-makeLesson input[type=text],
 textarea {
-    width: 90% !important;
-    margin-bottom: 20px !important;
+    width: 100% !important;
+    /* margin-bottom: 20px !important; */
 }
 
 .sweetalert-makeLesson textarea {
-    height: 80px !important;
     margin-left: 5px !important;
     resize: none !important;
 }
@@ -193,7 +254,6 @@ textarea {
 .sweetalert-makeLesson input[type=number],
 input[type=date],
 input[type=time] {
-    width: 200px !important;
     margin-left: 5px !important;
 }
 
