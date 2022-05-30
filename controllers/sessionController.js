@@ -2,6 +2,8 @@ const Session = require("../models/Session");
 const User = require("../models/User");
 const path = require("path");
 const { handleSessionErrors } = require("./errorHandler");
+const { update } = require("./userController");
+const { Console } = require("console");
 
 //TODO: only show non private session
 //do show if req was made by admin or participants
@@ -126,24 +128,26 @@ const getSessionInfo = async (session, userId) => {
         description: session.description
     }
 
-    if (session.private) {
-        if (userId != null) {
-            if (!userParticipates(userId, session.participants)) {
-                return null;
-            }
-
+    if (userId != null) {
+        if (session.private) {
             if (await isAdmin(userId)) {
                 sessionInfo["participants"] = session.participants;
+                return sessionInfo;
             }
 
             if (userParticipates(userId, session.participants)) {
                 sessionInfo["participates"] = true;
+                return sessionInfo;
+            } else {
+                return null;
             }
-        } else {
-            return null;
+        }
+
+        if (userParticipates(userId, session.participants)) {
+            sessionInfo["participates"] = true;
+            return sessionInfo;
         }
     }
-
     return sessionInfo;
 }
 
@@ -238,9 +242,10 @@ module.exports.signup = async (req, res) => {
 
     const comingWith = req.body.comingWith;
     const comingWithAmount = comingWith ? comingWith.length : null;
-    console.log(comingWithAmount);
     const reqId = JSON.parse(req.cookies.user).userId;
     const admin = await isAdmin(reqId);
+
+    console.log(reqId, userId);
 
     if (userId == reqId || admin) {
         if (sessionId) {
@@ -260,7 +265,7 @@ module.exports.signup = async (req, res) => {
                                         res.status(400).json({ message: err.message });
                                     }
                                 } else {
-                                    res.status(400).json({ message: "Deze gebruiker heeft niet genoeg saldo" });
+                                    res.status(400).json({ message: "U heeft niet genoeg saldo" });
                                 }
                             } else {
                                 res.status(400).json({ message: "Deze sessie is al geweest" });
@@ -284,20 +289,20 @@ module.exports.signup = async (req, res) => {
 }
 
 const updateUserHours = async (user, session, comingWithAmount) => {
-    const classPassHours = user.classPassHours;
+    let classPassHours = user.classPassHours;
     let sessionDuration = session.duration;
     sessionDuration /= 60;
-    const sessionCost = sessionDuration * comingWithAmount;
+    const sessionCost = sessionDuration + (sessionDuration * comingWithAmount);
 
-    user.classPassHours -= sessionCost;
-    await user.save();
+    const newSaldo = classPassHours -= sessionCost;
+    await User.updateOne({ _id: user.id }, { $set: { classPassHours: newSaldo } });
 }
 
 const checkUserBalance = (user, session, comingWithAmount) => {
     const classPassHours = user.classPassHours;
     let sessionDuration = session.duration;
     sessionDuration /= 60;
-    const sessionCost = sessionDuration * comingWithAmount;
+    const sessionCost = sessionDuration + (sessionDuration * comingWithAmount);
 
     if (classPassHours >= sessionCost) {
         return true

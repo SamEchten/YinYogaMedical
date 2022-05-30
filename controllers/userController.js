@@ -73,7 +73,7 @@ module.exports.update = async (req, res) => {
                     if (body.hasOwnProperty("isEmployee")) {
                         if (user.isEmployee) {
                             //Update user ->
-                            await User.updateOne({ id }, { $set: body });
+                            await User.updateOne({ _id: id }, { $set: body });
                             res.status(200).json({ id: user.id });
                         } else {
                             //Request was not made by admin ->

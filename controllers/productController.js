@@ -175,7 +175,9 @@ const addClassPass = async (user, product, paymentId) => {
         user.classPassHours += product.amountOfHours;
     }
 
-    user.save();
+    const newSaldo = user.classPassHours += product.amountOfHours;
+
+    await User.updateOne({ _id: user.id }, { $set: { classPassHours: newSaldo } });
 }
 
 const getExpireDate = (validFor) => {
