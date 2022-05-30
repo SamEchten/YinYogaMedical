@@ -26,6 +26,14 @@ function errorText(errMessage) {
   }, 3000)
 }
 
+function checkLogin() {
+    if(cookie){
+      return true;
+    }else{
+      return false;
+    }
+}
+
 // Date Time formatter  ->
 // Call the function with .time to get time 
 // Call the function with .date to get the date
@@ -57,7 +65,7 @@ function getCurrentWeekNumber() {
   var days = Math.floor((currentDate - startDate) /
     (24 * 60 * 60 * 1000));
 
-  var weekNumber = Math.ceil((currentDate.getDay() + 1 + days - 1) / 7);
+  var weekNumber = Math.ceil((currentDate.getDay() + days) / 7);
   return weekNumber;
 }
 

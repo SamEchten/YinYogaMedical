@@ -7,6 +7,8 @@ const config = require("./config").config;
 const https = require("https");
 const fs = require("fs");
 
+const email = require("./controllers/mailController.js");
+
 //Validator ->
 const { validateJwt } = require("./middleware/validator");
 const { validateAdmin } = require("./middleware/validator");

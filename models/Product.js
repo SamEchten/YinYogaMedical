@@ -12,6 +12,11 @@ const productSchema = mongoose.Schema({
     discription: {
         type: String
     },
+    category: {
+        type: String,
+        required: [true, "Category is verplicht"],
+        default: "Overig product"
+    },
     amountOfHours: {
         type: Number,
         required: false

@@ -17,6 +17,7 @@ body {
 
 .categoryTitle{
     margin-bottom: 20px;
+    margin-left: 20px;
 }
 
 .productItem {
@@ -75,6 +76,21 @@ body {
     margin-bottom: 10px;
 }
 
+.sweetalert-makeProductCategories{
+    padding: 20px !important;
+}
+
+@media only screen and (min-width:769px) {
+    .sweetalert-makeProductCategories{
+        width: 30vw !important;
+    }
+}
+
+.categoryButton, .categoryButton:focus {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 10px;
+}
 
 /* Sweetalert for making product */
 
@@ -97,6 +113,10 @@ body {
 .sweetalert-makeProduct input[type=text], textarea {
     width: 90% !important;
     margin-bottom: 20px !important;
+    margin-left: 2px !important;
+}
+
+.sweetalert-makeProduct input[type=checkbox] {
     margin-left: 2px !important;
 }
 
