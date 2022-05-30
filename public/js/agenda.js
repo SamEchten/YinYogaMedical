@@ -16,8 +16,6 @@ $(async function () {
   } catch (err) {
 
   }
-  
-
 });
 
 // Loading agenda data per week ->
@@ -144,9 +142,6 @@ function sessionDetails(data) {
   } else {
     $(".usersPerSessionRow").addClass("d-none");
   }
-    
-    
-
 }
 
 async function showAllParticipants(data) {

@@ -13,12 +13,18 @@
   <link rel="stylesheet" href="./bicons/bootstrap-icons.css">
   <link rel="stylesheet" href="sweetalert2.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
 </head>
 
 <body>
   <div id="custom-target"></div>
   <nav class="navbar navbar-expand-lg navbar-light navbar-style">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -41,8 +47,17 @@
         </li>
       </ul>
     </div>
-    <h4 class="p-2 lead userName"></h4>
-    <i class="bi bi-person p-2"></i>
+    <div class="dropdown">
+      <button class="btn dropdown-toggle bi bi-icons pe-3 me-1" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="bi bi-person"></i>
+      </button>
+      <div class="dropdown-menu dropdown-menu-right profileItemNav me-4" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item userNameNav" href="#"></a>
+        <a class="dropdown-item userSaldo" href="#"></a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Uitloggen</a>
+      </div>
+    </div>
   </nav>
   <div class="main-wrapper container-fluid">
     <div class="row h-100">
@@ -142,12 +157,8 @@
   </div>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script type="text/javascript"
-    src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-  <script src="./js/bootstrap.min.js"></script>
+  
+  
   <script src="sweetalert"></script>
   <script src="static/utils.js"></script>
   <script src="static/agendaTemplateItems.js"></script>

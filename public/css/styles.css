@@ -11,6 +11,11 @@
 input {
     box-shadow: none !important;
 }
+
+button {
+        box-shadow: none !important;
+}
+
 .inputStyle {
     /* border: none !important;
     border-bottom: 1px solid #d5ca9b !important;

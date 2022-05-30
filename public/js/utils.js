@@ -5,11 +5,12 @@ let user;
 $(async function () {
   roleCheck();
   getAndSetAllUsers();
-  try {
-    $(".userName").html(user.fullName);
-  } catch (err) {
-
+  
+  if(user) {
+    $(".userNameNav").html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
   }
+    
+
   
 });
 
