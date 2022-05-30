@@ -5,14 +5,25 @@ let user;
 $(async function () {
   roleCheck();
   getAndSetAllUsers();
-  
-  if(user) {
-    $(".userNameNav").html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
-  }
-    
-
-  
+  setUserItemsNav();
 });
+
+function setUserItemsNav () {
+  let username = $(".userNameNav");
+  let saldo = $(".userSaldo");
+  let switchNav = $(".navSwitch")
+
+  if(user) {
+    username.html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
+    saldo.html(`<i class="bi bi-wallet2"></i>  ` + user.saldo +" uur"  );
+    switchNav.after(`<a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Uitloggen</a>`);
+  } else {
+    username.remove();
+    saldo.remove();
+    switchNav.after(`<a class="dropdown-item" href="/login"><i class="bi bi-box-arrow-in-right"></i> Inloggen</a>`);
+    switchNav.remove();
+  }
+}
 
 // Error message : give the class "errorBox" to activate ->
 // $(".errorBox").on("click", function () {

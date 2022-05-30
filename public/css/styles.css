@@ -15,6 +15,9 @@ input {
 button {
         box-shadow: none !important;
 }
+.profileItemNav {
+    left: -105px !important;
+}
 
 .inputStyle {
     /* border: none !important;
@@ -148,6 +151,8 @@ animation: slide-out-top 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
     .rbs {
         border: 0px;
     }
+    
+
   }
 /* ANIMATIONS */
   @-webkit-keyframes tracking-in-contract {
