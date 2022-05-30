@@ -4,6 +4,7 @@ const mollieClient = require("../mollie/mollieClient");
 const config = require("../config").config;
 const path = require("path");
 const User = require("../models/User");
+const mailController = require("../controllers/mailController");
 
 module.exports.get = async (req, res) => {
     const id = req.params.id;
@@ -36,7 +37,7 @@ const getAllProducts = async (res) => {
     try {
         Product.find({}, async (err, products) => {
             if (products) {
-                res.status(200).json(products);
+                res.status(200).json(sortProducts(products));
             } else {
                 res.status(400).json({ message: "Er is iets fout gegaan", error: err });
             }
@@ -44,6 +45,52 @@ const getAllProducts = async (res) => {
     } catch (err) {
         res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
+}
+
+const sortProducts = (products) => {
+    let sortedProducts = setSortedProducts(products);
+
+    //Sort products
+    for (i in products) {
+        const product = products[i];
+        for (j in sortedProducts) {
+            const row = sortedProducts[j];
+            if (product.category == row.category) {
+                row.products.push(product);
+            }
+        }
+    }
+
+    return sortedProducts;
+}
+
+const getAllCategories = (products) => {
+    let categories = [];
+
+    //Get all categories
+    for (i in products) {
+        const category = products[i].category;
+        if (!categories.includes(category)) {
+            categories.push(category);
+        }
+    }
+
+    return categories;
+}
+
+const setSortedProducts = (products) => {
+    let allProducts = [];
+    const categories = getAllCategories(products);
+
+    for (i in categories) {
+        const category = categories[i];
+        allProducts.push({
+            category: category,
+            products: []
+        });
+    }
+
+    return allProducts;
 }
 
 module.exports.add = async (req, res) => {
@@ -62,14 +109,14 @@ module.exports.update = async (req, res) => {
     try {
         Product.findOne({ _id: id }, async (err, product) => {
             if (product) {
-                await Product.updateOne({ id }, { $set: body });
+                await Product.updateOne({ _id: id }, { $set: body });
                 res.status(200).json({ productId: product.id });
             } else {
                 res.status(404).json({ message: "Er is geen product gevonden met dit id" });
             }
         });
     } catch (err) {
-
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
 }
 
@@ -119,12 +166,8 @@ module.exports.succes = async (req, res) => {
 }
 
 const addClassPass = async (user, product, paymentId) => {
+    const expireDate = getExpireDate(product.validFor);
     //Add to purchases array ->
-    const date = new Date();
-    const year = date.getFullYear() + product.validFor;
-    const month = date.getMonth();
-    const day = date.getDate();
-    const expireDate = new Date(year, month, day, 2);
     user.purchases.push({ productId: product.id, expireDate: expireDate, paymentId: paymentId })
 
     //Add class pass hours to users class pass
@@ -132,7 +175,18 @@ const addClassPass = async (user, product, paymentId) => {
         user.classPassHours += product.amountOfHours;
     }
 
-    user.save();
+    const newSaldo = user.classPassHours += product.amountOfHours;
+
+    await User.updateOne({ _id: user.id }, { $set: { classPassHours: newSaldo } });
+}
+
+const getExpireDate = (validFor) => {
+    const date = new Date();
+    const year = date.getFullYear() + validFor;
+    const month = date.getMonth();
+    const day = date.getDate();
+    const expireDate = new Date(year, month, day, 2);
+    return expireDate;
 }
 
 module.exports.webHook = async (req, res) => {
@@ -147,12 +201,13 @@ module.exports.webHook = async (req, res) => {
                 Product.findOne({ _id: productId }, (err, product) => {
                     if (product) {
                         addClassPass(user, product, paymentId);
+                        //TODO: Send confirmation mail
+                        res.sendStatus(200);
                     }
                 });
             }
         });
     }
-    res.sendStatus(200);
 }
 
 module.exports.view = (req, res) => {

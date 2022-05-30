@@ -38,20 +38,28 @@ function changeName() {
                                 <i class="bi bi-x-circle" onclick="denyName()"></i>`
 }
 
-function acceptName() {
-    let updatedName = document.getElementById("nameChange").value;
-    Swal.fire({
-        title: "Uw naam is geupdate naar " + updatedName,
-        icon: 'succes',
-        showCloseButton: true,
-        confirmButtonColor: '#D5CA9B'
-    });
-    $(".settingsContent").empty();
-    $(".settingsContent").load("profile/myProfile");
-}
+// function acceptName() {
+//     let updatedName = document.getElementById("nameChange").value;
+//     try
+//     {
+//         let res = await ApiCaller.getSingleSession(sessionId); // Get all the infomation from the session
+//         let json = await res.json();
+//         Swal.fire({
+//             title: "Uw naam is geupdate naar " + updatedName,
+//             icon: 'succes',
+//             showCloseButton: true,
+//             confirmButtonColor: '#D5CA9B'
+//         });
+//         $(".settingsContent").empty();
+//         $(".settingsContent").load("profile/myProfile");
+//     }
+//     catch {
 
-function denyName() {
-    $(".settingsContent").empty();
-    $(".settingsContent").load("profile/myProfile");
-}
+//     }
+// }
+
+// function denyName() {
+//         $(".settingsContent").empty();
+//         $(".settingsContent").load("profile/myProfile");
+//     }
 

@@ -1,0 +1,16 @@
+.underline-border {
+    border-bottom: 1px solid #D5CA9B
+}
+
+.imgMail {
+    width: 100%;
+    height: auto;
+}
+
+a {
+    text-decoration: none;
+}
+
+i {
+    color: #D5CA9B;
+}

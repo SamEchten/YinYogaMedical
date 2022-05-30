@@ -1,38 +1,12 @@
+let category = "";
+let checkedToSchedule = false;
 
 // Show all details per session ->
 function productDetails(data) {
-  const currentdate = new Date();
-  currentdate.setFullYear(currentdate.getFullYear() + data.validFor);
-
+  let html = swalProductDetails(data);
   Swal.fire(
     {
-      html: `
-      <div class="alerttitle">
-        <h2>${data.productName}<h2>
-        <hr/>
-      </div>
-      <div class="test">
-        <div class="row width">
-          <div class="col-md-7">          
-            <h3 class="lbs">Beschrijving</h3>
-            <p>${data.discription}<p>
-          </div>
-          <div class="col-md-5">
-            <h3 class="lbs">Prijs</h3> 
-            <p>€${data.price},-</p>
-          </div>
-        </div>
-        <div class="row width">
-          <div class="col-md-7">
-            <h3 class="lbs">Aantal uur</h3>
-            <p>${data.amountOfHours}</p>
-          </div>
-          <div class="col-md-5">
-            <h3 class="lbs">Geldig tot</h3>
-            <p>${dateFormat(currentdate).date}<p>
-          </div>
-        </div>
-      </div>`,
+      html: html,
       customClass: 'sweetalert-seeproduct',
       confirmButtonColor: '#D5CA9B',
       confirmButtonText: 'OK'
@@ -48,8 +22,16 @@ $(async function () {
 async function loadProducts() {
   const res = await (await ApiCaller.getAllProducts()).json();
   for (r in res) {
-    let price = parseInt(res[r].price).toFixed(2).replace(".", ",");
-    loadProductItem(res[r]._id, res[r].productName, price, res[r].validFor);
+    const row = res[r]
+    const products = row.products;
+    const category = '<h2 class="lbs categoryTitle lead">' + row.category + '</h2>';
+    $(category).appendTo("#category")
+    //set category to html
+    for (i in products) {
+      const product = products[i];
+      let price = parseInt(product.price).toFixed(2).replace(".", ",");
+      loadProductItem(product._id, product.productName, price, product.validFor);
+    }
   }
   addEventHandlersSession();
   showOrhideElements();
@@ -58,54 +40,21 @@ async function loadProducts() {
 
 async function reloadProducts() {
   $("#category").empty();
-  const res = await (await ApiCaller.getAllProducts()).json();
-  for (r in res) {
-    let price = parseInt(res[r].price).toFixed(2).replace(".", ",");
-    loadProductItem(res[r]._id, res[r].productName, price, res[r].validFor);
-  }
-  addEventHandlersSession();
-  showOrhideElements();
-  clickEvents();
+  loadProducts();
 }
 
 function loadProductItem(id, productName, price, validFor) {
-  let date = new Date();
-  date.setFullYear(date.getFullYear() + validFor);
-  let itemLayout = `
-    <div id="${id}" class="row productItem align-items-center">
-      <div class="col-md-8 productnameTitle" id="productNameText">
-        <h4 id="title" class="text-left lead fw-bold productTitle">${productName}</h4>
-        <p id="subtitle" class="productSubtitle">Geldig tot ${dateFormat(date).date}</p>
-      </div>
-      <div class="col-md text-md-end">
-        <h4 id="price" class="lead fw-bold productPrice">€${price}</h4>
-      </div>
-      <div class="col-md-1">
-        <div class="row">
-          <div class="col-md-8 col-2 text-md-end text-start">
-            <i class="bi bi-pencil hiding editProduct icons"></i>
-          </div>
-          <div class="col-md-4 col-10 text-md-end text-start">
-            <i class="bi bi-trash3 hiding removeProduct icons"></i>
-          </div>
-        </div>
-      </div>
-      <div class="col-md text-end">
-        <button type="submit" class="btn btn-primary yinStyle BuyNow">+ Koop nu</button>
-      </div>
-    </div>`
+  let html = loadSingleProductItem(id, productName, price, validFor);
 
-  $(itemLayout).appendTo("#category");
+  $(html).appendTo("#category");
 }
 
 function addEventHandlersSession() {
   $(".productnameTitle").on("click", async function () {
     try {
       const id = $(this).parent().attr('id');
-      console.log(id)
       const res = await ApiCaller.getSingleProduct(id);
       const json = await res.json();
-      console.log(json)
       productDetails(json);
     } catch (err) {
       console.log(err)
@@ -125,12 +74,16 @@ function clickEvents() {
       const productId = $(this).parent().parent().parent().parent().attr("id");
       removeProduct(productId);
     });
-    $(".BuyNow").on("click", function () {
+  }
+  $(".BuyNow").on("click", function () {
+    if (checkLogin()) {
       let product = $(this).parent().parent().children("#productNameText").children("h4").text();
       let id = $(this).parent().parent().attr("id");
       buyProduct(product, id);
-    });
-  }
+    } else {
+      location.href = "/login";
+    }
+  });
 }
 
 // Remove a product as Admin
@@ -147,14 +100,8 @@ async function removeProduct(productId) {
         let res = await ApiCaller.removeProduct(productId);
         if (res.status == 200) {
           reloadProducts();
+          toastPopUp("Product verwijderd!", "success");
         }
-        Swal.fire({
-          title: "Product verwijderd!",
-          icon: 'success',
-          showCloseButton: false,
-          showConfirmButton: false,
-          timer: 1000
-        });
       } catch (err) {
         console.log(err)
       }
@@ -162,73 +109,95 @@ async function removeProduct(productId) {
   });
 }
 
+function checkToSchedule() {
+  if ($(this).attr('checked') == false) {
+    checkedToSchedule = false;
+  }
+  else {
+    checkedToSchedule = true;
+  }
+}
+
 $(".addProduct").on("click", async function () {
   let error = false;
+  let html2 = swalItemAddProductCategory();
   Swal.fire({
-    html: `
-    <h2>Voeg nieuw product toe</h2>
-    <hr>
-    <div class="row width">
-      <div class="col-md-6">
-        <h3 class="lead"><b>Productnaam:</b></h3>
-        <input id="productName" class="swal2-input" type="text" placeholder="Productnaam">
-        <h3 class="lead"><b>Beschrijving:</b></h3>
-        <textarea id="productDescription" class="swal2-input" placeholder="Productbeschrijving"></textarea>
-        <h3 class="lead"><b>Aantal jaar geldig:</b></h3>
-        <input id="productValid" class="swal2-input half" type="number" step="1" min="1" value="1">
-      </div>
-      <div class="col-md-6">
-        <h3 class="lead"><b>Prijs:</b></h3>
-        <p class="subtext">De prijs van het product.</p>
-        <input id="productPrice" class="swal2-input half" type="number" step="1" min="1" value="1">
-        <h3 class="lead"><b>Aantal uur:</b></h3>
-        <p class="subtext">Aantal uren op het product.</p>
-        <input id="productHours" class="swal2-input half" type="number" step="0.5" min="0.5" value="0.5">
-      </div>
-      <div class="alert alert-warning errorBox" role="alert"></div>
-    </div>`,
-    customClass: 'sweetalert-makeProduct',
+    html: html2,
+    customClass: 'sweetalert-makeProductCategories',
     showCancelButton: true,
-    confirmButtonText: 'Voeg product toe',
-    confirmButtonColor: '#D5CA9B',
-    cancelButtonText: 'Cancel',
-    preConfirm: async () => {
-      let add = await addProduct();
-      if (add) {
-        error = true;
+    showConfirmButton: false,
+    cancelButtonText: 'Cancel'
+  })    
+  $(".categoryButton").on("click", function(){
+    setCategory(this.id);
+    let html1 = swalItemAddProduct(category);
+    Swal.fire({
+      html: html1,
+      customClass: 'sweetalert-makeProduct',
+      showCancelButton: true,
+      confirmButtonText: 'Voeg product toe',
+      confirmButtonColor: '#D5CA9B',
+      cancelButtonText: 'Cancel',
+      preConfirm: async () => {
+        let add = await addProduct();
+        if (add) {
+          error = true;
+        }
       }
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-      if (error) {
-        Swal.fire({
-          title: "Product aangemaakt!",
-          icon: 'success',
-          showCloseButton: false,
-          showConfirmButton: false,
-          timer: 1000
-        });
-      } else {
-        Swal.fire({
-          title: "Velden niet correct ingevuld",
-          icon: 'warning',
-          showCloseButton: true,
-          confirmButtonColor: '#D5CA9B'
-        });
+    })
+    .then((result) => {
+      if (result.isConfirmed) {
+        if (error) {
+          toastPopUp("Product toegevoegd!", "success");
+        } else {
+          toastPopUp("Velden niet correct ingevuld.", "warning");
+        }
       }
-    }
-  });
+    });
+  })
 });
+
+
+
+
+function setCategory(categoryTemp) {
+  category = categoryTemp;
+  swal.clickConfirm();
+}
 
 // Add product call ->
 async function addProduct() {
-  let json = {
-    "productName": $("#productName").val(),
-    "price": $("#productPrice").val(),
-    "discription": $("#productDescription").val(),
-    "amountOfHours": $("#productHours").val(),
-    "toSchedule": false,
-    "validFor": $("#productValid").val()
+  let json = {};
+  if (category == "Strippenkaarten") {
+    json = {
+      "category": category,
+      "productName": $("#productName").val(),
+      "price": $("#productPrice").val(),
+      "discription": $("#productDescription").val(),
+      "amountOfHours": $("#productHours").val(),
+      "toSchedule": false,
+      "validFor": $("#productValid").val()
+    }
+  } else if (category == "Abonnementen") {
+    json = {
+      "category": category,
+      "productName": $("#productName").val(),
+      "price": $("#productPrice").val(),
+      "discription": $("#productDescription").val(),
+      "amountOfHours": '',
+      "toSchedule": false,
+      "validFor": $("#productValid").val()
+    }
+  } else {
+    json = {
+      "category": category,
+      "productName": $("#productName").val(),
+      "price": $("#productPrice").val(),
+      "discription": $("#productDescription").val(),
+      "amountOfHours": '',
+      "toSchedule": checkedToSchedule,
+      "validFor": $("#productValid").val()
+    }
   }
   try {
     let res = await ApiCaller.addProduct(json);
@@ -245,59 +214,56 @@ async function addProduct() {
 
 // buy product
 function buyProduct(product, id) {
-
+  let html1 = swalBuyProductCheck(product);
   // if () {
-    Swal.fire({
-      html: `
-      <h2>Product kopen</h2>
-      <hr>
-      <p>U wilt u het product <b>${product}</b> kopen. Klopt dit?</p>`,
-      customClass: 'sweetalert-subscribe',
-      showCancelButton: true,
-      confirmButtonText: 'Koop product',
-      confirmButtonColor: '#D5CA9B',
-      cancelButtonText: 'Cancel',
-    })
-      // .then(async (result) => {
-      //       if (result.isConfirmed)
-      //       {
-      //         let sessionId = $(this).parent().parent().attr("id");
-      //         let jsonData = {
-      //           "userId": user.userId,
-      //           "comingWith": sessionUserObject()
-      //         }
-      //         console.log(sessionId)
-      //         console.log(jsonData)
-      //         try
-      //         {
-      //           let res = await ApiCaller.addUserToSession(jsonData, sessionId);
-      //           let jsonRes = await res.json();
-      //           if (res.status == 200)
-      //           {
-      //             Swal.fire({
-      //               title: `U heeft zich ingeschreven voor ${lesson} .`,
-      //               icon: 'success',
-      //               text: `Wat leuk dat u zich hebt ingeschreven voor ${lesson}! Tot snel! `,
-      //               showCloseButton: true,
-      //               confirmButtonColor: '#D5CA9B'
-      //             });
-      //           } else
-      //           {
-      //             Swal.fire({
-      //               title: `Oops!`,
-      //               icon: 'warning',
-      //               text: jsonRes.message,
-      //               showCloseButton: true,
-      //               confirmButtonColor: '#D5CA9B'
-      //             });
-      //           }
-      //         } catch (err)
-      //         {
-      //           console.log(err);
-      //         }
-      //       }
-      //     })
-      ;
+  Swal.fire({
+    html: html1,
+    customClass: 'sweetalert-subscribe',
+    showCancelButton: true,
+    confirmButtonText: 'Koop product',
+    confirmButtonColor: '#D5CA9B',
+    cancelButtonText: 'Cancel',
+  })
+    // .then(async (result) => {
+    //       if (result.isConfirmed)
+    //       {
+    //         let sessionId = $(this).parent().parent().attr("id");
+    //         let jsonData = {
+    //           "userId": user.userId,
+    //           "comingWith": sessionUserObject()
+    //         }
+    //         console.log(sessionId)
+    //         console.log(jsonData)
+    //         try
+    //         {
+    //           let res = await ApiCaller.addUserToSession(jsonData, sessionId);
+    //           let jsonRes = await res.json();
+    //           if (res.status == 200)
+    //           {
+    //             Swal.fire({
+    //               title: `U heeft zich ingeschreven voor ${lesson} .`,
+    //               icon: 'success',
+    //               text: `Wat leuk dat u zich hebt ingeschreven voor ${lesson}! Tot snel! `,
+    //               showCloseButton: true,
+    //               confirmButtonColor: '#D5CA9B'
+    //             });
+    //           } else
+    //           {
+    //             Swal.fire({
+    //               title: `Oops!`,
+    //               icon: 'warning',
+    //               text: jsonRes.message,
+    //               showCloseButton: true,
+    //               confirmButtonColor: '#D5CA9B'
+    //             });
+    //           }
+    //         } catch (err)
+    //         {
+    //           console.log(err);
+    //         }
+    //       }
+    //     })
+    ;
   // } else {
 
   // }

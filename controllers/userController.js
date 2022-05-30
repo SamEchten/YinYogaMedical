@@ -2,6 +2,7 @@ const User = require("../models/User");
 const { handleUserErrors } = require("./errorHandler");
 const bcrypt = require("bcryptjs");
 const path = require("path");
+const mollieClient = require("../mollie/mollieClient");
 
 module.exports.get = async (req, res) => {
     const { id } = req.params;
@@ -22,6 +23,7 @@ module.exports.get = async (req, res) => {
                 res.status(404).json({ message: "Geen user gevonden met dit id" });
             }
         } catch (err) {
+            res.status(400).json({ message: "Er is iets fout gegaa", error: err.message });
         }
     } else {
         //Get all users ->
@@ -72,7 +74,7 @@ module.exports.update = async (req, res) => {
                     if (body.hasOwnProperty("isEmployee")) {
                         if (user.isEmployee) {
                             //Update user ->
-                            await User.updateOne({ id }, { $set: body });
+                            await User.updateOne({ _id: id }, { $set: body });
                             res.status(200).json({ id: user.id });
                         } else {
                             //Request was not made by admin ->
@@ -137,4 +139,13 @@ module.exports.delete = async (req, res) => {
         //Id was not provided ->
         res.sendStatus(400);
     }
+}
+
+module.exports.purchaseHistory = async (req, res) => {
+    const id = req.params.id;
+
+    User.findOne({ _id: id }, async (err, user) => {
+        const purchases = user.purchases;
+
+    });
 }

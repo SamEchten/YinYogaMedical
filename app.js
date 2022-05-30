@@ -7,13 +7,15 @@ const config = require("./config").config;
 const https = require("https");
 const fs = require("fs");
 
+const email = require("./controllers/mailController.js");
+
 //Validator ->
 const { validateJwt } = require("./middleware/validator");
 const { validateAdmin } = require("./middleware/validator");
 const { validateJson } = require("./middleware/validator");
 
 //Server port ->
-const port = 82;
+const port = 80;
 
 //Optinos for https connection
 const httpsOptions = {
@@ -62,11 +64,13 @@ const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
 const sessionRouter = require("./routes/sessionRouter");
 const productRouter = require("./routes/productRouter");
-const videoRouter = require("./routes/videoRouter")
+const videoRouter = require("./routes/videoRouter");
+const mediaUploadRouter = require("./routes/mediaUploadRouter");
 
 app.use("/api/auth", authRouter);
-app.use("/api/user", validateJwt, userRouter);
+app.use("/api/user", userRouter);
 app.use("/api/session", sessionRouter);
 app.use("/api/product", productRouter);
 app.use("/api/video", videoRouter);
+app.use("/api/mediaupload", mediaUploadRouter);
 app.use(viewRouter);

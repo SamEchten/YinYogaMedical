@@ -24,7 +24,6 @@
     display: none;
     height: 135px;
     overflow: auto;
-    
 }
 .allSessionItems p {
     padding: 7px;
@@ -41,11 +40,28 @@
 }
 
 .userFilterItem {
-    border-bottom: 2px solid #d5ca9b;
     transition: 0.5s;
     cursor: pointer;
     font-size: 17px !important;
+    border-radius: 7px;
+    border: 1px solid #e0e0e0;
 }
+.sessionUsers {
+    height: 150px;
+    overflow: auto;
+    display: none;
+}
+.userSessionDetails {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    margin: 2px;
+}
+.userSessionDetails:hover {
+    background-color: #d5ca9b;
+}
+
 .userFilterItem:hover { 
     background-color: #dfdfdf;
 }
@@ -98,6 +114,11 @@ body {
     background-attachment: fixed;
 }
 
+
+.btn {
+    
+}
+
 .headerRow {
     height: 10%;
 }
@@ -107,8 +128,8 @@ body {
     border-radius: 5px;
     transition: 0.2s;
     cursor: pointer;
-    animation-name: slide;
-    animation-duration: 0.5s;
+    /* animation-name: slide;
+    animation-duration: 0.5s; */
     /* box-shadow: 0px 1px 5px -3px #272727; */
 }
 
@@ -237,11 +258,10 @@ p {
 .sweetalert-makeLesson input[type=text],
 textarea {
     width: 100% !important;
-    margin-bottom: 20px !important;
+    /* margin-bottom: 20px !important; */
 }
 
 .sweetalert-makeLesson textarea {
-    height: 80px !important;
     margin-left: 5px !important;
     resize: none !important;
 }
@@ -285,8 +305,6 @@ input[type=time] {
 .sweetalert-seelesson p {
     font-family: 'OpenSans', 'Segoe UI' !important;
     font-size: 14pt !important;
-    margin-bottom: 20px;
-    margin-left: 10px;
     font-weight: 300;
     text-align: start !important;
     color: #707070;

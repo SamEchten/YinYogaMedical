@@ -5,8 +5,25 @@ let user;
 $(async function () {
   roleCheck();
   getAndSetAllUsers();
-  $(".userName").html(user.fullName);
+  setUserItemsNav();
 });
+
+function setUserItemsNav () {
+  let username = $(".userNameNav");
+  let saldo = $(".userSaldo");
+  let switchNav = $(".navSwitch")
+
+  if(user) {
+    username.html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
+    saldo.html(`<i class="bi bi-wallet2"></i>  ` + user.saldo +" uur"  );
+    switchNav.after(`<a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Uitloggen</a>`);
+  } else {
+    username.remove();
+    saldo.remove();
+    switchNav.after(`<a class="dropdown-item" href="/login"><i class="bi bi-box-arrow-in-right"></i> Inloggen</a>`);
+    switchNav.remove();
+  }
+}
 
 // Error message : give the class "errorBox" to activate ->
 // $(".errorBox").on("click", function () {
@@ -19,6 +36,14 @@ function errorText(errMessage) {
   setTimeout(function () {
     $(".errorBox").slideUp(400);
   }, 3000)
+}
+
+function checkLogin() {
+    if(cookie){
+      return true;
+    }else{
+      return false;
+    }
 }
 
 // Date Time formatter  ->
@@ -52,7 +77,7 @@ function getCurrentWeekNumber() {
   var days = Math.floor((currentDate - startDate) /
     (24 * 60 * 60 * 1000));
 
-  var weekNumber = Math.ceil((currentDate.getDay() + 1 + days - 1) / 7);
+  var weekNumber = Math.ceil((currentDate.getDay() + days) / 7);
   return weekNumber;
 }
 
@@ -97,10 +122,7 @@ function checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amount
 
   if ((amountOfParticipants >= maxAmountOfParticipants && !participates) || today > result) {
     if (!roleCheck()) {
-      $("#" + id).css({
-        "opacity": 0.5,
-        "pointer-events": "none"
-      })
+      $("#" + id).addClass("showOrHide");
     }
   }
 

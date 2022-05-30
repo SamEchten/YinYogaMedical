@@ -68,17 +68,10 @@ userSchema.statics.login = async function (email, password) {
         if (auth) {
             return user;
         }
-        throw Error(JSON.stringify({
-            path: "password",
-            message: "Incorrect wachtwoord"
-        }));
+        throw Error(JSON.stringify({ message: "Incorrect wachtwoord of email" }));
     }
-
     //User with given email does not exist ->
-    throw Error(JSON.stringify({
-        path: "email",
-        message: "Incorrect e-mailadres"
-    }));
+    throw Error(JSON.stringify({ message: "Incorrect wachtwoord of email" }));
 }
 
 const User = mongoose.model('user', userSchema);

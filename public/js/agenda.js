@@ -1,6 +1,7 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber() - 1;
+let weekNumb = getCurrentWeekNumber();
+console.log(weekNumb)
 
 // Render lesrooster from apiCaller and format it on date ->
 //  > Document.getready! first render. 
@@ -9,9 +10,12 @@ $(async function () {
   const res = await (await ApiCaller.getAllSessions()).json();
   schedule = res;
   loadAgenda(weekNumb);
-  scrollDownToCurrDay();
-  toastPopUp("Welkom " + user.fullName, "info");
+  //scrollDownToCurrDay();
+  try {
+    toastPopUp("Welkom " + user.fullName, "info");
+  } catch (err) {
 
+  }
 });
 
 // Loading agenda data per week ->
@@ -20,6 +24,7 @@ async function loadAgenda(weekNumber) {
   schedule = res;
   showOrhideElements();
   let week = schedule[weekNumber];
+  console.log(schedule)
   if (week != undefined) {
     for (day in week) {
       if (week[day].length > 0) {
@@ -27,9 +32,10 @@ async function loadAgenda(weekNumber) {
         clearAgenda(day)
         for (session in dayData) {
           let sessionData = dayData[session];
+          
           let { id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date } = sessionData;
           loadSessionItem(id, title, teacher, sessionData.participates, maxAmountOfParticipants, amountOfParticipants, date, day);
-          addSubscribedItems(id, sessionData.participates);
+          addSubscribedItems(id, sessionData.participates);  
         }
       } else {
         clearAgenda(day);
@@ -44,6 +50,7 @@ async function loadAgenda(weekNumber) {
   unsubcribeSession(); // loading in event handler for UNSUB button ->
   subscribeToSession();// loading in event handler for SUB button ->
   clickEvents();
+  addEventHandlersSession();
 }
 // Loads agenda items and sets the week dates on top of the agenda ->
 function loadAndSetFullAgenda() {
@@ -91,7 +98,7 @@ function addMinutes(date, minutes) {
 function addSubscribedItems(id, participates) {
   let subcribeBtn = `<button type="submit" class="btn btn-primary yinStyle subscribe"><i class="bi bi-arrow-bar-right"></i> Inschrijven</button>`;
   let unsubscribeBtn = `<button type="submit" class="btn btn-danger unSubStyle unsubscribe"><i class="bi bi-arrow-bar-left"></i> Uitschrijven</button>`;
-  let subCol = $("#" + id).children(".subscribeCol"); // subcribe col per ID, button is being pushed into this column
+  let subCol = $("#" + id).children(".subscribeCol"); // subscribe col per ID, button is being pushed into this column
 
   if (participates == undefined) {
     subCol.empty();
@@ -107,89 +114,59 @@ function addSubscribedItems(id, participates) {
 
 // Show all details per session ->
 function sessionDetails(data) {
+  let html = templateLoadSessionDetails(data);
+  let check = false;
   Swal.fire(
     {
-      html: `
-      <div class="alerttitle">
-        <h2>${data.title}<h2>
-        <hr/>
-      </div>
-      <div class="test">
-        <div class="row width">
-          <div class="col-md-7">          
-            <h3 class="lbs">Beschrijving</h3>
-            <p>${data.description}<p>
-          </div>
-          <div class="col-md-5">
-            <h3 class="lbs">Datum</h3> 
-            <p>${dateFormat(data.date).date}</p>
-          </div>
-        </div>
-        <div class="row width">
-          <div class="col-md-7">
-            <h3 class="lbs">Locatie</h3>
-            <p>${data.location}</p>
-          </div>
-          <div class="col-md-5">
-            <h3 class="lbs">Starttijd</h3>
-            <p>${dateFormat(data.date).time}<p>
-          </div>
-        </div>
-        <div class="row width">
-          <div class="col-md-7">
-            <h3 class="lbs">Docent</h3>
-            <p><i class="bi bi-person-circle icon"></i>${data.teacher}<p>
-          </div>
-          <div class="col-md-5">
-            <h3 class="lbs">Eindtijd</h3> 
-            <p>${dateFormat(addMinutes(new Date(data.date), data.duration)).time}</p>
-          </div>
-        </div>
-      </div>`,
+      html: html,
       customClass: 'sweetalert-seelesson',
       confirmButtonColor: '#D5CA9B',
       confirmButtonText: 'OK'
     });
+  //handle the dropdown effect
+  $(".dropDownUsers").on("click", function() {
+    if (check) {
+      $(".sessionUsers").slideUp("slow");
+      check = false;
+    } else {
+      $(".sessionUsers").slideDown("slow");
+      check = true;
+    }
+  });
+  //load all participants into correct div
+  if(roleCheck()) {
+    if(data.participants.length <= 0) {
+      $(".sessionUsers").append(`<p class="lead "> Geen inschrijvingen</p>`)
+    }
+    showAllParticipants(data.participants);
+  } else {
+    $(".usersPerSessionRow").addClass("d-none");
+  }
+}
+
+async function showAllParticipants(data) {
+  for(users in data) {
+    // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT  
+    try {
+      let res = await ApiCaller.getUserInfo(data[users].userId);
+      let json = await res.json();
+      if(res.status == 200) {
+        $(".sessionUsers").append(`<p class="lead userSessionDetails"><i class="bi bi-person"></i> ${json.fullName}</p>`);
+      } else {
+        toastPopUp(json.message);
+      }
+    } catch (err) {
+
+    }
+  
+  }
 }
 // Loads all session items and puts them into the right day ->
 function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipants, amountOfParticipants, date, day) {
-  let itemLayout = `
-    <div id="${id}" class="row ps-4 p-2 agendaItem align-items-center">
-      <div class="col-md-2">
-        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(date).time}</h4>
-      </div>
-      <div class="col-md-2 sessionDetails">
-        <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
-      </div>
-      <div class="col-md-2">
-        <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
-      </div>
-      <div class="col-md-4 settings">
-        <div class="row">
-          <div class="col-md-3 text-start">
-            ${amountOfParticipants} / ${maxAmountOfParticipants}
-          </div>
-          <div class="col-md-2 text-end">
-            <i class="bi bi-pencil hiding editSession"></i>
-          </div>
-          <div class="col-md-2 text-center">
-            <i class="bi bi-x-lg hiding removeSession"></i>
-          </div>
-          <div class="col-md-2 text-start">
-            <i class="bi bi-person-plus hiding addUser"></i>
-          </div>
-          <div class="col-md-3 participate text-start">
-          
-          </div>
-        </div>       
-      </div>
-      <div class="col-md-2 subscribeCol text-end ">
-        
-      </div>
-    </div>`
+  let itemLayout = templateLoadSession(id, date, title, teacher, amountOfParticipants, maxAmountOfParticipants);
 
   $(itemLayout).appendTo("#" + day);
-  addEventHandlersSession();
+
   checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date);
 }
 
@@ -204,7 +181,6 @@ function addEventHandlersSession() {
       console.log(err)
     }
   });
-
 }
 
 // Add eventlisteners for button that render in after dom has loaded ->
@@ -231,62 +207,38 @@ function clickEvents() {
 }
 
 function addUser(sessionId) {
-  Swal.fire({
-    html: `
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <h2>Gebruiker toevoegen</h2>
-              <hr>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <p>Zoek naar een gebruiker en klik vervolgens op toevoegen aan les.</p>
-            </div>
-          </div>
-          <div class="row align-items-center">
-            <div class="col-md-12 pb-3">
-              <input type="text" class="form-control" id="searchUser" placeholder="Zoeken..">
-            </div>
-          </div>
-          <div class="row userItemsRow">
-            <div class="col-md userItemCol">
-              <h4 class='lead'>Zoek naar een gebruiker</h4>
-            </div>
-          </div>
-        </div>  
-      </div>
-    </div> 
-    `,
-    showCancelButton: true,
-    showConfirmButton: false,
-    cancelButtonText: 'Terug'
-  });
+  //loading in the swal templates from agendaSwalItems.js
+  swalItemAddUser();
+
+  // show all users at the begin of loading the pop up
+  $(".userItemCol").empty();
+  loopAndAddElements(filterData(""), sessionId);
 
   $("#searchUser").on("input", function () {
     let userArray = filterData($(this).val());
-    console.log(userArray)
+
     if (userArray.length <= 0) {
       $(".userItemCol").empty();
       $(".userItemCol").append("<h4 class='lead'>Geen resultaat</h4>")
     } else {
       $(".userItemCol").empty();
-      for (item in userArray) {
-        $(".userItemCol").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
-        $("#" + userArray[item].id).on("click", function () {
-          console.log("adding session")
-          addUserToSessionAsAdmin(sessionId, this.id);
-        });
-        $("#_" + userArray[item].id).on("click", function () {
-          console.log("removing")
-          removeUserFromSessionAsAdmin(sessionId, this.id.substring(1));
-        });
-      }
+      loopAndAddElements(userArray, sessionId);
     }
   });
+}
+
+function loopAndAddElements(userArray, sessionId) {
+  for (item in userArray) {
+    $(".userItemCol").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
+    $("#" + userArray[item].id).on("click", function () {
+      console.log("adding session")
+      addUserToSessionAsAdmin(sessionId, this.id);
+    });
+    $("#_" + userArray[item].id).on("click", function () {
+      console.log("removing")
+      removeUserFromSessionAsAdmin(sessionId, this.id.substring(1));
+    });
+  }
 }
 // subcribe a user to a session as admin ->
 async function addUserToSessionAsAdmin(sessionId, userId) {
@@ -338,7 +290,7 @@ async function removeUserFromSessionAsAdmin(sessionId, userId) {
 // Create userItem element 
 function createUserItem(fullName, email, phoneNumber, id) {
   let element = `
-  <div class="row pb-2">
+  <div class="row pb-2 slide-in-blurred-top">
     <div class="col-md-12 p-2 lead userFilterItem text-start">
       <h4><i class="bi bi-person pe-2"></i> ${fullName}</h4>
       <p class="p-1">
@@ -361,85 +313,10 @@ async function editSession(sessionId) {
     let res = await ApiCaller.getSingleSession(sessionId); // Get all the infomation from the session
     let json = await res.json();
     let date = new Date(json.date);
+    let html = swalItemEditSession();
 
     Swal.fire({
-      html: `
-      <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <h2>Voeg nieuwe les toe</h2>
-              <hr>
-            </div>
-          </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Lesnaam:</b></h3>
-                <input id="lessonName" class="form-control" type="text">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Beschrijving:</b></h3>
-                <textarea id="lessonDescription" class="form-control"></textarea>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Locatie:</b></h3>
-                <input id="lessonLocation" class="form-control" type="text">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Yogadocent:</b></h3>
-                <p>
-                  <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
-                  Natascha Puper
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-12">
-                    <h3 class="lead lbs"><b>Dag:</b></h3>
-                  </div>
-                </div>
-                <div class="row align-items-center pb-3">
-                  <div class="col-md-12">
-                    <input id="lessonDay" class="form-control" type="date">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Starttijd:</b></h3>
-                <input id="lessonTime" class="form-control" type="time">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Duur:</b></h3>
-                <input id="lessonDuration" class="form-control" type="number" step="30" min="30">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Aantal deelnemers:</b></h3>
-                <input id="maxPeople" class="form-control" type="number" step="1" min="1">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>`,
+      html: html,
       customClass: 'sweetalert-makeLesson',
       showCancelButton: true,
       confirmButtonText: 'Update les',
@@ -458,8 +335,6 @@ async function editSession(sessionId) {
           "maxAmountOfParticipants": $("#maxPeople").val(),
           "weekly": false
         }
-        console.log(jsonData)
-
         try {
           let resUpdate = await ApiCaller.updateSession(jsonData, sessionId);
           let resJson = await resUpdate.json();
@@ -517,7 +392,10 @@ async function removeSession(sessionId) {
       try {
         let res = await ApiCaller.removeSession(sessionId);
         if (res.status == 200) {
-          loadAndSetFullAgenda();
+          $("#" + sessionId).addClass("slide-out-top");
+          $("#" + sessionId).slideUp(500);
+
+          //loadAndSetFullAgenda();
           toastPopUp("Les geannuleerd", "success");
         }
       } catch (err) {
@@ -555,110 +433,11 @@ $(".week").on("click", function () {
 });
 
 $(".addLesson").on("click", async function () {
-  let error = false;
-  let today = new Date().toISOString().split("T");
   let sessionArray = [];
+  let html = swalItemAddSession();
 
   Swal.fire({
-    html: `
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <h2>Voeg nieuwe les toe</h2>
-              <hr>
-            </div>
-          </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Lesnaam:</b></h3>
-                <input id="lessonName" class="form-control" type="text">
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Beschrijving:</b></h3>
-                <textarea id="lessonDescription" class="form-control"></textarea>
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Locatie:</b></h3>
-                <input id="lessonLocation" class="form-control" type="text">
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Yogadocent:</b></h3>
-                <p>
-                  <input id="lessonTeacher" type="radio" checked="true" value="Natascha Puper">
-                  Natascha Puper
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-12">
-                    <h3 class="lead lbs"><b>Dag:</b></h3>
-                  </div>
-                </div>
-                <div class="row align-items-center pb-3">
-                  <div class="col-md-10">
-                    <input id="lessonDay" value="${today[0]}"class="form-control" type="date">
-                  </div>
-                  <div class="col-md-1">
-                    <i class="bi bi-plus-square-dotted addSessionToArray"></i>
-                  </div>
-                  <div class="col-md-1">
-                    
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-8 text-center">
-                    <p class="lead">Toegevoegde dagen <i class="bi bi-chevron-down seeAddedSessions"></i></p>
-                  </div>
-                  <div class="col-md-4 text-center">
-                    
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12 allSessionItems text-center">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Starttijd:</b></h3>
-                <input id="lessonTime" class="form-control" type="time">
-              </div>
-            </div>
-            <div class="row  pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Duur:</b></h3>
-                <input id="lessonDuration" class="form-control" type="number" step="30" min="30">
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-md-12">
-                <h3 class="lead lbs"><b>Aantal deelnemers:</b></h3>
-                <input id="maxPeople" class="form-control" type="number" step="1" min="1">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="alert alert-warning close errorBox" role="alert">
-      </div>
-    </div>
-      `,
+    html: html,
     customClass: 'sweetalert-makeLesson',
     confirmButtonColor: '#D5CA9B',
     showCloseButton: true,
@@ -666,6 +445,7 @@ $(".addLesson").on("click", async function () {
     focusConfirm: false,
     confirmButtonText: 'Voeg les toe',
     cancelButtonText: 'Terug',
+    allowOutsideClick: false
 
   }).then(async (result) => {
     if (result.isConfirmed) {
@@ -684,12 +464,15 @@ $(".addLesson").on("click", async function () {
           teacher: "Natascha",
           description: $("#lessonDescription").val(),
           maxAmountOfParticipants: $("#maxPeople").val(),
-          weekly: false
+          weekly: false,
+          private: $(".lessonPrive").is(":checked")
+
         }
         addSession(json);
       }
     }
   });
+
 
   // Display all session added at the moment ->
   let checkStatus = false;
@@ -713,11 +496,13 @@ $(".addLesson").on("click", async function () {
     let description = $("#lessonDescription").val();
     let maxAmountOfParticipants = $("#maxPeople").val();
     let weekly = false;
+    $(".allSessionItems").slideDown(200);
+    checkStatus = true;
 
     let json = { title, location, date, duration, participants, teacher, description, maxAmountOfParticipants, weekly }
 
     if (title == "" || location == "" || date == "" || duration == "" || teacher == "" || description == "" || maxAmountOfParticipants == "") {
-      errorText("Vul all velden in voordat u de les toevoegd.")
+      errorText("Vul alle velden in voordat u de les toevoegd.")
     } else {
       sessionArray.push(json);
       drawItems(sessionArray);
@@ -731,6 +516,7 @@ async function addSession(sessionArray) {
     let json = await res.json();
     if(res.status == 201) {
       toastPopUp("Les(sen) toegevoegd!", "success");
+      loadAndSetFullAgenda(weekNumb);
     } else {
       toastPopUp(json.message, "error");
     }
@@ -745,7 +531,7 @@ function drawItems(sessionArray) {
 
   for (jsonIndex in sessionArray) {
     const json = sessionArray[jsonIndex];
-    const item = $(`<p id="${jsonIndex}" class="lbs itemsSession"><b>${json.title}</b><br> ${dateFormat(json.date).date}</p>`);
+    const item = $(`<p id="${jsonIndex}" class="lbs itemsSession slide-in-blurred-top"><b>${json.title}</b><br> ${dateFormat(json.date).date}</p>`);
     item.on("click", function () {
       //Remove json object from array ->
       sessionArray.splice(this.id, 1);
@@ -756,31 +542,10 @@ function drawItems(sessionArray) {
   }
 }
 
-// Add session call ->
-// async function addSession(data) {
-//   try {
-//     let res = await ApiCaller.addSession(json);
-//     let json = await res.json();
-//     if (res.status == 201) {
-//       toastPopUp(json.message, "success");
-//     } else {
-//       Swal.fire({
-//         title: "Oops",
-//         icon: 'success',
-//         text: json.message,
-//         showCloseButton: true,
-//         confirmButtonColor: '#D5CA9B'
-//       });
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
 // Unsubscribe form a session ->
 function unsubcribeSession() {
   $(".unsubscribe").on("click", function () {
     let sessionId = $(this).parent().parent().attr("id");
-
     Swal.fire({
       title: 'Weet u zeker dat u zich wilt uitschrijven voor deze les?',
       icon: 'info',
@@ -820,30 +585,19 @@ function unsubcribeSession() {
     });
   });
 }
+
 // subcribe to lesson ->
 function subscribeToSession() {
+  
   $(".subscribe").on("click", function () {
+    let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
+    let html = swalItemSubscribeToSession(lesson);
     if (typeof user == 'undefined') {
       console.log("user not logged in");
       location.href = "/login";
     } else {
-      let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
-      console.log(lesson)
       Swal.fire({
-        html: `
-        <h2>Inschrijven</h2>
-        <hr>
-        <p>U wilt u inschrijven voor <b>${lesson}</b>.</p>
-        <p><b> Hoeveel personen wilt u inschrijven?</b></p>
-        <div class="row width">
-          <div class="col-md-12 text-start">
-            <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
-          </div>
-        </div>
-        <p><b id="extraPeopleTitle"></b></p>
-        <div id="allInputs">
-
-        </div>`,
+        html: html,
         customClass: 'sweetalert-subscribe',
         showCancelButton: true,
         confirmButtonText: 'Schrijf mij in',
@@ -925,7 +679,7 @@ function nrOfPeopleChanged() {
         </div> 
       </div>`;
 
-    }
+    }G
     title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
     document.getElementById('allInputs').innerHTML = temporary;
   }
