@@ -26,6 +26,14 @@ function errorText(errMessage) {
   }, 3000)
 }
 
+function checkLogin() {
+    if(cookie){
+      return true;
+    }else{
+      return false;
+    }
+}
+
 // Date Time formatter  ->
 // Call the function with .time to get time 
 // Call the function with .date to get the date

@@ -21,9 +21,11 @@ const sendMail = async (receiver, html) => {
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
+        if (error)
+        {
             throw Error({ message: "Mail kon niet worden verzonden", error: error.message });
-        } else {
+        } else
+        {
             mailConfirmation = info;
         }
     });
@@ -38,13 +40,17 @@ module.exports.sessionSignOutMail = async (user, session) => {
         <p>Met vriendelijke groet, </p>
         <p>Het Eigen Wijze Lichaam</p>
     `;
-    try {
-        if (sendMail(receiver, html)) {
+    try
+    {
+        if (sendMail(receiver, html))
+        {
             return true;
-        } else {
+        } else
+        {
             return false;
         }
-    } catch (err) {
+    } catch (err)
+    {
         return false;
     }
 }
@@ -52,18 +58,38 @@ module.exports.sessionSignOutMail = async (user, session) => {
 module.exports.signUpMail = async (user) => {
     let receiver = user.email;
     let html = `
-        <h1>Welkom ${user.fullName}</h1>
-        <p>U heeft zich aangemeld voor het platform van Het Eigen Wijze Lichaam</p>
-        <p>Met vriendelijke groet, </p>
-        <p>Het Eigen Wijze Lichaam</p>
+                        <div class="row pt-3">
+                            <div class="col-md-8">
+                                <p>Welkom bij het eigenwijze lichaam.</p>
+                                <p>Op het platform kan je stippenkaarten afsluiten waarmee je je in kan schrijven op
+                                    lessen. Deze strippenkaarten kan je niet alleen voor jezelf kopen maar ook cadeau
+                                    doen aan andere mensen. Het platform geeft je ook de mogelijkheid om meerdere
+                                    personen mee te nemen naar een les.</p>
+                                <p>Op het platform kan je niet allen inschrijven voor lessen maar kan je ook filmpjes
+                                    bekijken of luisteren naar podcasts.</p>
+                                <p>Met vriendelijke groet,</p>
+                                <p>Natascha Puper</p>
+                                <a href="https://twitter.com/nataschapuper"><i class="bi bi-twitter"></i></a>
+                                <a href="https://www.facebook.com/natascha.puper"><i class="bi bi-facebook"></i></a>
+                                <a href="https://www.linkedin.com/in/nataschapuper-yinyogamedical/"><i
+                                        class="bi bi-linkedin"></i></a>
+                            </div>
+                            <div class="col md-4">
+                                <img class="imgMail" src="static/Eigen-wijze-lichaam-logo.png">
+                            </div>
+                        </div>
     `;
-    try {
-        if (sendMail(receiver, html)) {
+    try
+    {
+        if (sendMail(receiver, html))
+        {
             return true;
-        } else {
+        } else
+        {
             return false;
         }
-    } catch (err) {
+    } catch (err)
+    {
         return false;
     }
 }
