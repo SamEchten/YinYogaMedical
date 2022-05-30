@@ -16,7 +16,7 @@ module.exports.login_post = async (req, res) => {
         let user = await User.login(email, password);
 
         //Send jwt token to client ->
-        sendCookies(res, user._id, user.fullName, user.email, user.isEmployee);
+        sendCookies(res, user._id, user.fullName, user.email, user.isEmployee, user.classPassHours);
 
         //Send user info to client ->
         res.status(200).json({
@@ -40,7 +40,7 @@ module.exports.signup_post = async (req, res) => {
         const user = await User.create({ fullName, email, password, phoneNumber, notes, isEmployee: false });
 
         //Send jwt cookie to client
-        sendCookies(res, user._id, user.fullName, user.email, user.isEmployee);
+        sendCookies(res, user._id, user.fullName, user.email, user.isEmployee, user.classPassHours);
 
         //Send mail to user
         signUpMail({
@@ -69,7 +69,7 @@ module.exports.signup_post = async (req, res) => {
 //          isEmployee
 //Creates a token and sends it to the client via the response
 //Cookie is valid for 1 day and is httpOnly
-const sendCookies = (res, id, fullName, email, isEmployee) => {
+const sendCookies = (res, id, fullName, email, isEmployee, saldo) => {
     let userId = id.toString();
     let token = createToken(userId, fullName, isEmployee);
 
@@ -79,7 +79,7 @@ const sendCookies = (res, id, fullName, email, isEmployee) => {
     });
 
 
-    res.cookie("user", JSON.stringify({ userId, fullName, email, isEmployee }), {
+    res.cookie("user", JSON.stringify({ userId, fullName, email, isEmployee, saldo }), {
         expiresIn: maxAge * 1000
     })
 }

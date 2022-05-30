@@ -2,19 +2,30 @@
     background-image: url("./pexels-cottonbro-4325455.jpg");
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: cover; 
+    /* animation: animatedBackground 50s linear infinite alternate; */
+    
 }
 
 .main-wrapper {
     height: 100vh;
 }
+@keyframes animatedBackground {
+    from {
+      background-position: 50% 50%;
+      background-size: 100%;
+    }
+    to {
+      background-position: 10% 100%;
+      background-size: 150%;
+    }
+  }
 
 .loginContent {
     padding: 50px;
     width: 80%;
     margin: auto;
 }
-
 .loginButton {
     width: 100% !important;
 }
@@ -28,3 +39,5 @@
 .emailInput {
     padding-bottom: 20px;
 }
+
+
