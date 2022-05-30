@@ -24,6 +24,7 @@ module.exports.login_post = async (req, res) => {
             "fullName": user.fullName
         });
     } catch (err) {
+        console.log(err.message);
         let errors = handleUserErrors(err);
         res.status(400).json(errors);
     }
