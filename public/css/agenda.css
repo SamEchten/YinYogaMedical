@@ -47,9 +47,19 @@
     border: 1px solid #e0e0e0;
 }
 .sessionUsers {
-    height: 200px;
+    height: 150px;
     overflow: auto;
     display: none;
+}
+.userSessionDetails {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    margin: 2px;
+}
+.userSessionDetails:hover {
+    background-color: #d5ca9b;
 }
 
 .userFilterItem:hover { 
@@ -290,8 +300,6 @@ input[type=time] {
 .sweetalert-seelesson p {
     font-family: 'OpenSans', 'Segoe UI' !important;
     font-size: 14pt !important;
-    margin-bottom: 20px;
-    margin-left: 10px;
     font-weight: 300;
     text-align: start !important;
     color: #707070;
