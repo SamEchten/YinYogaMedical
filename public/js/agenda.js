@@ -1,6 +1,7 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber() -1;
+let weekNumb = getCurrentWeekNumber();
+console.log(weekNumb)
 
 // Render lesrooster from apiCaller and format it on date ->
 //  > Document.getready! first render. 
@@ -25,6 +26,7 @@ async function loadAgenda(weekNumber) {
   schedule = res;
   showOrhideElements();
   let week = schedule[weekNumber];
+  console.log(schedule)
   if (week != undefined) {
     for (day in week) {
       if (week[day].length > 0) {
@@ -32,6 +34,7 @@ async function loadAgenda(weekNumber) {
         clearAgenda(day)
         for (session in dayData) {
           let sessionData = dayData[session];
+          
           let { id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date } = sessionData;
           loadSessionItem(id, title, teacher, sessionData.participates, maxAmountOfParticipants, amountOfParticipants, date, day);
           addSubscribedItems(id, sessionData.participates);  
@@ -122,31 +125,45 @@ function sessionDetails(data) {
       confirmButtonColor: '#D5CA9B',
       confirmButtonText: 'OK'
     });
-    //handle the dropdown effect
-    $(".dropDownUsers").on("click", function() {
-      if (check) {
-        $(".sessionUsers").slideUp("slow");
-        check = false;
-      } else {
-        $(".sessionUsers").slideDown("slow");
-        check = true;
-      }
-    });
-    //load all participants into correct div
-    if(roleCheck()) {
-      showAllParticipants(data.participants);
+  //handle the dropdown effect
+  $(".dropDownUsers").on("click", function() {
+    if (check) {
+      $(".sessionUsers").slideUp("slow");
+      check = false;
     } else {
-      $(".usersPerSessionRow").addClass("d-none");
+      $(".sessionUsers").slideDown("slow");
+      check = true;
     }
+  });
+  //load all participants into correct div
+  if(roleCheck()) {
+    if(data.participants.length <= 0) {
+      $(".sessionUsers").append(`<p class="lead "> Geen inschrijvingen</p>`)
+    }
+    showAllParticipants(data.participants);
+  } else {
+    $(".usersPerSessionRow").addClass("d-none");
+  }
     
     
 
 }
 
-function showAllParticipants(data) {
+async function showAllParticipants(data) {
   for(users in data) {
     // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT  
-    $(".sessionUsers").append(`<p id="" class="lead">${data[users].userId}<p>`)
+    try {
+      let res = await ApiCaller.getUserInfo(data[users].userId);
+      let json = await res.json();
+      if(res.status == 200) {
+        $(".sessionUsers").append(`<p class="lead userSessionDetails"><i class="bi bi-person"></i> ${json.fullName}</p>`);
+      } else {
+        toastPopUp(json.message);
+      }
+    } catch (err) {
+
+    }
+  
   }
 }
 // Loads all session items and puts them into the right day ->
@@ -452,12 +469,15 @@ $(".addLesson").on("click", async function () {
           teacher: "Natascha",
           description: $("#lessonDescription").val(),
           maxAmountOfParticipants: $("#maxPeople").val(),
-          weekly: false
+          weekly: false,
+          private: $(".lessonPrive").is(":checked")
+
         }
         addSession(json);
       }
     }
   });
+
 
   // Display all session added at the moment ->
   let checkStatus = false;
@@ -487,7 +507,7 @@ $(".addLesson").on("click", async function () {
     let json = { title, location, date, duration, participants, teacher, description, maxAmountOfParticipants, weekly }
 
     if (title == "" || location == "" || date == "" || duration == "" || teacher == "" || description == "" || maxAmountOfParticipants == "") {
-      errorText("Vul all velden in voordat u de les toevoegd.")
+      errorText("Vul alle velden in voordat u de les toevoegd.")
     } else {
       sessionArray.push(json);
       drawItems(sessionArray);
