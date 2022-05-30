@@ -731,6 +731,7 @@ async function addSession(sessionArray) {
     let json = await res.json();
     if(res.status == 201) {
       toastPopUp("Les(sen) toegevoegd!", "success");
+      loadAndSetFullAgenda(weekNumb);
     } else {
       toastPopUp(json.message, "error");
     }

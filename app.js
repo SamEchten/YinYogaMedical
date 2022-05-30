@@ -13,7 +13,7 @@ const { validateAdmin } = require("./middleware/validator");
 const { validateJson } = require("./middleware/validator");
 
 //Server port ->
-const port = 82;
+const port = 443;
 
 //Optinos for https connection
 const httpsOptions = {
