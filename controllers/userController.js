@@ -17,13 +17,13 @@ module.exports.get = async (req, res) => {
                     fullName: user.fullName,
                     email: user.email,
                     phoneNumber: user.phoneNumber,
-                    notes: user.notes,
-                    saldo: user.classPassHours
+                    notes: user.notes
                 });
             } else {
                 res.status(404).json({ message: "Geen user gevonden met dit id" });
             }
         } catch (err) {
+            res.status(400).json({ message: "Er is iets fout gegaa", error: err.message });
         }
     } else {
         //Get all users ->
@@ -37,8 +37,7 @@ module.exports.get = async (req, res) => {
                     fullName: user.fullName,
                     email: user.email,
                     phoneNumber: user.phoneNumber,
-                    notes: user.notes,
-                    saldo: user.classPassHours
+                    notes: user.notes
                 });
             }
             res.status(200).json(allUsers);
