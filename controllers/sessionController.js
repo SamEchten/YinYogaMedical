@@ -245,8 +245,6 @@ module.exports.signup = async (req, res) => {
     const reqId = JSON.parse(req.cookies.user).userId;
     const admin = await isAdmin(reqId);
 
-    console.log(reqId, userId);
-
     if (userId == reqId || admin) {
         if (sessionId) {
             try {

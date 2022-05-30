@@ -17,7 +17,8 @@ module.exports.get = async (req, res) => {
                     fullName: user.fullName,
                     email: user.email,
                     phoneNumber: user.phoneNumber,
-                    notes: user.notes
+                    notes: user.notes,
+                    saldo: user.classPassHours
                 });
             } else {
                 res.status(404).json({ message: "Geen user gevonden met dit id" });
@@ -36,7 +37,8 @@ module.exports.get = async (req, res) => {
                     fullName: user.fullName,
                     email: user.email,
                     phoneNumber: user.phoneNumber,
-                    notes: user.notes
+                    notes: user.notes,
+                    saldo: user.classPassHours
                 });
             }
             res.status(200).json(allUsers);
