@@ -12,9 +12,9 @@ input {
     box-shadow: none !important;
 }
 .inputStyle {
-    border: none !important;
+    /* border: none !important;
     border-bottom: 1px solid #d5ca9b !important;
-    border-radius: 0px !important;
+    border-radius: 0px !important; */
 }
 .showOrHide {
     opacity: 0.5 !important;
