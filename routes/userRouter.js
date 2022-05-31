@@ -6,13 +6,13 @@ const { validateAdmin } = require("../middleware/validator");
 
 //Accessible by logged in users
 router.use(validateJwt);
-//Get single user
-router.get("/", controller.get);
 //Get all users
 router.get("/:id", controller.get);
 
 //Accessible by admin
 router.use(validateAdmin);
+//Get single user
+router.get("/", controller.get);
 //Add a new user
 router.post("/", controller.add);
 //Updated a user with new information

@@ -6,16 +6,32 @@ $(async function () {
   roleCheck();
   getAndSetAllUsers();
   setUserItemsNav();
+
+  sessionStorage.setItem("firstPageLoad", true);
+  showWelcomMessage();
 });
 
-function setUserItemsNav () {
+function showWelcomMessage() {
+  const firstPageLoad = sessionStorage.getItem("firstPageLoad");
+  console.log(firstPageLoad);
+  if (firstPageLoad) {
+    if (user) {
+      toastPopUp("Welkom " + user.fullName, "info");
+    } else {
+      toastPopUp("Welkom bij Natascha Puper", "info");
+    }
+    sessionStorage.setItem("firstPageLoad", false);
+  }
+}
+
+function setUserItemsNav() {
   let username = $(".userNameNav");
   let saldo = $(".userSaldo");
   let switchNav = $(".navSwitch")
 
-  if(user) {
+  if (user) {
     username.html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
-    saldo.html(`<i class="bi bi-wallet2"></i>  ` + user.saldo +" uur"  );
+    saldo.html(`<i class="bi bi-wallet2"></i>  ` + user.saldo + " uur");
     switchNav.after(`<a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Uitloggen</a>`);
   } else {
     username.remove();
@@ -39,11 +55,11 @@ function errorText(errMessage) {
 }
 
 function checkLogin() {
-    if(cookie){
-      return true;
-    }else{
-      return false;
-    }
+  if (cookie) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // Date Time formatter  ->
