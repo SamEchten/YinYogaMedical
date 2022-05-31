@@ -2,7 +2,9 @@
         font-family: Lato;
         src: url(./font_lato);
 }
-
+.contentRow::-webkit-scrollbar {
+        display: none;
+    }
 @font-face {
         font-family: OpenSans;
         src: url(./open_sans);

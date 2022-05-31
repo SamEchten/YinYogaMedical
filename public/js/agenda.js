@@ -179,7 +179,6 @@ function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipan
     $("#" + id).children().children().children(".participantsColor").css("color", checkSessionSize(amountOfParticipants, maxAmountOfParticipants));
   }
   
-
   checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date);
 }
 

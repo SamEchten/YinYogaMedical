@@ -4,4 +4,5 @@ const controller = require("../controllers/videoController");
 
 router.get("/", controller.get);
 
+
 module.exports = router;

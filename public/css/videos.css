@@ -1,0 +1,34 @@
+.main-wrapper {
+    height: calc(100vh - 58px);
+}
+.headerRow {
+    height: 10%;
+}
+body {
+    background-color: rgb(255, 255, 255) !important;
+}
+.headerText {
+    padding: 10px;
+    font-weight: 600 !important;
+}
+.contentRow {
+    height: 90%;
+    background-color: rgb(255, 255, 255) ;
+    overflow: auto;
+}
+.videoThumbnail  {
+    background-image: url("./pexels-valeria-ushakova-3094230.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 15px 15px 0px 0px;
+    border-top: 1px solid rgb(209, 209, 209);
+    border-left: 1px solid rgb(209, 209, 209);
+    border-right: 1px solid rgb(209, 209, 209);
+}
+.videoInfo {
+    border-radius: 0px 0px 15px 15px;   
+    background-color: rgb(255, 255, 255);
+    border-bottom: 1px solid rgb(209, 209, 209);
+    border-left: 1px solid rgb(209, 209, 209);
+    border-right: 1px solid rgb(209, 209, 209);
+}

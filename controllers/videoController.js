@@ -1,5 +1,6 @@
 // in the imports above
 const fs = require("fs");
+const path = require("path");
 
 module.exports.get = async (req, res) => {
     // Ensure there is a range given for the video
@@ -36,3 +37,8 @@ module.exports.get = async (req, res) => {
     // Stream the video chunk to the client
     videoStream.pipe(res);
 };
+
+// Render video page
+module.exports.view = (req, res) => {
+    res.render(path.join(__dirname, "../views/video"), { isAdmin: false });
+}
