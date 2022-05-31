@@ -149,14 +149,20 @@ async function showAllParticipants(data) {
       let json = await res.json();
       if (res.status == 200) {
         $(".sessionUsers").append(`<p class="lead userSessionDetails"><i class="bi bi-person"></i> ${json.fullName}</p>`);
+
+        //Add coming With participants
+        for (i in data[users].comingWith) {
+          const participant = data[users].comingWith[i];
+          $(".sessionUsers").append(`<p class="lead userSessionDetails ms-3"><i class="bi bi-arrow-return-right"></i> ${participant.name}</p>`);
+        }
       } else {
         toastPopUp(json.message);
       }
     } catch (err) {
 
     }
-
   }
+  $(".sessionUsers").addClass("hideScrollbar");
 }
 // Loads all session items and puts them into the right day ->
 function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipants, amountOfParticipants, date, day) {
@@ -326,7 +332,6 @@ async function editSession(sessionId) {
           "location": $("#lessonLocation").val(),
           "date": createDateString($("#lessonDay").val(), $("#lessonTime").val()),
           "duration": $("#lessonDuration").val(),
-          "participants": [],
           "teacher": "Natascha",
           "description": $("#lessonDescription").val(),
           "maxAmountOfParticipants": $("#maxPeople").val(),
