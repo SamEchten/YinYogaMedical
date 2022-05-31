@@ -287,10 +287,10 @@ function templateLoadSession(id, date, title, teacher, amountOfParticipants, max
             <i class="bi bi-pencil hiding editSession"></i>
           </div>
           <div class="col-md-2 text-center">
-            <i class="bi bi-x-lg hiding removeSession"></i>
+            <i class="bi bi-trash3 hiding removeSession"></i>
           </div>
           <div class="col-md-2 text-start">
-            <i class="bi bi-person-plus hiding addUser"></i>
+            <i class="bi bi-person-check hiding addUser"></i>
           </div>
           <div class="col-md-3 participate text-start">
           
