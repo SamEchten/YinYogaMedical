@@ -15,7 +15,6 @@ async function updateSaldo() {
   if (user) {
     let res = await ApiCaller.getUserInfo(user.userId);
     let json = await res.json();
-    console.log(json.saldo);
     $(".userSaldo").html(`<i class="bi bi-wallet2"></i>  ` + json.saldo + " uur");
   }
 }
@@ -121,7 +120,6 @@ function getfirstAndlastDatesOfTheWeek(year, week) {
 
 function createDateString(date, time) {
   let string = date + "T" + time + ":00.000Z"
-  //console.log(string)
   return string;
 }
 
@@ -183,12 +181,10 @@ async function getAndSetAllUsers() {
   try {
     let res = await ApiCaller.getAllUsers();
     let json = await res.json();
-    console.log(json)
     if (res.status == 200) {
       allUsers = json;
     }
   } catch (err) {
-    console.log(err)
   }
 }
 
