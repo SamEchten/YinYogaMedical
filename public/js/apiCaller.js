@@ -213,6 +213,26 @@ class ApiCaller {
         }
     }
 
+    // Update product -> *ADMIN*
+    static updateProduct = async (data, productId) => {
+        let url = "/api/product/" + productId;
+        let options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
+
     // Remove a product -> *ADMIN*
     static removeProduct = async (productId) => {
         let url = "/api/product/" + productId;

@@ -8,6 +8,7 @@ $(async function () {
   setUserItemsNav();
   updateSaldo();
   showWelcomMessage();
+  
 });
 
 // Update users saldo 
@@ -47,7 +48,14 @@ function setUserItemsNav() {
     switchNav.remove();
   }
 }
-
+function createToolTip(item, title, position) {
+  item.attr({
+    "data-toggle" : "tooltip",
+    "data-placement" : position,
+    "title" : title
+  })
+  // data-toggle="tooltip" data-placement="top" title="Tooltip on top"
+}
 // Error message : give the class "errorBox" to activate ->
 // $(".errorBox").on("click", function () {
 //   $(".errorBox").slideUp(300);
@@ -155,6 +163,7 @@ function showOrhideElements() {
   if (roleCheck()) {
     $(".hiding").css("display", "block");
     $(".subscribe").attr("disabled", true);
+    $(".BuyNow").attr("disabled", true);
   }
 }
 

@@ -82,6 +82,81 @@ function swalItemAddProductCategory(){
   return template;
 }
 
+// Edit a product ->
+function swalItemEditProduct(category){
+  let template = '';
+  if (category == "Strippenkaarten"){
+     template = `
+    <h2>Voeg nieuwe strippenkaart toe</h2>
+    <hr>
+    <div class="row width">
+      <div class="col-md-6">
+        <h3 class="lead"><b>Productnaam:</b></h3>
+        <input id="productName" class="swal2-input" type="text" placeholder="Productnaam">
+        <h3 class="lead"><b>Beschrijving:</b></h3>
+        <textarea id="productDescription" class="swal2-input" placeholder="Productbeschrijving"></textarea>
+        <h3 class="lead"><b>Aantal jaar geldig:</b></h3>
+        <input id="productValid" class="swal2-input half" type="number" step="1" min="1" value="1">
+      </div>
+      <div class="col-md-6">
+        <h3 class="lead"><b>Prijs:</b></h3>
+        <input id="productPrice" class="swal2-input half" type="number" step="1" min="1" value="1">
+        <h3 class="lead"><b>Aantal uur:</b></h3>
+        <p class="subtext">Aantal uren op het product.</p>
+        <input id="productHours" class="swal2-input half" type="number" step="0.5" min="0.5" value="0.5">
+      </div>
+      <div class="alert alert-warning errorBox" role="alert"></div>
+    </div>`;
+  } else if(category == "Abonnementen") {
+    template = `
+    <h2>Voeg nieuw abonnement toe</h2>
+    <hr>
+    <div class="row width">
+      <div class="col-md-6">
+        <h3 class="lead"><b>Productnaam:</b></h3>
+        <input id="productName" class="swal2-input" type="text" placeholder="Productnaam">
+        <h3 class="lead"><b>Beschrijving:</b></h3>
+        <textarea id="productDescription" class="swal2-input" placeholder="Productbeschrijving"></textarea>
+        </div>
+      <div class="col-md-6">
+        <h3 class="lead"><b>Prijs:</b></h3>
+        <input id="productPrice" class="swal2-input half" type="number" step="1" min="1" value="1">
+        <h3 class="lead"><b>Aantal jaar geldig:</b></h3>
+        <input id="productValid" class="swal2-input half" type="number" step="1" min="1" value="1">
+      </div>
+      <div class="alert alert-warning errorBox" role="alert"></div>
+    </div>`;
+  } else {
+    template = `
+    <h2>Voeg nieuw product toe</h2>
+    <hr>
+    <div class="row width">
+      <div class="col-md-6">
+        <h3 class="lead"><b>Productnaam:</b></h3>
+        <input id="productName" class="swal2-input" type="text" placeholder="Productnaam">
+        <h3 class="lead"><b>Beschrijving:</b></h3>
+        <textarea id="productDescription" class="swal2-input" placeholder="Productbeschrijving"></textarea>
+        <h3 class="lead"><b>Aantal jaar geldig:</b></h3>
+        <input id="productValid" class="swal2-input half" type="number" step="1" min="1" value="1">
+      </div>
+      <div class="col-md-6">
+        <h3 class="lead"><b>Prijs:</b></h3>
+        <input id="productPrice" class="swal2-input half" type="number" step="1" min="1" value="1">
+        <h3 class="lead"><b>Inplannen:</b></h3>
+        <div class="row">
+          <div class="col-md-12 text-start">
+            <input id="toschedule" type="checkbox" name="plan" onclick="checkToSchedule()"/>
+            <label for="plan" class="subtext">Dit product moet worden ingepland.</label>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-warning errorBox" role="alert"></div>
+    </div>`;
+  }
+   
+  return template;
+}
+
 // Add a product ->
 function swalItemAddProduct(category){
   let template = '';
