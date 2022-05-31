@@ -146,12 +146,12 @@ async function editProduct(productId) {
     $("#productValid").val(json.validFor);
     $("#productPrice").val(json.price);
     $("#productHours").val(json.amountOfHours);
-    if(json.toSchedule){
+    if (json.toSchedule) {
       $("#toschedule").attr("checked", true);
     } else {
       $("#toschedule").attr("checked", false);
     }
-    
+
   } catch (err) {
     console.log(err)
   }
@@ -283,58 +283,40 @@ async function addProduct() {
 // buy product
 function buyProduct(product) {
   let html1 = swalBuyProductCheck(product);
-  // if () {
+  let html2 = swalGiftProduct();
   Swal.fire({
     html: html1,
-    customClass: 'sweetalert-subscribe',
+    customClass: {
+      html: 'sweetalert-subscribe',
+      denyButton: 'giftButton',
+      confirmButton: 'buyButton',
+      cancelButton: 'cancelButton'
+    },
     showCancelButton: true,
+    showDenyButton: true,
+    denyButtonText: `<i class="bi bi-gift"></i> &nbsp; Doe product cadeau`,
     confirmButtonText: 'Koop product',
     confirmButtonColor: '#D5CA9B',
-    cancelButtonText: 'Cancel',
+    cancelButtonText: 'Cancel'
   })
-    // .then(async (result) => {
-    //       if (result.isConfirmed)
-    //       {
-    //         let sessionId = $(this).parent().parent().attr("id");
-    //         let jsonData = {
-    //           "userId": user.userId,
-    //           "comingWith": sessionUserObject()
-    //         }
-    //         console.log(sessionId)
-    //         console.log(jsonData)
-    //         try
-    //         {
-    //           let res = await ApiCaller.addUserToSession(jsonData, sessionId);
-    //           let jsonRes = await res.json();
-    //           if (res.status == 200)
-    //           {
-    //             Swal.fire({
-    //               title: `U heeft zich ingeschreven voor ${lesson} .`,
-    //               icon: 'success',
-    //               text: `Wat leuk dat u zich hebt ingeschreven voor ${lesson}! Tot snel! `,
-    //               showCloseButton: true,
-    //               confirmButtonColor: '#D5CA9B'
-    //             });
-    //           } else
-    //           {
-    //             Swal.fire({
-    //               title: `Oops!`,
-    //               icon: 'warning',
-    //               text: jsonRes.message,
-    //               showCloseButton: true,
-    //               confirmButtonColor: '#D5CA9B'
-    //             });
-    //           }
-    //         } catch (err)
-    //         {
-    //           console.log(err);
-    //         }
-    //       }
-    //     })
-    ;
-  // } else {
-
-  // }
+    .then(async (result) => {
+      if (result.isConfirmed) {
+        console.log('redirect to mollie');
+        // TODO: Redirect to mollie
+      } else if(result.isDenied) {
+        Swal.fire({
+          html: html2,
+          customClass: 'sweetalert-gift',
+          showCancelButton: true,
+          confirmButtonText: 'Stuur cadeau',
+          confirmButtonColor: '#D5CA9B',
+          cancelButtonText: 'Cancel'
+        }).then(()=> {
+          console.log('redirect to mollie');
+          // TODO: Redirect to mollie
+        });
+      }
+    });
 }
 
 
