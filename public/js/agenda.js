@@ -138,6 +138,7 @@ function sessionDetails(data) {
     if(data.participants.length <= 0) {
       $(".sessionUsers").append(`<p class="lead "> Geen inschrijvingen</p>`)
     }
+    $(".sessionUsers").empty();
     showAllParticipants(data.participants);
   } else {
     $(".usersPerSessionRow").addClass("d-none");
@@ -145,7 +146,6 @@ function sessionDetails(data) {
 }
 
 async function showAllParticipants(data) {
-  $(".sessionUsers").empty(); 
   for(users in data) {
     // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT 
     try {
