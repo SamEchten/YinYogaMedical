@@ -6,16 +6,39 @@ $(async function () {
   roleCheck();
   getAndSetAllUsers();
   setUserItemsNav();
+  updateSaldo();
+  showWelcomMessage();
 });
 
-function setUserItemsNav () {
+// Update users saldo 
+async function updateSaldo() {
+  if (user) {
+    let res = await ApiCaller.getUserInfo(user.userId);
+    let json = await res.json();
+    $(".userSaldo").html(`<i class="bi bi-wallet2"></i>  ` + json.saldo + " uur");
+  }
+}
+
+function showWelcomMessage() {
+  const firstPageLoad = sessionStorage.getItem("firstPageLoad");
+  if (firstPageLoad == null) {
+    if (user) {
+      toastPopUp("Welkom " + user.fullName, "info");
+    } else {
+      toastPopUp("Welkom bij Natascha Puper", "info");
+    }
+  }
+  sessionStorage.setItem("firstPageLoad", true);
+}
+
+function setUserItemsNav() {
   let username = $(".userNameNav");
   let saldo = $(".userSaldo");
   let switchNav = $(".navSwitch")
 
-  if(user) {
+  if (user) {
     username.html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
-    saldo.html(`<i class="bi bi-wallet2"></i>  ` + user.saldo +" uur"  );
+    saldo.html(`<i class="bi bi-wallet2"></i>  ` + user.saldo + " uur");
     switchNav.after(`<a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Uitloggen</a>`);
   } else {
     username.remove();
@@ -39,11 +62,11 @@ function errorText(errMessage) {
 }
 
 function checkLogin() {
-    if(cookie){
-      return true;
-    }else{
-      return false;
-    }
+  if (cookie) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // Date Time formatter  ->
@@ -97,7 +120,6 @@ function getfirstAndlastDatesOfTheWeek(year, week) {
 
 function createDateString(date, time) {
   let string = date + "T" + time + ":00.000Z"
-  //console.log(string)
   return string;
 }
 
@@ -159,12 +181,10 @@ async function getAndSetAllUsers() {
   try {
     let res = await ApiCaller.getAllUsers();
     let json = await res.json();
-    console.log(json)
     if (res.status == 200) {
       allUsers = json;
     }
   } catch (err) {
-    console.log(err)
   }
 }
 

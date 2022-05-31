@@ -17,7 +17,8 @@ module.exports.get = async (req, res) => {
                     fullName: user.fullName,
                     email: user.email,
                     phoneNumber: user.phoneNumber,
-                    notes: user.notes
+                    notes: user.notes,
+                    saldo: user.classPassHours
                 });
             } else {
                 res.status(404).json({ message: "Geen user gevonden met dit id" });
@@ -37,7 +38,8 @@ module.exports.get = async (req, res) => {
                     fullName: user.fullName,
                     email: user.email,
                     phoneNumber: user.phoneNumber,
-                    notes: user.notes
+                    notes: user.notes,
+                    saldo: user.classPassHours
                 });
             }
             res.status(200).json(allUsers);
@@ -68,7 +70,7 @@ module.exports.update = async (req, res) => {
     if (id) {
         try {
             //Check if user with given id exists in db ->
-            User.findOne({ id }, async (err, user) => {
+            User.findOne({ _id: id }, async (err, user) => {
                 if (user) {
                     //Check if update request has isEmployee -> check if request was made by an admin
                     if (body.hasOwnProperty("isEmployee")) {
@@ -89,10 +91,10 @@ module.exports.update = async (req, res) => {
                     }
 
                     //Update user ->
-                    await User.updateOne({ id }, { $set: body });
+                    await User.updateOne({ _id: id }, { $set: body });
 
                     //Find updated user doc and send to client ->
-                    User.findOne({ id }, (err, doc) => {
+                    User.findOne({ _id: id }, (err, doc) => {
                         if (err) {
                             res.sendStatus(400);
                         } else {

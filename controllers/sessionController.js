@@ -263,7 +263,11 @@ module.exports.signup = async (req, res) => {
                                         res.status(400).json({ message: err.message });
                                     }
                                 } else {
-                                    res.status(400).json({ message: "U heeft niet genoeg saldo" });
+                                    if (admin) {
+                                        res.status(400).json({ message: "Gebruiker heeft niet genoeg saldo" });
+                                    } else {
+                                        res.status(400).json({ message: "U heeft niet genoeg saldo" });
+                                    }
                                 }
                             } else {
                                 res.status(400).json({ message: "Deze sessie is al geweest" });

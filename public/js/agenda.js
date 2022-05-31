@@ -1,7 +1,6 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber();
-console.log(weekNumb)
 
 // Render lesrooster from apiCaller and format it on date ->
 //  > Document.getready! first render. 
@@ -11,11 +10,6 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
   //scrollDownToCurrDay();
-  try {
-    toastPopUp("Welkom " + user.fullName, "info");
-  } catch (err) {
-
-  }
 });
 
 // Loading agenda data per week ->
@@ -24,7 +18,6 @@ async function loadAgenda(weekNumber) {
   schedule = res;
   showOrhideElements();
   let week = schedule[weekNumber];
-  console.log(schedule)
   if (week != undefined) {
     for (day in week) {
       if (week[day].length > 0) {
@@ -32,10 +25,10 @@ async function loadAgenda(weekNumber) {
         clearAgenda(day)
         for (session in dayData) {
           let sessionData = dayData[session];
-          
+
           let { id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date } = sessionData;
           loadSessionItem(id, title, teacher, sessionData.participates, maxAmountOfParticipants, amountOfParticipants, date, day);
-          addSubscribedItems(id, sessionData.participates);  
+          addSubscribedItems(id, sessionData.participates);
         }
       } else {
         clearAgenda(day);
@@ -56,6 +49,7 @@ async function loadAgenda(weekNumber) {
 function loadAndSetFullAgenda() {
   setWeekData(weekNumb);
   loadAgenda(weekNumb);
+  updateSaldo();
 }
 // scrolls down to the current day in the agenda
 function scrollDownToCurrDay() {
@@ -124,7 +118,7 @@ function sessionDetails(data) {
       confirmButtonText: 'OK'
     });
   //handle the dropdown effect
-  $(".dropDownUsers").on("click", function() {
+  $(".dropDownUsers").on("click", function () {
     if (check) {
       $(".sessionUsers").slideUp("slow");
       check = false;
@@ -134,10 +128,11 @@ function sessionDetails(data) {
     }
   });
   //load all participants into correct div
-  if(roleCheck()) {
-    if(data.participants.length <= 0) {
+  if (roleCheck()) {
+    if (data.participants.length <= 0) {
       $(".sessionUsers").append(`<p class="lead "> Geen inschrijvingen</p>`)
     }
+    $(".sessionUsers").empty();
     showAllParticipants(data.participants);
   } else {
     $(".usersPerSessionRow").addClass("d-none");
@@ -145,12 +140,13 @@ function sessionDetails(data) {
 }
 
 async function showAllParticipants(data) {
-  for(users in data) {
-    // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT  
+  $(".sessionUsers").empty();
+  for (users in data) {
+    // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT 
     try {
       let res = await ApiCaller.getUserInfo(data[users].userId);
       let json = await res.json();
-      if(res.status == 200) {
+      if (res.status == 200) {
         $(".sessionUsers").append(`<p class="lead userSessionDetails"><i class="bi bi-person"></i> ${json.fullName}</p>`);
       } else {
         toastPopUp(json.message);
@@ -158,7 +154,7 @@ async function showAllParticipants(data) {
     } catch (err) {
 
     }
-  
+
   }
 }
 // Loads all session items and puts them into the right day ->
@@ -231,11 +227,9 @@ function loopAndAddElements(userArray, sessionId) {
   for (item in userArray) {
     $(".userItemCol").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
     $("#" + userArray[item].id).on("click", function () {
-      console.log("adding session")
       addUserToSessionAsAdmin(sessionId, this.id);
     });
     $("#_" + userArray[item].id).on("click", function () {
-      console.log("removing")
       removeUserFromSessionAsAdmin(sessionId, this.id.substring(1));
     });
   }
@@ -243,7 +237,6 @@ function loopAndAddElements(userArray, sessionId) {
 // subcribe a user to a session as admin ->
 async function addUserToSessionAsAdmin(sessionId, userId) {
   let data = { userId }
-  console.log(data)
   try {
     let res = await ApiCaller.addUserToSession(data, sessionId);
     let json = await res.json();
@@ -254,7 +247,6 @@ async function addUserToSessionAsAdmin(sessionId, userId) {
       toastPopUp(json.message, "error");
     }
   } catch (err) {
-    console.log(err);
   }
 }
 // Remove a user from a session as admin ->
@@ -270,8 +262,6 @@ async function removeUserFromSessionAsAdmin(sessionId, userId) {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        console.log(data)
-        console.log(sessionId)
         let res = await ApiCaller.unsubscribeFormSession(data, sessionId)
         let json = await res.json();
 
@@ -282,7 +272,6 @@ async function removeUserFromSessionAsAdmin(sessionId, userId) {
           toastPopUp(json.message, "error");
         }
       } catch (err) {
-        console.log(err);
       }
     }
   });
@@ -449,14 +438,13 @@ $(".addLesson").on("click", async function () {
 
   }).then(async (result) => {
     if (result.isConfirmed) {
-      console.log(sessionArray.length)
-      if(sessionArray.length > 0) {
-        for(item in sessionArray) {
+      if (sessionArray.length > 0) {
+        for (item in sessionArray) {
           addSession(sessionArray[item]);
         }
-      } else { 
-        let json =  {
-          title: $("#lessonName").val() ,
+      } else {
+        let json = {
+          title: $("#lessonName").val(),
           location: $("#lessonLocation").val(),
           date: createDateString($("#lessonDay").val(), $("#lessonTime").val()),
           duration: $("#lessonDuration").val(),
@@ -514,13 +502,13 @@ async function addSession(sessionArray) {
   try {
     let res = await ApiCaller.addSession(sessionArray);
     let json = await res.json();
-    if(res.status == 201) {
+    if (res.status == 201) {
       toastPopUp("Les(sen) toegevoegd!", "success");
       loadAndSetFullAgenda(weekNumb);
     } else {
       toastPopUp(json.message, "error");
     }
-  } catch(err){
+  } catch (err) {
     console.log(err)
   }
 }
@@ -588,12 +576,11 @@ function unsubcribeSession() {
 
 // subcribe to lesson ->
 function subscribeToSession() {
-  
+
   $(".subscribe").on("click", function () {
     let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
     let html = swalItemSubscribeToSession(lesson);
     if (typeof user == 'undefined') {
-      console.log("user not logged in");
       location.href = "/login";
     } else {
       Swal.fire({
@@ -610,8 +597,6 @@ function subscribeToSession() {
             "userId": user.userId,
             "comingWith": sessionUserObject()
           }
-          console.log(sessionId)
-          console.log(jsonData)
           try {
             let res = await ApiCaller.addUserToSession(jsonData, sessionId);
             let jsonRes = await res.json();
@@ -679,7 +664,7 @@ function nrOfPeopleChanged() {
         </div> 
       </div>`;
 
-    }G
+    } G
     title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
     document.getElementById('allInputs').innerHTML = temporary;
   }
