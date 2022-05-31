@@ -142,26 +142,31 @@ function sessionDetails(data) {
 
 async function showAllParticipants(data) {
   $(".sessionUsers").empty();
-  for (users in data) {
-    // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT 
-    try {
-      let res = await ApiCaller.getUserInfo(data[users].userId);
-      let json = await res.json();
-      if (res.status == 200) {
-        $(".sessionUsers").append(`<p class="lead userSessionDetails"><i class="bi bi-person"></i> ${json.fullName}</p>`);
-
-        //Add coming With participants
-        for (i in data[users].comingWith) {
-          const participant = data[users].comingWith[i];
-          $(".sessionUsers").append(`<p class="lead userSessionDetails ms-3"><i class="bi bi-arrow-return-right"></i> ${participant.name}</p>`);
+    if(data.length <= 0) {
+      $(".sessionUsers").append(`<p class="lead"></i>Nog geen aanmeldingen <i class="bi bi-emoji-frown"></p>`);
+    } else {
+      for (users in data) {
+        // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT 
+        try {
+          let res = await ApiCaller.getUserInfo(data[users].userId);
+          let json = await res.json();
+          if (res.status == 200) {
+            $(".sessionUsers").append(`<p class="lead userSessionDetails"><i class="bi bi-person"></i> ${json.fullName}</p>`);
+    
+            //Add coming With participants
+            for (i in data[users].comingWith) {
+              const participant = data[users].comingWith[i];
+              $(".sessionUsers").append(`<p class="lead userSessionDetails ms-3"><i class="bi bi-arrow-return-right"></i> ${participant.name}</p>`);
+            }
+          } else {
+            toastPopUp(json.message);
+          }
+        } catch (err) {
+    
         }
-      } else {
-        toastPopUp(json.message);
-      }
-    } catch (err) {
-
     }
   }
+  
   $(".sessionUsers").addClass("hideScrollbar");
 }
 // Loads all session items and puts them into the right day ->
@@ -290,20 +295,35 @@ async function removeUserFromSessionAsAdmin(sessionId, userId) {
     }
   });
 }
-// Create userItem element 
+// Create userItem element in side add user to session
 function createUserItem(fullName, email, phoneNumber, id) {
   let element = `
   <div class="row pb-2 slide-in-blurred-top">
-    <div class="col-md-12 p-2 lead userFilterItem text-start">
+    <div class="col-md-10 p-2 lead userFilterItem text-start">
       <h4><i class="bi bi-person pe-2"></i> ${fullName}</h4>
       <p class="p-1">
       <i class="bi bi-envelope pe-3"></i> ${email} <br>
       <i class="bi bi-telephone pe-3"></i> ${phoneNumber}<br>
       </p>
-      <div>
-        <i id=${id} class="bi bi-person-plus float-end" data-toggle="tooltip" data-placement="top" title="Gebruiker toevoegen aan de les"></i>
-        <i id="_${id}"class="bi bi-person-dash pe-2 removeAsAdmin float-end" data-toggle="tooltip" data-placement="top" title="Gebruiker verwijderen uit de les"></i>
+    </div>
+    <div class="col-md-2">
+      <div class="row h-33 align-items-center">
+        <div class="col-md-12  cursor addAsAdmin">
+          <i id=${id} class="bi bi-person-plus " data-toggle="tooltip" data-placement="top" title="Gebruiker toevoegen aan de les"></i>
+        </div>
       </div>
+      <div class="row h-33 align-items-center">
+        <div class="col-md-12  cursor removeAsAdmin">
+          <i id="_${id}"class="bi bi-person-dash " data-toggle="tooltip" data-placement="top" title="Gebruiker verwijderen uit de les"></i>
+        </div> 
+      </div>
+      <div class="row h-33 align-items-center">
+        <div class="col-md-12 cursor giftFreeSession">
+          <i class="bi bi-gift gift"></i>
+        </div>
+      </div>
+      
+      
     </div>
   </div>`
 

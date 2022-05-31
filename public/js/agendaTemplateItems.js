@@ -21,7 +21,7 @@ function swalItemAddUser() {
                 </div>
               </div>
               <div class="row align-items-center">
-                <div class="col-md-12 pb-3">
+                <div class="col-md-12 pb-3 p-0">
                   <input type="text" class="form-control inputStyle" id="searchUser" placeholder="Zoeken..">
                 </div>
               </div>

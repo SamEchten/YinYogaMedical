@@ -56,8 +56,7 @@
     transition: 0.5s;
     cursor: pointer;
     font-size: 17px !important;
-    border-radius: 7px;
-    border: 1px solid #e0e0e0;
+    border-bottom: 2px solid #D5CA9B;
 }
 
 .sessionUsers {
@@ -192,6 +191,17 @@ body {
     margin-bottom: 10px;
 }
 
+.giftFreeSession:hover {
+    color: green; 
+            
+}
+
+.removeAsAdmin:hover {
+    color: red;
+}
+.addAsAdmin:hover {
+    color: green;
+}
 
 .week {
     cursor: pointer;
