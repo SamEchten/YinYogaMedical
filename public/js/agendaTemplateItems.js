@@ -281,7 +281,7 @@ function templateLoadSession(id, date, title, teacher, amountOfParticipants, max
       </div>
       <div class="col-md-4 settings">
         <div class="row">
-          <div class="col-md-3 text-start">
+          <div class="col-md-3 participantsColor text-start">
             ${amountOfParticipants} / ${maxAmountOfParticipants}
           </div>
           <div class="col-md-2 text-end">

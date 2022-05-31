@@ -209,3 +209,13 @@ function filterData(filterValue) {
   return filteredArray;
 }
 
+function checkSessionSize(amountOfParticipants, maxAmountOfParticipants) {
+  let threshold = maxAmountOfParticipants / 2;
+  if(amountOfParticipants == maxAmountOfParticipants) {
+      return "red";
+  } else if(amountOfParticipants < threshold ) {
+      return "green";
+  } else if(amountOfParticipants >= threshold) {
+      return "orange";
+  }
+}

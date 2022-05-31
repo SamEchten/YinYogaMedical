@@ -174,6 +174,11 @@ function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipan
   let itemLayout = templateLoadSession(id, date, title, teacher, amountOfParticipants, maxAmountOfParticipants);
 
   $(itemLayout).appendTo("#" + day);
+  
+  if(roleCheck()){
+    $("#" + id).children().children().children(".participantsColor").css("color", checkSessionSize(amountOfParticipants, maxAmountOfParticipants));
+  }
+  
 
   checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date);
 }
@@ -681,7 +686,7 @@ function sessionUserObject() {
 }
 
 // Loads inputfields. ->
-function nrOfPeopleChanged() {s
+function nrOfPeopleChanged() {
   let val = document.getElementById('nrOfPeople').value;
   let title = document.getElementById('extraPeopleTitle');
   let temporary = '';
