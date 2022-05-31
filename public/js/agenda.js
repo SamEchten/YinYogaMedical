@@ -140,8 +140,9 @@ function sessionDetails(data) {
 }
 
 async function showAllParticipants(data) {
+  $(".sessionUsers").empty();
   for (users in data) {
-    // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT  
+    // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT 
     try {
       let res = await ApiCaller.getUserInfo(data[users].userId);
       let json = await res.json();
