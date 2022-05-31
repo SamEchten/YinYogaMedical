@@ -180,20 +180,27 @@ module.exports.add = async (req, res) => {
         const { title, location, date, duration, participants, teacher,
             description, maxAmountOfParticipants, weekly, private } = req.body;
 
-        const session = await Session.create({
-            title,
-            location,
-            date,
-            duration,
-            participants,
-            teacher,
-            description,
-            maxAmountOfParticipants,
-            weekly,
-            private
-        });
-
-        res.status(201).json({ id: session.id });
+        if (duration > 0) {
+            if (maxAmountOfParticipants > 0) {
+                const session = await Session.create({
+                    title,
+                    location,
+                    date,
+                    duration,
+                    participants,
+                    teacher,
+                    description,
+                    maxAmountOfParticipants,
+                    weekly,
+                    private
+                });
+            } else {
+                res.status(400).json({ message: "Maximaal aantal deelnemers moet meer zijn dan 0" });
+            }
+            res.status(201).json({ id: session.id });
+        } else {
+            res.status(400).json({ message: "Ongeldige duur" })
+        }
     } catch (err) {
         let errors = handleSessionErrors(err);
         res.status(400).json(errors);
@@ -207,8 +214,16 @@ module.exports.update = async (req, res) => {
     try {
         const session = await Session.findOne({ _id: id });
         if (session) {
-            await Session.updateOne({ _id: id }, { $set: body });
-            res.status(200).json({ id: session._id });
+            if (body.duration > 0) {
+                if (body.maxAmountOfParticipants > 0) {
+                    await Session.updateOne({ _id: id }, { $set: body });
+                    res.status(200).json({ id: session._id });
+                } else {
+                    res.status(400).json({ message: "Maximaal aantal deelnemers moet meer zijn dan 0" });
+                }
+            } else {
+                res.status(400).json({ message: "Ongeldige duur" });
+            }
         } else {
             res.status(404).json({ error: "Geen sessie gevonden met dit Id" })
         }
@@ -321,40 +336,63 @@ const deleteUser = (e, session, userId) => {
     }
 }
 
+const returnSaldo = async (user, participants) => {
+    let cost;
+    for (i in participants) {
+        const row = participants[i];
+        if (row.userId == user.id) {
+            cost = row.cost;
+        }
+    }
+    const newSaldo = user.classPassHours + cost;
+    console.log(newSaldo);
+    await User.updateOne({ _id: user.id }, { $set: { classPassHours: newSaldo } })
+}
+
 module.exports.signout = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
     const cookieUserId = JSON.parse(req.cookies.user).userId;
     const cookieEmployee = JSON.parse(req.cookies.user).isEmployee;
 
-    if (sessionId) {
-        try {
-            let session = await Session.findOne({ _id: sessionId });
-            if (session) {
-                if (userParticipates(userId, session.participants)) {
-                    if (cookieUserId == userId || cookieEmployee == true) {
-                        session.participants.some(e => deleteUser(e, session, userId));
-                        res.status(200).json({ message: "Succesvol uitgeschreven" });
+    if (userId) {
+        User.findOne({ _id: userId }, async (err, user) => {
+            if (user) {
+                if (sessionId) {
+                    try {
+                        let session = await Session.findOne({ _id: sessionId });
+                        if (session) {
+                            if (userParticipates(userId, session.participants)) {
+                                if (cookieUserId == userId || cookieEmployee == true) {
+                                    await returnSaldo(user, session.participants);
+                                    session.participants.some(e => deleteUser(e, session, userId));
+                                    res.status(200).json({ message: "Succesvol uitgeschreven" });
+                                }
+                                else {
+                                    res.status(400).json({ message: "U bent niet gemachtigd deze gebruiker uit te schrijven" });
+                                }
+                            } else {
+                                res.status(400).json({ message: "Deze gebruiker is momenteel niet ingeschreven voor deze les" });
+                            }
+                        } else {
+                            res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
+                        }
                     }
-                    else {
-                        res.status(400).json({ message: "U bent niet gemachtigd deze gebruiker uit te schrijven" });
+                    catch (err) {
+                        console.log(err);
+                        res.status(400).json({ message: err.message });
                     }
-                } else {
-                    res.status(400).json({ message: "Deze gebruiker is momenteel niet ingeschreven voor deze les" });
+                }
+                else {
+                    res.status(400).json({ message: "Er is geen sessionId gegegeven" });
                 }
             } else {
-                res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
+                res.status(400).json({ message: "Er is geen gebruiker gevonden met dit id" });
             }
-        }
-        catch (err) {
-            console.log(err);
-            res.status(400).json({ message: err.message });
-        }
+        });
+    } else {
+        res.status(400).json({ message: "Er is geen userOd gegeven" });
     }
-    else {
-        res.status(400).json({ message: "Er is geen sessionId gegegeven" });
-    }
-
 }
 
 module.exports.view = (req, res) => {

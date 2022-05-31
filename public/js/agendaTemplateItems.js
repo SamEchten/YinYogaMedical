@@ -3,9 +3,9 @@
 // !!!! PLEASE ONLY WRITE HTML AND SWAL POP UP IN THIS FILE !!!!
 
 // Container for adding/removing a user to a session as admin ->
-function swalItemAddUser(){
-    Swal.fire({
-        html: `
+function swalItemAddUser() {
+  Swal.fire({
+    html: `
         <div class="container">
           <div class="row">
             <div class="col-md-12">
@@ -34,15 +34,15 @@ function swalItemAddUser(){
           </div>
         </div> 
         `,
-        showCancelButton: true,
-        showConfirmButton: false,
-        cancelButtonText: 'Terug'
-      });
+    showCancelButton: true,
+    showConfirmButton: false,
+    cancelButtonText: 'Terug'
+  });
 }
 
 // Edit a session as admin and update the items ->
-function  swalItemEditSession () {
-    let template = `
+function swalItemEditSession() {
+  let template = `
     <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -123,9 +123,9 @@ function  swalItemEditSession () {
 }
 
 // Add a session to the agenda template ->
-function swalItemAddSession(){
-    let today = new Date().toISOString().split("T");
-    let template = `
+function swalItemAddSession() {
+  let today = new Date().toISOString().split("T");
+  let template = `
     <div class="container">
       <div class="row">
         <div class="col-md-12">
@@ -239,13 +239,13 @@ function swalItemAddSession(){
       </div>
     </div>
       `
-      return template;
+  return template;
 }
 
 // User subscibes to a session ->
 
 function swalItemSubscribeToSession(lesson) {
-    let template = `
+  let template = `
     <h2>Inschrijven</h2>
     <hr>
     <p>U wilt u inschrijven voor <b>${lesson}</b>.</p>
@@ -260,13 +260,13 @@ function swalItemSubscribeToSession(lesson) {
 
     </div>`
 
-    return template;
+  return template;
 }
 
 //Loading session items for to add to the agenda ->
 
-function templateLoadSession(id,date, title, teacher, amountOfParticipants,  maxAmountOfParticipants) {
-    let template = 
+function templateLoadSession(id, date, title, teacher, amountOfParticipants, maxAmountOfParticipants) {
+  let template =
     `
     <div id="${id}" class="row ps-4 p-2 agendaItem swing-in-top-fwd align-items-center">
       <div class="col-md-2">
@@ -302,7 +302,7 @@ function templateLoadSession(id,date, title, teacher, amountOfParticipants,  max
       </div>
     </div>`
 
-    return template;
+  return template;
 }
 
 // Load Session details for when a user clicks on a session info button ->
@@ -345,11 +345,11 @@ function templateLoadSessionDetails(data) {
         </div>
         <div class="row w-100 usersPerSessionRow ">
           <h3>Ingeschreven leden <i class="bi bi-chevron-down dropDownUsers"></i><h3>
-          <div class="col-md-12 sessionUsers">
+          <div class="col-md-12 sessionUsers hideScrollbar">
 
           </div>
         </div>
       </div>`
 
-      return template;
+  return template;
 }
