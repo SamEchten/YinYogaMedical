@@ -21,7 +21,7 @@ function swalItemAddUser() {
                 </div>
               </div>
               <div class="row align-items-center">
-                <div class="col-md-12 pb-3">
+                <div class="col-md-12 pb-3 p-0">
                   <input type="text" class="form-control inputStyle" id="searchUser" placeholder="Zoeken..">
                 </div>
               </div>
@@ -281,7 +281,7 @@ function templateLoadSession(id, date, title, teacher, amountOfParticipants, max
       </div>
       <div class="col-md-4 settings">
         <div class="row">
-          <div class="col-md-3 text-start">
+          <div class="col-md-3 participantsColor text-start">
             ${amountOfParticipants} / ${maxAmountOfParticipants}
           </div>
           <div class="col-md-2 text-center">
