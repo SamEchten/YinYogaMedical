@@ -67,7 +67,8 @@ function clickEvents() {
   if (roleCheck()) {
     // Edit a session ->
     $(".editProduct").on("click", function () {
-      console.log("EDIT PRODUCT");
+      const productId = $(this).parent().parent().parent().parent().attr("id");
+      editProduct(productId);
     });
     // Remove a session ->
     $(".removeProduct").on("click", function () {
@@ -84,6 +85,76 @@ function clickEvents() {
       location.href = "/login";
     }
   });
+}
+
+async function editProduct(productId) {
+  try {
+    let res = await ApiCaller.getSingleProduct(productId); // Get all the infomation from the session
+    let json = await res.json();
+    let html = swalItemEditProduct(json.category);
+
+    Swal.fire({
+      html: html,
+      customClass: 'sweetalert-makeProduct',
+      showCancelButton: true,
+      confirmButtonText: 'Update les',
+      confirmButtonColor: '#D5CA9B',
+      cancelButtonText: 'Terug',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let jsonData = {
+          "productName": $("#productName").val(),
+          "price": $("#productPrice").val(),
+          "discription": $("#productDescription").val(),
+          "amountOfHours": $("#productHours").val(),
+          "toSchedule": $("#toschedule").is(":checked"),
+          "validFor": $("#productValid").val()
+        }
+        try {
+          let resUpdate = await ApiCaller.updateProduct(jsonData, productId);
+          let resJson = await resUpdate.json();
+          if (resUpdate.status == 200) {
+            Swal.fire({
+              title: "Product " + $("#productName").val() + " is gewijzigd!",
+              icon: 'success',
+              text: "Er zal een Email gestuurd worden naar alle leden die dit product hebben gekocht!",
+              showCloseButton: true,
+              confirmButtonColor: '#D5CA9B'
+            });
+
+            reloadProducts();
+          } else {
+            Swal.fire({
+              title: "Oops!",
+              icon: 'warning',
+              text: resJson.message,
+              showCloseButton: true,
+              confirmButtonColor: '#D5CA9B'
+            });
+          }
+        } catch (err) {
+          console.log(err);
+        }
+
+      } else {
+
+      }
+    });
+
+    $("#productName").val(json.productName);
+    $("#productDescription").val(json.discription);
+    $("#productValid").val(json.validFor);
+    $("#productPrice").val(json.price);
+    $("#productHours").val(json.amountOfHours);
+    if(json.toSchedule){
+      $("#toschedule").attr("checked", true);
+    } else {
+      $("#toschedule").attr("checked", false);
+    }
+    
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 // Remove a product as Admin
@@ -127,8 +198,8 @@ $(".addProduct").on("click", async function () {
     showCancelButton: true,
     showConfirmButton: false,
     cancelButtonText: 'Cancel'
-  })    
-  $(".categoryButton").on("click", function(){
+  })
+  $(".categoryButton").on("click", function () {
     setCategory(this.id);
     let html1 = swalItemAddProduct(category);
     Swal.fire({
@@ -145,20 +216,17 @@ $(".addProduct").on("click", async function () {
         }
       }
     })
-    .then((result) => {
-      if (result.isConfirmed) {
-        if (error) {
-          toastPopUp("Product toegevoegd!", "success");
-        } else {
-          toastPopUp("Velden niet correct ingevuld.", "warning");
+      .then((result) => {
+        if (result.isConfirmed) {
+          if (error) {
+            toastPopUp("Product toegevoegd!", "success");
+          } else {
+            toastPopUp("Velden niet correct ingevuld.", "warning");
+          }
         }
-      }
-    });
+      });
   })
 });
-
-
-
 
 function setCategory(categoryTemp) {
   category = categoryTemp;
@@ -213,7 +281,7 @@ async function addProduct() {
 }
 
 // buy product
-function buyProduct(product, id) {
+function buyProduct(product) {
   let html1 = swalBuyProductCheck(product);
   // if () {
   Swal.fire({

@@ -155,6 +155,7 @@ function showOrhideElements() {
   if (roleCheck()) {
     $(".hiding").css("display", "block");
     $(".subscribe").attr("disabled", true);
+    $(".BuyNow").attr("disabled", true);
   }
 }
 
