@@ -140,6 +140,34 @@ body {
     text-align: start !important;
 }
 
+.buyButton {
+    border: 1px solid #D5CA9B !important;
+}
+
+.cancelButton {
+    border: 1px solid #767676 !important;
+    background-color: #767676 !important;
+}
+
+.giftButton {
+    color: #767676 !important;
+    background-color: #d5ca9b00 !important;
+    border: 1px solid #D5CA9B !important;
+}
+
+.giftButton:hover {
+    background-color: #D5CA9B !important;
+    border-color: #D5CA9B !important;
+    color: white !important;
+}
+
+.sweetalert-gift input {
+    margin-top: 5px !important;
+    margin-left: 3px !important;
+    width: 75% !important;
+    margin-bottom: 25px !important;
+}
+
 .alerttitle {
     margin-bottom: 20px !important;
     text-align: start !important;

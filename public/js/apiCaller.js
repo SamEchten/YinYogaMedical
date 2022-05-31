@@ -132,7 +132,7 @@ class ApiCaller {
             return response;
         } catch (err)
         {
-            //error
+            console.log(err)
         }
     }
 
