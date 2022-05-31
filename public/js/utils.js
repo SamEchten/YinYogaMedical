@@ -26,7 +26,7 @@ function setUserItemsNav () {
 
   sessionStorage.setItem("firstPageLoad", true);
   showWelcomMessage();
-});
+};
 
 function showWelcomMessage() {
   const firstPageLoad = sessionStorage.getItem("firstPageLoad");
