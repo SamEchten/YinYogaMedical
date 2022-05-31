@@ -70,7 +70,7 @@ module.exports.update = async (req, res) => {
     if (id) {
         try {
             //Check if user with given id exists in db ->
-            User.findOne({ id }, async (err, user) => {
+            User.findOne({ _id: id }, async (err, user) => {
                 if (user) {
                     //Check if update request has isEmployee -> check if request was made by an admin
                     if (body.hasOwnProperty("isEmployee")) {
@@ -91,10 +91,10 @@ module.exports.update = async (req, res) => {
                     }
 
                     //Update user ->
-                    await User.updateOne({ id }, { $set: body });
+                    await User.updateOne({ _id: id }, { $set: body });
 
                     //Find updated user doc and send to client ->
-                    User.findOne({ id }, (err, doc) => {
+                    User.findOne({ _id: id }, (err, doc) => {
                         if (err) {
                             res.sendStatus(400);
                         } else {

@@ -8,28 +8,28 @@ $(async function () {
   setUserItemsNav();
   updateSaldo();
   showWelcomMessage();
-};
+});
 
 // Update users saldo 
 async function updateSaldo() {
   if (user) {
     let res = await ApiCaller.getUserInfo(user.userId);
     let json = await res.json();
-    saldo.html(`<i class="bi bi-wallet2"></i>  ` + json.saldo + " uur");
+    console.log(json.saldo);
+    $(".userSaldo").html(`<i class="bi bi-wallet2"></i>  ` + json.saldo + " uur");
   }
 }
 
 function showWelcomMessage() {
-  sessionStorage.setItem("firstPageLoad", true);
   const firstPageLoad = sessionStorage.getItem("firstPageLoad");
-  if (firstPageLoad) {
+  if (firstPageLoad == null) {
     if (user) {
       toastPopUp("Welkom " + user.fullName, "info");
     } else {
       toastPopUp("Welkom bij Natascha Puper", "info");
     }
-    sessionStorage.setItem("firstPageLoad", false);
   }
+  sessionStorage.setItem("firstPageLoad", true);
 }
 
 function setUserItemsNav() {
