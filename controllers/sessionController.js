@@ -182,7 +182,7 @@ module.exports.add = async (req, res) => {
 
         if (duration > 0) {
             if (maxAmountOfParticipants > 0) {
-                const session = await Session.create({
+                const sessions = await Session.create({
                     title,
                     location,
                     date,
@@ -194,10 +194,10 @@ module.exports.add = async (req, res) => {
                     weekly,
                     private
                 });
+                res.status(201).json({ id: sessions.id });
             } else {
                 res.status(400).json({ message: "Maximaal aantal deelnemers moet meer zijn dan 0" });
             }
-            res.status(201).json({ id: session.id });
         } else {
             res.status(400).json({ message: "Ongeldige duur" })
         }

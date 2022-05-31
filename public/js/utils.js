@@ -8,7 +8,6 @@ $(async function () {
   setUserItemsNav();
   updateSaldo();
   showWelcomMessage();
-  
 });
 
 // Update users saldo 
