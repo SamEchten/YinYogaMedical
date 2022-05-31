@@ -11,11 +11,6 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
   //scrollDownToCurrDay();
-  try {
-    toastPopUp("Welkom " + user.fullName, "info");
-  } catch (err) {
-
-  }
 });
 
 // Loading agenda data per week ->
@@ -32,10 +27,10 @@ async function loadAgenda(weekNumber) {
         clearAgenda(day)
         for (session in dayData) {
           let sessionData = dayData[session];
-          
+
           let { id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date } = sessionData;
           loadSessionItem(id, title, teacher, sessionData.participates, maxAmountOfParticipants, amountOfParticipants, date, day);
-          addSubscribedItems(id, sessionData.participates);  
+          addSubscribedItems(id, sessionData.participates);
         }
       } else {
         clearAgenda(day);
@@ -124,7 +119,7 @@ function sessionDetails(data) {
       confirmButtonText: 'OK'
     });
   //handle the dropdown effect
-  $(".dropDownUsers").on("click", function() {
+  $(".dropDownUsers").on("click", function () {
     if (check) {
       $(".sessionUsers").slideUp("slow");
       check = false;
@@ -134,8 +129,8 @@ function sessionDetails(data) {
     }
   });
   //load all participants into correct div
-  if(roleCheck()) {
-    if(data.participants.length <= 0) {
+  if (roleCheck()) {
+    if (data.participants.length <= 0) {
       $(".sessionUsers").append(`<p class="lead "> Geen inschrijvingen</p>`)
     }
     $(".sessionUsers").empty();
@@ -146,12 +141,13 @@ function sessionDetails(data) {
 }
 
 async function showAllParticipants(data) {
-  for(users in data) {
+  $(".sessionUsers").empty();
+  for (users in data) {
     // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT 
     try {
       let res = await ApiCaller.getUserInfo(data[users].userId);
       let json = await res.json();
-      if(res.status == 200) {
+      if (res.status == 200) {
         $(".sessionUsers").append(`<p class="lead userSessionDetails"><i class="bi bi-person"></i> ${json.fullName}</p>`);
       } else {
         toastPopUp(json.message);
@@ -159,7 +155,7 @@ async function showAllParticipants(data) {
     } catch (err) {
 
     }
-  
+
   }
 }
 // Loads all session items and puts them into the right day ->
@@ -451,13 +447,13 @@ $(".addLesson").on("click", async function () {
   }).then(async (result) => {
     if (result.isConfirmed) {
       console.log(sessionArray.length)
-      if(sessionArray.length > 0) {
-        for(item in sessionArray) {
+      if (sessionArray.length > 0) {
+        for (item in sessionArray) {
           addSession(sessionArray[item]);
         }
-      } else { 
-        let json =  {
-          title: $("#lessonName").val() ,
+      } else {
+        let json = {
+          title: $("#lessonName").val(),
           location: $("#lessonLocation").val(),
           date: createDateString($("#lessonDay").val(), $("#lessonTime").val()),
           duration: $("#lessonDuration").val(),
@@ -515,13 +511,13 @@ async function addSession(sessionArray) {
   try {
     let res = await ApiCaller.addSession(sessionArray);
     let json = await res.json();
-    if(res.status == 201) {
+    if (res.status == 201) {
       toastPopUp("Les(sen) toegevoegd!", "success");
       loadAndSetFullAgenda(weekNumb);
     } else {
       toastPopUp(json.message, "error");
     }
-  } catch(err){
+  } catch (err) {
     console.log(err)
   }
 }
@@ -589,7 +585,7 @@ function unsubcribeSession() {
 
 // subcribe to lesson ->
 function subscribeToSession() {
-  
+
   $(".subscribe").on("click", function () {
     let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
     let html = swalItemSubscribeToSession(lesson);
@@ -680,7 +676,7 @@ function nrOfPeopleChanged() {
         </div> 
       </div>`;
 
-    }G
+    } G
     title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
     document.getElementById('allInputs').innerHTML = temporary;
   }
