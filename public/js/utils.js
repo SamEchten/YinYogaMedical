@@ -5,32 +5,23 @@ let user;
 $(async function () {
   roleCheck();
   getAndSetAllUsers();
-  setUserItemsNav();  
-  updateSaldo();
-});
-
-// Update users saldo 
-async function updateSaldo () {
-  if(user) {
-    let res = await ApiCaller.getUserInfo(user.userId);
-    let json = await res.json();
-    console.log(json)
-    //saldo.html(`<i class="bi bi-wallet2"></i>  ` + json.saldo +" uur"  );
-
-  }
-}
-
-
-function setUserItemsNav () {
   setUserItemsNav();
-
-  sessionStorage.setItem("firstPageLoad", true);
+  updateSaldo();
   showWelcomMessage();
 });
 
+// Update users saldo 
+async function updateSaldo() {
+  if (user) {
+    let res = await ApiCaller.getUserInfo(user.userId);
+    let json = await res.json();
+    saldo.html(`<i class="bi bi-wallet2"></i>  ` + json.saldo + " uur");
+  }
+}
+
 function showWelcomMessage() {
+  sessionStorage.setItem("firstPageLoad", true);
   const firstPageLoad = sessionStorage.getItem("firstPageLoad");
-  console.log(firstPageLoad);
   if (firstPageLoad) {
     if (user) {
       toastPopUp("Welkom " + user.fullName, "info");
