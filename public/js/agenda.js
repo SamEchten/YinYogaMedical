@@ -10,6 +10,7 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
   //scrollDownToCurrDay();
+  
 });
 
 // Loading agenda data per week ->
@@ -148,14 +149,20 @@ async function showAllParticipants(data) {
       let json = await res.json();
       if (res.status == 200) {
         $(".sessionUsers").append(`<p class="lead userSessionDetails"><i class="bi bi-person"></i> ${json.fullName}</p>`);
+
+        //Add coming With participants
+        for (i in data[users].comingWith) {
+          const participant = data[users].comingWith[i];
+          $(".sessionUsers").append(`<p class="lead userSessionDetails ms-3"><i class="bi bi-arrow-return-right"></i> ${participant.name}</p>`);
+        }
       } else {
         toastPopUp(json.message);
       }
     } catch (err) {
 
     }
-
   }
+  $(".sessionUsers").addClass("hideScrollbar");
 }
 // Loads all session items and puts them into the right day ->
 function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipants, amountOfParticipants, date, day) {
@@ -184,6 +191,12 @@ function addEventHandlersSession() {
 //  > Remove session : Admin can delete/cancel a session
 function clickEvents() {
   if (roleCheck()) {
+    
+    // Add tooltips on icons
+    createToolTip($(".editSession"), "Wijzigen van een les", "top");
+    createToolTip($(".removeSession"), "Verwijderen van een les", "top");
+    createToolTip($(".addUser"), "Voeg gebruikers toe aan de les", "top");
+    $('[data-toggle="tooltip"]').tooltip();
     // Edit a session ->
     $(".editSession").on("click", function () {
       const sessionId = $(this).parent().parent().parent().parent().attr("id");
@@ -226,6 +239,7 @@ function addUser(sessionId) {
 function loopAndAddElements(userArray, sessionId) {
   for (item in userArray) {
     $(".userItemCol").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
+    $('[data-toggle="tooltip"]').tooltip();
     $("#" + userArray[item].id).on("click", function () {
       addUserToSessionAsAdmin(sessionId, this.id);
     });
@@ -287,8 +301,8 @@ function createUserItem(fullName, email, phoneNumber, id) {
       <i class="bi bi-telephone pe-3"></i> ${phoneNumber}<br>
       </p>
       <div>
-        <i id=${id} class="bi bi-person-plus float-end"></i>
-        <i id="_${id}"class="bi bi-person-dash pe-2 removeAsAdmin float-end"></i>
+        <i id=${id} class="bi bi-person-plus float-end" data-toggle="tooltip" data-placement="top" title="Gebruiker toevoegen aan de les"></i>
+        <i id="_${id}"class="bi bi-person-dash pe-2 removeAsAdmin float-end" data-toggle="tooltip" data-placement="top" title="Gebruiker verwijderen uit de les"></i>
       </div>
     </div>
   </div>`
@@ -318,7 +332,6 @@ async function editSession(sessionId) {
           "location": $("#lessonLocation").val(),
           "date": createDateString($("#lessonDay").val(), $("#lessonTime").val()),
           "duration": $("#lessonDuration").val(),
-          "participants": [],
           "teacher": "Natascha",
           "description": $("#lessonDescription").val(),
           "maxAmountOfParticipants": $("#maxPeople").val(),
@@ -648,7 +661,7 @@ function sessionUserObject() {
 }
 
 // Loads inputfields. ->
-function nrOfPeopleChanged() {
+function nrOfPeopleChanged() {s
   let val = document.getElementById('nrOfPeople').value;
   let title = document.getElementById('extraPeopleTitle');
   let temporary = '';
@@ -663,8 +676,7 @@ function nrOfPeopleChanged() {
           <input class='swal2-input emailAddress${i}' type='text' placeholder='E-mailadres'>
         </div> 
       </div>`;
-
-    } G
+    }
     title.innerHTML = 'Vul hieronder de naam en het e-mailadres in van de personen die u meeneemt.';
     document.getElementById('allInputs').innerHTML = temporary;
   }
