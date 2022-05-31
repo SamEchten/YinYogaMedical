@@ -1,7 +1,6 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber();
-console.log(weekNumb)
 
 // Render lesrooster from apiCaller and format it on date ->
 //  > Document.getready! first render. 
@@ -19,7 +18,6 @@ async function loadAgenda(weekNumber) {
   schedule = res;
   showOrhideElements();
   let week = schedule[weekNumber];
-  console.log(schedule)
   if (week != undefined) {
     for (day in week) {
       if (week[day].length > 0) {
@@ -229,11 +227,9 @@ function loopAndAddElements(userArray, sessionId) {
   for (item in userArray) {
     $(".userItemCol").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
     $("#" + userArray[item].id).on("click", function () {
-      console.log("adding session")
       addUserToSessionAsAdmin(sessionId, this.id);
     });
     $("#_" + userArray[item].id).on("click", function () {
-      console.log("removing")
       removeUserFromSessionAsAdmin(sessionId, this.id.substring(1));
     });
   }
@@ -241,7 +237,6 @@ function loopAndAddElements(userArray, sessionId) {
 // subcribe a user to a session as admin ->
 async function addUserToSessionAsAdmin(sessionId, userId) {
   let data = { userId }
-  console.log(data)
   try {
     let res = await ApiCaller.addUserToSession(data, sessionId);
     let json = await res.json();
@@ -252,7 +247,6 @@ async function addUserToSessionAsAdmin(sessionId, userId) {
       toastPopUp(json.message, "error");
     }
   } catch (err) {
-    console.log(err);
   }
 }
 // Remove a user from a session as admin ->
@@ -268,8 +262,6 @@ async function removeUserFromSessionAsAdmin(sessionId, userId) {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        console.log(data)
-        console.log(sessionId)
         let res = await ApiCaller.unsubscribeFormSession(data, sessionId)
         let json = await res.json();
 
@@ -280,7 +272,6 @@ async function removeUserFromSessionAsAdmin(sessionId, userId) {
           toastPopUp(json.message, "error");
         }
       } catch (err) {
-        console.log(err);
       }
     }
   });
@@ -447,7 +438,6 @@ $(".addLesson").on("click", async function () {
 
   }).then(async (result) => {
     if (result.isConfirmed) {
-      console.log(sessionArray.length)
       if (sessionArray.length > 0) {
         for (item in sessionArray) {
           addSession(sessionArray[item]);
@@ -591,7 +581,6 @@ function subscribeToSession() {
     let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
     let html = swalItemSubscribeToSession(lesson);
     if (typeof user == 'undefined') {
-      console.log("user not logged in");
       location.href = "/login";
     } else {
       Swal.fire({
@@ -608,8 +597,6 @@ function subscribeToSession() {
             "userId": user.userId,
             "comingWith": sessionUserObject()
           }
-          console.log(sessionId)
-          console.log(jsonData)
           try {
             let res = await ApiCaller.addUserToSession(jsonData, sessionId);
             let jsonRes = await res.json();
