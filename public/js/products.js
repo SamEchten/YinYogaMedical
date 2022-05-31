@@ -75,6 +75,10 @@ function clickEvents() {
       const productId = $(this).parent().parent().parent().parent().attr("id");
       removeProduct(productId);
     });
+    $(".addPeople").on("click", function () {
+      const productId = $(this).parent().parent().parent().parent().attr("id");
+      addPeople(productId);
+    });
   }
   $(".BuyNow").on("click", function () {
     if (checkLogin()) {
@@ -178,6 +182,10 @@ async function removeProduct(productId) {
       }
     }
   });
+}
+
+function addPeople(productId){
+  console.log("add people");
 }
 
 function checkToSchedule() {
