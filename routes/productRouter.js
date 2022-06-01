@@ -18,6 +18,8 @@ router.get("/", controller.get);
 router.get("/:id", controller.get);
 //Buy product
 router.post("/purchase/:id", controller.purchase);
+//Gift product
+router.post("/gift/:id", controller.gift);
 
 //Accessible by admin
 router.use(validateAdmin);
