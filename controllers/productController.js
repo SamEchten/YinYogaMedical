@@ -4,6 +4,7 @@ const mollieClient = require("../mollie/mollieClient");
 const config = require("../config").config;
 const path = require("path");
 const User = require("../models/User");
+const mailController = require("../controllers/mailController");
 
 module.exports.get = async (req, res) => {
     const id = req.params.id;
@@ -165,12 +166,8 @@ module.exports.succes = async (req, res) => {
 }
 
 const addClassPass = async (user, product, paymentId) => {
+    const expireDate = getExpireDate(product.validFor);
     //Add to purchases array ->
-    const date = new Date();
-    const year = date.getFullYear() + product.validFor;
-    const month = date.getMonth();
-    const day = date.getDate();
-    const expireDate = new Date(year, month, day, 2);
     user.purchases.push({ productId: product.id, expireDate: expireDate, paymentId: paymentId })
 
     //Add class pass hours to users class pass
@@ -178,7 +175,18 @@ const addClassPass = async (user, product, paymentId) => {
         user.classPassHours += product.amountOfHours;
     }
 
-    user.save();
+    const newSaldo = user.classPassHours += product.amountOfHours;
+
+    await User.updateOne({ _id: user.id }, { $set: { classPassHours: newSaldo } });
+}
+
+const getExpireDate = (validFor) => {
+    const date = new Date();
+    const year = date.getFullYear() + validFor;
+    const month = date.getMonth();
+    const day = date.getDate();
+    const expireDate = new Date(year, month, day, 2);
+    return expireDate;
 }
 
 module.exports.webHook = async (req, res) => {
@@ -193,12 +201,13 @@ module.exports.webHook = async (req, res) => {
                 Product.findOne({ _id: productId }, (err, product) => {
                     if (product) {
                         addClassPass(user, product, paymentId);
+                        //TODO: Send confirmation mail
+                        res.sendStatus(200);
                     }
                 });
             }
         });
     }
-    res.sendStatus(200);
 }
 
 module.exports.view = (req, res) => {

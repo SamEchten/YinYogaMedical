@@ -41,7 +41,7 @@ const validateAdmin = async (req, res, next) => {
         if (decodedToken != null) {
             //Valid token ->
             const id = decodedToken.id;
-            User.findOne({ id }, (err, doc) => {
+            User.findOne({ _id: id }, (err, doc) => {
                 if (!err) {
                     if (doc.isEmployee) {
                         //Request was made by admin ->

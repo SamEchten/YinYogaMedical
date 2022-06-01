@@ -132,7 +132,7 @@ class ApiCaller {
             return response;
         } catch (err)
         {
-            //error
+            console.log(err)
         }
     }
 
@@ -198,6 +198,26 @@ class ApiCaller {
         let url = "/api/product/";
         let options = {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
+
+    // Update product -> *ADMIN*
+    static updateProduct = async (data, productId) => {
+        let url = "/api/product/" + productId;
+        let options = {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },

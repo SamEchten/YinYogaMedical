@@ -1,5 +1,6 @@
 // in the imports above
 const fs = require("fs");
+const path = require("path");
 const Video = require("../models/Video");
 
 module.exports.streamFile = async (req, res) => {
@@ -39,6 +40,11 @@ module.exports.streamFile = async (req, res) => {
     // Stream the video chunk to the client
     videoStream.pipe(res);
 };
+
+// Render video page
+module.exports.view = (req, res) => {
+    res.render(path.join(__dirname, "../views/video"), { isAdmin: false });
+}
 
 module.exports.get = async (req, res) => {
     //Get all videos ->

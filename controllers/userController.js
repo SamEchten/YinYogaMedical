@@ -2,6 +2,7 @@ const User = require("../models/User");
 const { handleUserErrors } = require("./errorHandler");
 const bcrypt = require("bcryptjs");
 const path = require("path");
+const mollieClient = require("../mollie/mollieClient");
 
 module.exports.get = async (req, res) => {
     const { id } = req.params;
@@ -16,12 +17,14 @@ module.exports.get = async (req, res) => {
                     fullName: user.fullName,
                     email: user.email,
                     phoneNumber: user.phoneNumber,
-                    notes: user.notes
+                    notes: user.notes,
+                    saldo: user.classPassHours
                 });
             } else {
                 res.status(404).json({ message: "Geen user gevonden met dit id" });
             }
         } catch (err) {
+            res.status(400).json({ message: "Er is iets fout gegaa", error: err.message });
         }
     } else {
         //Get all users ->
@@ -35,7 +38,8 @@ module.exports.get = async (req, res) => {
                     fullName: user.fullName,
                     email: user.email,
                     phoneNumber: user.phoneNumber,
-                    notes: user.notes
+                    notes: user.notes,
+                    saldo: user.classPassHours
                 });
             }
             res.status(200).json(allUsers);
@@ -66,13 +70,13 @@ module.exports.update = async (req, res) => {
     if (id) {
         try {
             //Check if user with given id exists in db ->
-            User.findOne({ id }, async (err, user) => {
+            User.findOne({ _id: id }, async (err, user) => {
                 if (user) {
                     //Check if update request has isEmployee -> check if request was made by an admin
                     if (body.hasOwnProperty("isEmployee")) {
                         if (user.isEmployee) {
                             //Update user ->
-                            await User.updateOne({ id }, { $set: body });
+                            await User.updateOne({ _id: id }, { $set: body });
                             res.status(200).json({ id: user.id });
                         } else {
                             //Request was not made by admin ->
@@ -87,10 +91,10 @@ module.exports.update = async (req, res) => {
                     }
 
                     //Update user ->
-                    await User.updateOne({ id }, { $set: body });
+                    await User.updateOne({ _id: id }, { $set: body });
 
                     //Find updated user doc and send to client ->
-                    User.findOne({ id }, (err, doc) => {
+                    User.findOne({ _id: id }, (err, doc) => {
                         if (err) {
                             res.sendStatus(400);
                         } else {
@@ -137,4 +141,13 @@ module.exports.delete = async (req, res) => {
         //Id was not provided ->
         res.sendStatus(400);
     }
+}
+
+module.exports.purchaseHistory = async (req, res) => {
+    const id = req.params.id;
+
+    User.findOne({ _id: id }, async (err, user) => {
+        const purchases = user.purchases;
+
+    });
 }

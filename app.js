@@ -69,7 +69,7 @@ const videoRouter = require("./routes/videoRouter");
 const mediaUploadRouter = require("./routes/mediaUploadRouter");
 
 app.use("/api/auth", authRouter);
-app.use("/api/user", validateJwt, userRouter);
+app.use("/api/user", userRouter);
 app.use("/api/session", sessionRouter);
 app.use("/api/product", productRouter);
 app.use("/api/video", videoRouter);

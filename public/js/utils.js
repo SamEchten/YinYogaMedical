@@ -5,14 +5,56 @@ let user;
 $(async function () {
   roleCheck();
   getAndSetAllUsers();
-  try {
-    $(".userName").html(user.fullName);
-  } catch (err) {
-
-  }
-  
+  setUserItemsNav();
+  updateSaldo();
+  showWelcomMessage();
 });
 
+// Update users saldo 
+async function updateSaldo() {
+  if (user) {
+    let res = await ApiCaller.getUserInfo(user.userId);
+    let json = await res.json();
+    $(".userSaldo").html(`<i class="bi bi-wallet2"></i>  ` + json.saldo + " uur");
+  }
+}
+
+function showWelcomMessage() {
+  const firstPageLoad = sessionStorage.getItem("firstPageLoad");
+  if (firstPageLoad == null) {
+    if (user) {
+      toastPopUp("Welkom " + user.fullName, "info");
+    } else {
+      toastPopUp("Welkom bij Natascha Puper", "info");
+    }
+  }
+  sessionStorage.setItem("firstPageLoad", true);
+}
+
+function setUserItemsNav() {
+  let username = $(".userNameNav");
+  let saldo = $(".userSaldo");
+  let switchNav = $(".navSwitch")
+
+  if (user) {
+    username.html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
+    saldo.html(`<i class="bi bi-wallet2"></i>  ` + user.saldo + " uur");
+    switchNav.after(`<a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Uitloggen</a>`);
+  } else {
+    username.remove();
+    saldo.remove();
+    switchNav.after(`<a class="dropdown-item" href="/login"><i class="bi bi-box-arrow-in-right"></i> Inloggen</a>`);
+    switchNav.remove();
+  }
+}
+function createToolTip(item, title, position) {
+  item.attr({
+    "data-toggle" : "tooltip",
+    "data-placement" : position,
+    "title" : title
+  })
+  // data-toggle="tooltip" data-placement="top" title="Tooltip on top"
+}
 // Error message : give the class "errorBox" to activate ->
 // $(".errorBox").on("click", function () {
 //   $(".errorBox").slideUp(300);
@@ -27,11 +69,11 @@ function errorText(errMessage) {
 }
 
 function checkLogin() {
-    if(cookie){
-      return true;
-    }else{
-      return false;
-    }
+  if (cookie) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // Date Time formatter  ->
@@ -85,7 +127,6 @@ function getfirstAndlastDatesOfTheWeek(year, week) {
 
 function createDateString(date, time) {
   let string = date + "T" + time + ":00.000Z"
-  //console.log(string)
   return string;
 }
 
@@ -121,6 +162,7 @@ function showOrhideElements() {
   if (roleCheck()) {
     $(".hiding").css("display", "block");
     $(".subscribe").attr("disabled", true);
+    $(".BuyNow").attr("disabled", true);
   }
 }
 
@@ -147,12 +189,10 @@ async function getAndSetAllUsers() {
   try {
     let res = await ApiCaller.getAllUsers();
     let json = await res.json();
-    console.log(json)
     if (res.status == 200) {
       allUsers = json;
     }
   } catch (err) {
-    console.log(err)
   }
 }
 
@@ -169,3 +209,13 @@ function filterData(filterValue) {
   return filteredArray;
 }
 
+function checkSessionSize(amountOfParticipants, maxAmountOfParticipants) {
+  let threshold = maxAmountOfParticipants / 2;
+  if(amountOfParticipants == maxAmountOfParticipants) {
+      return "red";
+  } else if(amountOfParticipants < threshold ) {
+      return "green";
+  } else if(amountOfParticipants >= threshold) {
+      return "orange";
+  }
+}

@@ -2,39 +2,52 @@
     font-family: OpenSans;
     src: url(./open_sans);
 }
+
 /* Toast alert */
 #custom-target {
     position: absolute;
-  }
+}
+
 .seeAddedSessions {
     cursor: pointer;
 }
+
 .itemsSession {
     padding: 5px;
     cursor: pointer;
     transition: 0.5s;
 }
+
 .itemsSession:hover {
     background-color: #f3f3f3;
 }
-.addSessionToArray { 
+
+.addSessionToArray {
     cursor: pointer;
 }
+
 .allSessionItems {
     display: none;
     height: 135px;
     overflow: auto;
 }
+
 .allSessionItems p {
     padding: 7px;
     padding-left: 28px;
     background: #d5ca9b40;
     margin-bottom: 2px;
 }
+
 .userItemsRow {
     height: 400px;
     overflow: auto;
 }
+
+.hideSrollBar::-webkit-scrollbar {
+    display: none !important;
+}
+
 .userItemsRow::-webkit-scrollbar {
     display: none;
 }
@@ -43,14 +56,15 @@
     transition: 0.5s;
     cursor: pointer;
     font-size: 17px !important;
-    border-radius: 7px;
-    border: 1px solid #e0e0e0;
+    border-bottom: 2px solid #D5CA9B;
 }
+
 .sessionUsers {
     height: 150px;
     overflow: auto;
     display: none;
 }
+
 .userSessionDetails {
     cursor: pointer;
     padding: 10px;
@@ -58,18 +72,21 @@
     border-radius: 5px;
     margin: 2px;
 }
+
 .userSessionDetails:hover {
     background-color: #d5ca9b;
 }
 
-.userFilterItem:hover { 
+.userFilterItem:hover {
     background-color: #dfdfdf;
 }
+
 .unSubStyle {
     color: #fff !important;
     background-color: #d5ca9b !important;
     border-color: #b7b7b7 !important;
-} 
+}
+
 .unSubStyle:hover {
     color: #fff !important;
     background-color: #dc3545 !important;
@@ -171,6 +188,17 @@ body {
     margin-bottom: 10px;
 }
 
+.giftFreeSession:hover {
+    color: green; 
+            
+}
+
+.removeAsAdmin:hover {
+    color: red;
+}
+.addAsAdmin:hover {
+    color: green;
+}
 
 .week {
     cursor: pointer;

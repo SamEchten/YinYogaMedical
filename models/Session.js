@@ -16,7 +16,8 @@ const sessionSchema = mongoose.Schema({
     },
     duration: {
         type: Number,
-        required: [true, "De lengte van de les in verplicht"]
+        required: [true, "De lengte van de les in verplicht"],
+        minimum: [0, "Ongeldige duur"]
     },
     participants: {
         type: Array
@@ -62,6 +63,9 @@ sessionSchema.statics.getAmountOfParticipants = async function (id) {
 sessionSchema.methods.addParticipants = async function (id, info) {
     const { userId, comingWith } = info;
     const session = this;
+    const comingWithLength = comingWith ? comingWith.length : 0;
+    const sessionDuration = session.duration / 60;
+    const cost = (sessionDuration) + (comingWithLength * sessionDuration);
 
     if (session) {
         let comingWithLength = 0;
@@ -80,7 +84,7 @@ sessionSchema.methods.addParticipants = async function (id, info) {
                     //Check if user is already signedup for this session ->
                     if (!session.participants.some(e => e.userId == userId)) {
                         //Add user to participants / save document ->
-                        session.participants.push({ userId, comingWith });
+                        session.participants.push({ userId, comingWith, cost });
                         await session.save();
                     } else {
                         throw Error("U bent al aangemeld voor deze les");

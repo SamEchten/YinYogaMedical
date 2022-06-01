@@ -21,11 +21,9 @@ const sendMail = async (receiver, html) => {
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
-        if (error)
-        {
+        if (error) {
             throw Error({ message: "Mail kon niet worden verzonden", error: error.message });
-        } else
-        {
+        } else {
             mailConfirmation = info;
         }
     });
@@ -40,17 +38,13 @@ module.exports.sessionSignOutMail = async (user, session) => {
         <p>Met vriendelijke groet, </p>
         <p>Het Eigen Wijze Lichaam</p>
     `;
-    try
-    {
-        if (sendMail(receiver, html))
-        {
+    try {
+        if (sendMail(receiver, html)) {
             return true;
-        } else
-        {
+        } else {
             return false;
         }
-    } catch (err)
-    {
+    } catch (err) {
         return false;
     }
 }
@@ -79,17 +73,13 @@ module.exports.signUpMail = async (user) => {
                             </div>
                         </div>
     `;
-    try
-    {
-        if (sendMail(receiver, html))
-        {
+    try {
+        if (sendMail(receiver, html)) {
             return true;
-        } else
-        {
+        } else {
             return false;
         }
-    } catch (err)
-    {
+    } catch (err) {
         return false;
     }
 }
