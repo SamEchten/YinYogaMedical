@@ -51,6 +51,14 @@ const userSchema = new mongoose.Schema({
     classPassHours: {
         type: Number,
         default: 0
+    },
+    customerId: {
+        type: String,
+        default: null
+    },
+    mandateId: {
+        type: String,
+        default: null
     }
 });
 

@@ -27,7 +27,7 @@ const productSchema = mongoose.Schema({
     },
     validFor: {
         type: Number,
-        required: [true, "De geldigheid van het product is verplicht"]
+        default: 1
     },
     recurring: {
         type: Boolean,

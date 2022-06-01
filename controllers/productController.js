@@ -158,18 +158,56 @@ module.exports.delete = async (req, res) => {
 module.exports.purchase = async (req, res) => {
     const id = req.params.id;
     const userId = req.body.userId;
+    const mandate = req.body.mandate;
 
     if (id && userId) {
         Product.findOne({ _id: id }, async (err, product) => {
             if (product) {
-                const checkOutUrl = await createPayment(product, userId);
-                res.status(200).json({ redirectUrl: checkOutUrl });
+                User.findOne({ _id: userId }, async (err, user) => {
+                    if (user) {
+                        const checkOutUrl = await purchaseProduct(userId, product, mandate);
+                        res.status(200).json({ redirectUrl: checkOutUrl });
+                    } else {
+                        res.status(404).json({ message: "Er is geen gebruiker gevonden met id id" })
+                    }
+                })
             } else {
-                res.status(400).json({ message: "Er is geen product gevonden met dit Id" });
+                res.status(404).json({ message: "Er is geen product gevonden met dit Id" });
             }
         });
     } else {
         res.status(400).json({ message: "Er mist een userId of productId" });
+    }
+}
+
+const purchaseProduct = async (userId, product, mandate) => {
+    let checkOutUrl;
+    if (product.recurring) {
+        checkOutUrl = await createSubscription(product, userId, mandate);
+    } else {
+        checkOutUrl = await createPayment(product, userId);
+    }
+    return checkOutUrl;
+}
+
+const createSubscription = async (product, userId, mandate) => {
+    const price = product.price;
+    const discription = product.productName;
+    const redirectUrl = config.ngrok.url + "/api/product/succes/" + product._id + "";
+    const webHookUrl = config.ngrok.url + "/api/product/webhook";
+    const productId = product.id;
+    let subscription;
+
+    if (mandate) {
+        User.findOne({ _id: userId }, async (err, user) => {
+            if (user) {
+                subscription = await mollieClient.createSubscription(price, discription, webHookUrl,
+                    productId, userId, user.customerId, user.mandateId);
+                console.log(subscription);
+            } else {
+                throw Error({ message: "Geen gebruiker gevonden met dit id" });
+            }
+        });
     }
 }
 
