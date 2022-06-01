@@ -94,6 +94,7 @@ const setSortedProducts = (products) => {
 }
 
 module.exports.add = async (req, res) => {
+    req.body.price = convertPrice(req.body.price);
     try {
         const product = await Product.create(req.body);
         res.status(200).json({ id: product.id });
@@ -101,6 +102,24 @@ module.exports.add = async (req, res) => {
         const error = handleUserErrors(err);
         res.status(400).json(error);
     }
+}
+
+const convertPrice = (price) => {
+    const length = price.length;
+    price = price.toString();
+    if (length != 5) {
+        if (!price.includes(".")) {
+            price += ".00";
+        } else {
+            const num = price.split(".")[0];
+            const decimals = price.split(".")[1];
+            if (decimals.length != 2) {
+                price = num + "." + "" + decimals[0] + "" + decimals[1];
+            }
+        }
+    }
+
+    return price;
 }
 
 module.exports.update = async (req, res) => {
