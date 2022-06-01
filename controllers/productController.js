@@ -162,14 +162,7 @@ module.exports.purchase = async (req, res) => {
     if (id && userId) {
         Product.findOne({ _id: id }, async (err, product) => {
             if (product) {
-                const price = product.price;
-                const discription = product.productName;
-                const redirectUrl = config.ngrok.url + "/api/product/succes/" + product._id + "";
-                const webHookUrl = config.ngrok.url + "/api/product/webhook";
-                const productId = product.id;
-
-                let payment = await mollieClient.createPayment(price, discription, redirectUrl, webHookUrl, productId, userId);
-                let checkOutUrl = payment.getCheckoutUrl();
+                const checkOutUrl = await createPayment(product, userId);
                 res.status(200).json({ redirectUrl: checkOutUrl });
             } else {
                 res.status(400).json({ message: "Er is geen product gevonden met dit Id" });
@@ -180,14 +173,83 @@ module.exports.purchase = async (req, res) => {
     }
 }
 
+const isAdmin = async (userId) => {
+    const user = await User.findOne({ _id: userId });
+    if (user) {
+        if (user.isEmployee) {
+            return true;
+        }
+        return false;
+    } else {
+        return false;
+    }
+}
+
+const createPayment = async (product, userId) => {
+    const price = product.price;
+    const discription = product.productName;
+    const redirectUrl = config.ngrok.url + "/api/product/succes/" + product._id + "";
+    const webHookUrl = config.ngrok.url + "/api/product/webhook";
+    const productId = product.id;
+
+    let payment = await mollieClient.createPayment(price, discription, redirectUrl, webHookUrl, productId, userId);
+    let checkOutUrl = payment.getCheckoutUrl();
+    return checkOutUrl;
+}
+
+module.exports.gift = async (req, res) => {
+    const id = req.params.id;
+    const userId = req.body.userId;
+    const userEmail = req.body.email;
+    const reqId = JSON.parse(req.cookies.user).userId;
+    const productId = req.params.id;
+
+    if (!await isAdmin(reqId)) {
+        if (id && userId) {
+            Product.findOne({ _id: id }, async (err, product) => {
+                if (product) {
+                    User.findOne({ email: userEmail }, async (err, user) => {
+                        if (user) {
+                            const checkOutUrl = await createPayment(product, user.id);
+                            res.status(200).json({ redirectUrl: checkOutUrl });
+                        } else {
+                            res.status(400).json({ message: "Geen gebruiker gevonden met dit e-mail adres" })
+                        }
+                    })
+                } else {
+                    res.status(400).json({ message: "Er is geen product gevonden met dit Id" });
+                }
+            });
+        } else {
+            res.status(400).json({ message: "Er mist een userId of productId" });
+        }
+    } else {
+        User.findOne({ _id: userId }, async (err, user) => {
+            if (user) {
+                Product.findOne({ _id: productId }, (err, product) => {
+                    if (product) {
+                        addClassPass(user, product, "gift");
+                        res.status(200).json({ message: "Product succesvol gegeven aan: " + user.fullName });
+                    } else {
+                        res.status(400).json({ message: "Geen product gevonden met dit id" })
+                    }
+                });
+            } else {
+                res.status(400).json({ message: "Geen gebruiker gevonden met dit id" })
+            }
+        })
+    }
+}
+
 module.exports.succes = async (req, res) => {
     res.send("succes!")
 }
 
 const addClassPass = async (user, product, paymentId) => {
     const expireDate = getExpireDate(product.validFor);
+    const purchases = user.purchases;
     //Add to purchases array ->
-    user.purchases.push({ productId: product.id, expireDate: expireDate, paymentId: paymentId })
+    purchases.push({ productId: product.id, expireDate: expireDate, paymentId: paymentId })
 
     //Add class pass hours to users class pass
     if (product.amountOfHours) {
@@ -196,7 +258,7 @@ const addClassPass = async (user, product, paymentId) => {
 
     const newSaldo = user.classPassHours += product.amountOfHours;
 
-    await User.updateOne({ _id: user.id }, { $set: { classPassHours: newSaldo } });
+    await User.updateOne({ _id: user.id }, { $set: { classPassHours: newSaldo, purchases: purchases } });
 }
 
 const getExpireDate = (validFor) => {
