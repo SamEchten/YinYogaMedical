@@ -213,6 +213,7 @@ function loopAndAddElements(userArray, productId) {
     $('[data-toggle="tooltip"]').tooltip();
     $("#" + userArray[item].id).on("click", function () {
       giftProduct(userArray[item].id, productId);
+    $('[data-toggle="tooltip"]').tooltip('hide');
     });
   }
 }
@@ -294,7 +295,7 @@ async function addProduct() {
     json = {
       "category": category,
       "productName": $("#productName").val(),
-      "price": $("#productPrice").val()+".00",
+      "price": $("#productPrice").val(),
       "discription": $("#productDescription").val(),
       "amountOfHours": $("#productHours").val(),
       "toSchedule": false,
@@ -304,7 +305,7 @@ async function addProduct() {
     json = {
       "category": category,
       "productName": $("#productName").val(),
-      "price": $("#productPrice").val()+".00",
+      "price": $("#productPrice").val(),
       "discription": $("#productDescription").val(),
       "amountOfHours": '',
       "toSchedule": false,
@@ -314,7 +315,7 @@ async function addProduct() {
     json = {
       "category": category,
       "productName": $("#productName").val(),
-      "price": $("#productPrice").val()+".00",
+      "price": $("#productPrice").val(),
       "discription": $("#productDescription").val(),
       "amountOfHours": '',
       "toSchedule": checkedToSchedule,
