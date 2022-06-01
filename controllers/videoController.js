@@ -47,21 +47,41 @@ module.exports.view = (req, res) => {
 }
 
 module.exports.get = async (req, res) => {
-    //Get all videos ->
-    try {
-        let videos = await Video.find();
-        let allVideos = [];
-        for (videoIndex in videos) {
-            let video = videos[videoIndex];
-            allVideos.push({
-                id: video._id,
-                title: video.title,
-                price: video.price,
-                description: video.description
-            });
+    const { id } = req.params;
+
+    //Get single user by given Id ->
+    if (id) {
+        try {
+            let video = await Video.findOne({ _id: id });
+            if (video) {
+                res.status(200).json({
+                    title: video.title,
+                    price: video.price,
+                    description: video.description
+                });
+            } else {
+                res.status(404).json({ message: "Geen video gevonden met dit id" });
+            }
+        } catch (err) {
+            res.status(400).json({ message: "Er is iets fout gegaan", error: err.message });
         }
-        res.status(200).json(allVideos);
-    } catch (err) {
-        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
+    } else {
+        //Get all videos ->
+        try {
+            let videos = await Video.find();
+            let allVideos = [];
+            for (videoIndex in videos) {
+                let video = videos[videoIndex];
+                allVideos.push({
+                    id: video._id,
+                    title: video.title,
+                    price: video.price,
+                    description: video.description
+                });
+            }
+            res.status(200).json(allVideos);
+        } catch (err) {
+            res.status(400).json({ message: "Er is iets fout gegaan", error: err });
+        }
     }
 }

@@ -8,7 +8,7 @@ router.use(express.json());
 router.get("/stream/:id", controller.streamFile);
 
 //Krijg het mp4-bestand van een video
-router.get("/", controller.get)
+router.get("/:id", controller.get)
 
 
 module.exports = router;
