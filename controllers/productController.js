@@ -200,6 +200,7 @@ const createPayment = async (product, userId) => {
 module.exports.gift = async (req, res) => {
     const id = req.params.id;
     const userId = req.body.userId;
+    const userEmail = req.body.email;
     const reqId = JSON.parse(req.cookies.user).userId;
     const productId = req.params.id;
 
@@ -207,8 +208,14 @@ module.exports.gift = async (req, res) => {
         if (id && userId) {
             Product.findOne({ _id: id }, async (err, product) => {
                 if (product) {
-                    const checkOutUrl = await createPayment(product, userId);
-                    res.status(200).json({ redirectUrl: checkOutUrl });
+                    User.findOne({ email: userEmail }, async (err, user) => {
+                        if (user) {
+                            const checkOutUrl = await createPayment(product, user.id);
+                            res.status(200).json({ redirectUrl: checkOutUrl });
+                        } else {
+                            res.status(400).json({ message: "Geen gebruiker gevonden met dit e-mail adres" })
+                        }
+                    })
                 } else {
                     res.status(400).json({ message: "Er is geen product gevonden met dit Id" });
                 }
