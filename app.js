@@ -67,6 +67,7 @@ const sessionRouter = require("./routes/sessionRouter");
 const productRouter = require("./routes/productRouter");
 const videoRouter = require("./routes/videoRouter");
 const mediaUploadRouter = require("./routes/mediaUploadRouter");
+const calendarController = require("./controllers/calendarController");
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
