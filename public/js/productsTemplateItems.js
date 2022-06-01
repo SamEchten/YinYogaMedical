@@ -59,6 +59,68 @@ function swalProductDetails(data){
   return template;
 }
 
+function swalItemGiftUser() {
+  Swal.fire({
+    html: `
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-12">
+                  <h2>Product cadeau doen</h2>
+                  <hr>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <p>Zoek naar een gebruiker en klik vervolgens op het product cadeau doen.</p>
+                </div>
+              </div>
+              <div class="row align-items-center">
+                <div class="col-md-12 pb-3 p-0">
+                  <input type="text" class="form-control inputStyle" id="searchUser" placeholder="Zoeken..">
+                </div>
+              </div>
+              <div class="row userItemsRow">
+                <div class="col-md userItem">
+                  <h4 class='lead'>Zoek naar een gebruiker</h4>
+                </div>
+              </div>
+            </div>  
+          </div>
+        </div> 
+        `,
+    showCancelButton: true,
+    showConfirmButton: false,
+    cancelButtonText: 'Terug'
+  });
+}
+
+// Create userItem element in side add user to session
+function createUserItem(fullName, email, phoneNumber, id) {
+  let element = `
+  <div class="row pb-2 slide-in-blurred-top">
+    <div class="col-md-10 p-2 lead userFilterItem text-start">
+      <h4><i class="bi bi-person pe-2"></i> ${fullName}</h4>
+      <p class="p-1">
+      <i class="bi bi-envelope pe-3"></i> ${email} <br>
+      <i class="bi bi-telephone pe-3"></i> ${phoneNumber}<br>
+      </p>
+    </div>
+    <div class="col-md-2">
+      <div class="row h-100 align-items-center">
+        <div class="col-md-12 cursor giftFreeSession">
+          <i id=${id} class="bi bi-gift gift" data-toggle="tooltip" data-placement="top" title="Geef product cadeau"></i>
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>`
+
+  return element;
+}
+
 function swalItemAddProductCategory(){
   let template = `
   <div class="container">
@@ -106,7 +168,7 @@ function swalItemEditProduct(category){
   let template = '';
   if (category == "Strippenkaarten"){
      template = `
-    <h2>Voeg nieuwe strippenkaart toe</h2>
+    <h2>Wijzig strippenkaart</h2>
     <hr>
     <div class="row width">
       <div class="col-md-6">
@@ -128,7 +190,7 @@ function swalItemEditProduct(category){
     </div>`;
   } else if(category == "Abonnementen") {
     template = `
-    <h2>Voeg nieuw abonnement toe</h2>
+    <h2>Wijzig abonnement</h2>
     <hr>
     <div class="row width">
       <div class="col-md-6">
@@ -147,7 +209,7 @@ function swalItemEditProduct(category){
     </div>`;
   } else {
     template = `
-    <h2>Voeg nieuw product toe</h2>
+    <h2>Wijzig product</h2>
     <hr>
     <div class="row width">
       <div class="col-md-6">

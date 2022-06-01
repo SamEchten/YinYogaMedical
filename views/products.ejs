@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="./css/bootstrap.min.css">
   <link rel="stylesheet" href="./bicons/bootstrap-icons.css">
   <link rel="stylesheet" href="sweetalert2.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+    integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -43,7 +46,8 @@
       </ul>
     </div>
     <div class="dropdown">
-      <button class="btn dropdown-toggle bi bi-icons pe-3 me-1" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button class="btn dropdown-toggle bi bi-icons pe-3 me-1" id="dropdownMenuButton" data-bs-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
         <i class="bi bi-person"></i>
       </button>
       <div class="dropdown-menu dropdown-menu-right profileItemNav me-4" aria-labelledby="dropdownMenuButton">
@@ -65,7 +69,16 @@
         <div class="row contentcontainer">
           <div class="col-md">
             <div class="row align-items-center">
-              <i class="bi bi-plus-circle hiding addProduct text-end"></i>
+              <div class="col-md"></div>
+              <div class="col-md-1 text-end">
+                <div class="row">
+                  <div class="col-md-6"></div>
+                  <div class="col-md-6">
+                    <i class="bi bi-plus-circle hiding addProduct" data-toggle="tooltip" data-placement="left"
+                      title="Voeg hier een product toe"></i>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="row align-items-start">
               <div id="category">

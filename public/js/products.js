@@ -64,7 +64,13 @@ function addEventHandlersSession() {
 
 // Add eventlisteners for button that render in after dom has loaded ->
 function clickEvents() {
+  
   if (roleCheck()) {
+    // Add tooltips on icons
+    createToolTip($(".editProduct"), "Wijzigen van product", "top");
+    createToolTip($(".removeProduct"), "Verwijderen van product", "top");
+    createToolTip($(".addPeople"), "Geef product cadeau", "top");
+    $('[data-toggle="tooltip"]').tooltip();
     // Edit a session ->
     $(".editProduct").on("click", function () {
       const productId = $(this).parent().parent().parent().parent().attr("id");
@@ -184,8 +190,48 @@ async function removeProduct(productId) {
   });
 }
 
-function addPeople(productId){
-  console.log("add people");
+function addPeople(productId) {
+  swalItemGiftUser();
+  $(".userItem").empty();
+  loopAndAddElements(filterData(""), productId);
+  $("#searchUser").on("input", function () {
+    let userArray = filterData($(this).val());
+
+    if (userArray.length <= 0) {
+      $(".userItem").empty();
+      $(".userItem").append("<h4 class='lead'>Geen resultaat</h4>")
+    } else {
+      $(".userItem").empty();
+      loopAndAddElements(userArray, productId);
+    }
+  });
+}
+
+function loopAndAddElements(userArray, productId) {
+  for (item in userArray) {
+    $(".userItem").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
+    $('[data-toggle="tooltip"]').tooltip();
+    $("#" + userArray[item].id).on("click", function () {
+      giftProduct(userArray[item].id, productId);
+    });
+  }
+}
+
+async function giftProduct(userId, productId){
+  let data =  userId ;
+  try {
+    // TODO: make gifting possible.
+    let res = await ApiCaller.buyUserProduct(data, productId);
+    console.log(res.status);
+    // let json = await res.json();
+    if (res.status == 200) {
+      toastPopUp("Product is verstuurd.", "success");
+      loadAndSetFullAgenda(weekNumb);
+    } else {
+      toastPopUp("Error","error");
+    }
+  } catch (err) {
+  }
 }
 
 function checkToSchedule() {
@@ -248,7 +294,7 @@ async function addProduct() {
     json = {
       "category": category,
       "productName": $("#productName").val(),
-      "price": $("#productPrice").val(),
+      "price": $("#productPrice").val()+".00",
       "discription": $("#productDescription").val(),
       "amountOfHours": $("#productHours").val(),
       "toSchedule": false,
@@ -258,7 +304,7 @@ async function addProduct() {
     json = {
       "category": category,
       "productName": $("#productName").val(),
-      "price": $("#productPrice").val(),
+      "price": $("#productPrice").val()+".00",
       "discription": $("#productDescription").val(),
       "amountOfHours": '',
       "toSchedule": false,
@@ -268,7 +314,7 @@ async function addProduct() {
     json = {
       "category": category,
       "productName": $("#productName").val(),
-      "price": $("#productPrice").val(),
+      "price": $("#productPrice").val()+".00",
       "discription": $("#productDescription").val(),
       "amountOfHours": '',
       "toSchedule": checkedToSchedule,
@@ -311,7 +357,7 @@ function buyProduct(product) {
       if (result.isConfirmed) {
         console.log('redirect to mollie');
         // TODO: Redirect to mollie
-      } else if(result.isDenied) {
+      } else if (result.isDenied) {
         Swal.fire({
           html: html2,
           customClass: 'sweetalert-gift',
@@ -319,7 +365,7 @@ function buyProduct(product) {
           confirmButtonText: 'Stuur cadeau',
           confirmButtonColor: '#D5CA9B',
           cancelButtonText: 'Cancel'
-        }).then(()=> {
+        }).then(() => {
           console.log('redirect to mollie');
           // TODO: Redirect to mollie
         });
