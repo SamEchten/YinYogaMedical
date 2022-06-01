@@ -392,7 +392,7 @@ async function editSession(sessionId) {
     });
 
     $("#lessonName").val(json.title);
-    $("#lessionDescription").val(json.description);
+    $("#lessonDescription").val(json.description);
     $("#lessonLocation").val(json.location);
     $("#lessonDay").val(date.toISOString().split("T")[0]);
     $("#lessonDuration").val(json.duration);
