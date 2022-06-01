@@ -10,11 +10,6 @@ const profileController = require("../controllers/profileController");
 const productController = require("../controllers/productController");
 const videoController = require("../controllers/videoController");
 
-//Tijdelijke test voor video
-router.get("/videosTest", validateJwt, (req, res) => {
-    res.render(path.join(__dirname, "../views/videotester"));
-});
-
 //Auth ->
 router.get("/login", authController.login_get);
 router.get("/signup", authController.signup_get);
