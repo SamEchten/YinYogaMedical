@@ -182,13 +182,13 @@ body {
 }
 
 .prevWeek {
-    font-size: 20px;
+
     cursor: pointer;
     transition: 0.3s;
 }
 
 .nextWeek {
-    font-size: 20px;
+
     cursor: pointer;
     transition: 0.3s;
 }

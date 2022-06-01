@@ -39,3 +39,24 @@ function addVideoTemplate () {
 
     return html
 }
+
+function videoTemplate (title, description) {
+    let html = `
+    <div class="col-md-3 h-100 p-4">
+        <div class="row h-60">
+            <div class="col-md videoThumbnail">
+            
+            </div>
+        </div>
+        <div class="row h-40">
+            <div class="col-md videoInfo">
+            <h4 class="lead p-1 font-weight-bold">${title}</h4>
+            <hr class="m-0">
+            <p class="p-2"><small>${description}</small></p>
+            </div>
+        </div>
+    </div>
+    `
+
+    return html;
+}

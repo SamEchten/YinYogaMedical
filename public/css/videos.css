@@ -61,3 +61,12 @@ body {
 .videoInfo::-webkit-scrollbar {
     display: none;
 }
+.videoRowTop {
+    height: 47.5%;
+}
+.videoRowBottom {
+    height: 47.5%;
+}
+.videoRowHeader {
+    height: 5%; 
+}
