@@ -1,9 +1,14 @@
 //click on nav and change the content
 $(".setting").on("click", function () {
     $(".settingsContent").empty();
+    let name = user.fullName;
     if (this.id == "profiel")
     {
+        console.log(name);
+        
         $(".settingsContent").load("profile/myProfile");
+        // this.nameRow.innerHTML = '<p>'+ name +'<i class="bi bi-pencil" onclick="changeName()"></i></p>';
+        // $(".")
     }
     else if (this.id == "product")
     {
@@ -24,17 +29,12 @@ $(".setting").on("click", function () {
 // console.log()
 
 
-
-
-
-
 function changeName() {
-
     let name = user.fullName;
     console.log(this.name)
 
     this.nameRow.innerHTML = `<input id = "nameChange" type = "text" value = "` + name + `"> 
-                                <i class="bi bi-check-circle"onclick="acceptName()"></i>
+                                <i class="bi bi-check-circle" onclick="acceptName()"></i>
                                 <i class="bi bi-x-circle" onclick="denyName()"></i>`
 }
 
