@@ -11,24 +11,39 @@ body {
     padding: 10px;
     font-weight: 600 !important;
 }
+.videoItem {
+    height: 262px !important;
+    width: 333px !important;
+}
 .contentRow {
+    
     height: 90%;
-    background-color: rgb(255, 255, 255) ;
+    background-color: white;
+    margin-left: 5px !important;
+    margin-right: 5px !important;
     overflow: auto;
+    border-radius: 10px 10px 0px 0px;
+    border: 1px solid #eeeeee;
 }
 .videoThumbnail  {
-    background-image: url("./pexels-valeria-ushakova-3094230.jpg");
+    background-image: url("./pexels-cliff-booth-4056723.jpg");
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center;
     border-radius: 15px 15px 0px 0px;
     border-top: 1px solid rgb(209, 209, 209);
     border-left: 1px solid rgb(209, 209, 209);
     border-right: 1px solid rgb(209, 209, 209);
 }
 .videoInfo {
+    height: 100%;
+    overflow: auto;
     border-radius: 0px 0px 15px 15px;   
     background-color: rgb(255, 255, 255);
     border-bottom: 1px solid rgb(209, 209, 209);
     border-left: 1px solid rgb(209, 209, 209);
     border-right: 1px solid rgb(209, 209, 209);
+}
+.videoInfo::-webkit-scrollbar {
+    display: none;
 }
