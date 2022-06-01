@@ -17,9 +17,9 @@ module.exports.post = async (req, res) => {
         description = fields.description;
 
 
-        if (files.filetoupload.originalFilename.endsWith(".mp4"))//Kijk of het een filmje is
+        if (files.fileToUpload.originalFilename.endsWith(".mp4"))//Kijk of het een filmpje is
         {
-            const oldpath = files.filetoupload.filepath;
+            const oldpath = files.fileToUpload.filepath;
             const oldpathThumbnail = files.thumbnail.filepath;
 
             const video = await Video.create({ title, price, description });//Zet alles in de database en doe dan de upload naar de server
@@ -42,9 +42,9 @@ module.exports.post = async (req, res) => {
                 }
             }
         }
-        else if (files.filetoupload.originalFilename.endsWith(".mp3"))//Kijk of het een podcast is
+        else if (files.fileToUpload.originalFilename.endsWith(".mp3"))//Kijk of het een podcast is
         {
-            const oldpath = files.filetoupload.filepath;
+            const oldpath = files.fileToUpload.filepath;
 
             const podcast = await Podcast.create({ title, price, description });//Zet alles in de database
             {

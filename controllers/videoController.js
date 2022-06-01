@@ -85,3 +85,35 @@ module.exports.get = async (req, res) => {
         }
     }
 }
+
+module.exports.delete = async (req, res) => {
+    const id = req.params.id;
+    if (id) {
+        try {
+            let video = await Video.findOne({ _id: id });
+            //Check if video exists ->
+            if (video) {
+                //Delete user ->
+                await video.remove();
+                res.status(200).send();
+            } else {
+                //Video does not exit ->
+                res.status(404).send();
+            }
+        } catch (err) {
+            res.sendStatus(400);
+        }
+    } else {
+        //Id was not provided ->
+        res.sendStatus(400);
+    }
+}
+
+module.exports.update = async (req, res) => {
+    const id = req.params.id
+    const body = req.body;
+
+    Video.findOne({ _id: id }, async (err, user) => {
+        await Video.updateOne({ _id: id }, { $set: body });
+    });
+}

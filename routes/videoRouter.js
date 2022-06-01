@@ -7,9 +7,15 @@ router.use(express.json());
 //Stream het bestand van een video
 router.get("/stream/:id", controller.streamFile);
 
-//Krijg het mp4-bestand van een video
+//krijg info over een, of alle videos
 router.get("/:id", controller.get)
 router.get("/", controller.get)
+
+//verwijderen
+router.delete("/:id", controller.delete);
+
+//updaten
+router.put("/:id", controller.update)
 
 
 module.exports = router;
