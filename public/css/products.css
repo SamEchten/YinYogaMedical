@@ -210,4 +210,31 @@ body {
     margin: 0 !important;
 }
 
+.userItemsRow {
+    height: 400px;
+    overflow: auto;
+}
+
+.userItemsRow::-webkit-scrollbar {
+    display: none;
+}
+
+.hideSrollBar::-webkit-scrollbar {
+    display: none !important;
+}
+
+.userFilterItem {
+    transition: 0.5s;
+    cursor: pointer;
+    font-size: 17px !important;
+    border-bottom: 2px solid #D5CA9B;
+}
+
+.userFilterItem:hover {
+    background-color: #dfdfdf;
+}
+
+.gift:hover {
+    color: green;
+}
 

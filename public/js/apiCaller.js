@@ -251,6 +251,26 @@ class ApiCaller {
             //error
         }
     }
+
+    // Add a user to a session with or without extra participants ->
+    static buyUserProduct = async (data, productId) => {
+        let url = "/api/product/purchase/" + productId;
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
     
     // Gets all users with information -> *ADMIN*
     static getAllUsers = async () => {
