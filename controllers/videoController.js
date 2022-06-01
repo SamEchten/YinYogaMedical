@@ -1,7 +1,10 @@
 // in the imports above
 const fs = require("fs");
+const Video = require("../models/Video");
 
-module.exports.get = async (req, res) => {
+module.exports.streamFile = async (req, res) => {
+    const { id } = req.params;
+
     // Ensure there is a range given for the video
     const range = req.headers.range;
     if (!range) {
@@ -9,8 +12,8 @@ module.exports.get = async (req, res) => {
     }
 
     // get video stats (about 61MB)
-    const videoPath = "./media/videos/testvideo.mp4";//Dit haalt nu een testvideo op, er moet nog dat hij video's van een bepaald id ophaalt
-    const videoSize = fs.statSync("./media/videos/testvideo.mp4").size;
+    const videoPath = "./media/videos/" + id + ".mp4";
+    const videoSize = fs.statSync("./media/videos/" + id + ".mp4").size;
 
     // Parse Range
     // Example: "bytes=32324-"
@@ -36,3 +39,23 @@ module.exports.get = async (req, res) => {
     // Stream the video chunk to the client
     videoStream.pipe(res);
 };
+
+module.exports.get = async (req, res) => {
+    //Get all videos ->
+    try {
+        let videos = await Video.find();
+        let allVideos = [];
+        for (videoIndex in videos) {
+            let video = videos[videoIndex];
+            allVideos.push({
+                id: video._id,
+                title: video.title,
+                price: video.price,
+                description: video.description
+            });
+        }
+        res.status(200).json(allVideos);
+    } catch (err) {
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
+    }
+}
