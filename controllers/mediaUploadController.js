@@ -5,6 +5,7 @@ const Podcast = require("../models/Podcast");
 
 module.exports.post = async (req, res) => {
     //Er moet hier nog een checkje dat je wel een admin bent
+    
     let title;
     let price;
     let description;
@@ -12,6 +13,7 @@ module.exports.post = async (req, res) => {
     const form = new formidable.IncomingForm({maxFileSize: 100000000000/*Dit is 100 gB*/});
 
     form.parse(req, async function (err, fields, files) {
+        console.log(fields.title)
         title = fields.title;
         price = fields.price;
         description = fields.description;
