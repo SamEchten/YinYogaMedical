@@ -219,15 +219,15 @@ function loopAndAddElements(userArray, productId) {
 }
 
 async function giftProduct(userId, productId){
-  let data =  userId ;
+  let data = {
+    "userId": userId,
+  };
   try {
     // TODO: make gifting possible.
     let res = await ApiCaller.buyUserProduct(data, productId);
-    console.log(res.status);
     // let json = await res.json();
     if (res.status == 200) {
       toastPopUp("Product is verstuurd.", "success");
-      loadAndSetFullAgenda(weekNumb);
     } else {
       toastPopUp("Error","error");
     }
@@ -336,7 +336,7 @@ async function addProduct() {
 }
 
 // buy product
-function buyProduct(product) {
+function buyProduct(product, id) {
   let html1 = swalBuyProductCheck(product);
   let html2 = swalGiftProduct();
   Swal.fire({
@@ -356,8 +356,7 @@ function buyProduct(product) {
   })
     .then(async (result) => {
       if (result.isConfirmed) {
-        console.log('redirect to mollie');
-        // TODO: Redirect to mollie
+        buyAProduct(user.userId, id);
       } else if (result.isDenied) {
         Swal.fire({
           html: html2,
@@ -367,11 +366,27 @@ function buyProduct(product) {
           confirmButtonColor: '#D5CA9B',
           cancelButtonText: 'Cancel'
         }).then(() => {
-          console.log('redirect to mollie');
-          // TODO: Redirect to mollie
+          buyAProduct(user.userId, id);
         });
       }
     });
+}
+
+async function buyAProduct(userId, productId){
+  let data = {
+    "userId": userId,
+  };
+  try {
+    let res = await ApiCaller.buyUserProduct(data, productId);
+    let json = await res.json();
+    if (res.status == 200) {
+      // Redirects to mollie.
+      location.href = json.redirectUrl;
+    } else {
+      toastPopUp("Er is iets misgegaan","error");
+    }
+  } catch (err) {
+  }
 }
 
 
