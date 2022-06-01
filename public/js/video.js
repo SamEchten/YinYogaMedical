@@ -8,20 +8,19 @@ $(".addVideo").on("click", function() {
 });
 
 function addVideo () {
+    let html = addVideoTemplate();
     if(roleCheck()) {
         Swal.fire({
             title: 'Video toevoegen',
-            html: `<form>
-                <div class="form-group">
-                <label for="exampleFormControlFile1">Example file input</label>
-                <input type="file" class="form-control-file" id="exampleFormControlFile1">
-                </div>
-            </form>`,
+            html: html,
             showCancelButton: true,
             text: "",
             confirmButtonColor: '#D5CA9B',
             confirmButtonText: 'Toevoegen',
             cancelButtonText: 'Terug'
-          });
+          })
+          $("test").on("click", function( ) {
+            document.forms['sumbitVideo'].submit();
+          })
     }
 }
