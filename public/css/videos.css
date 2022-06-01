@@ -15,6 +15,9 @@ body {
     height: 262px !important;
     width: 333px !important;
 }
+.addVideo {
+    cursor: pointer;
+}
 .contentRow {
     
     height: 90%;
