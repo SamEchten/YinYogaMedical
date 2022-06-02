@@ -12,6 +12,14 @@ const videoSchema = mongoose.Schema({
     description: {
         type: String,
         required: [true, "Beschrijving is verplicht"]
+    },
+    thumbnailPath : {
+        type: String,
+        required: [true, "thumbnail is verplicht"]
+    },
+     videoPath: {
+        type: String,
+        required: [true, "video is verplicht"]
     }
 });
 

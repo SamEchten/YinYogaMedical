@@ -50,6 +50,9 @@ body {
 .test:hover {
     transform: translateY(-10px)
 }
+.removeVideo {
+    display: none;
+}
 
 .unlockIcon {
     color: green;
@@ -59,7 +62,7 @@ body {
 .lockIcon {
     font-size: 70px;
     font-weight: 500;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 .bought {
     filter: none;

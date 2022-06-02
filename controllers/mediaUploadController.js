@@ -1,65 +1,133 @@
 const formidable = require("formidable");
 const fs = require('fs');
+const path = require("path");
 const Video = require("../models/Video");
 const Podcast = require("../models/Podcast");
+const { compareSync } = require("bcryptjs");
 
-module.exports.post = async (req, res) => {
+module.exports.upload = async (req, res) => {
     //Er moet hier nog een checkje dat je wel een admin bent
+    const thumbnailUploadPath = path.join(__dirname, "../public/thumbnails/");
+    const videoUploadPath = path.join(__dirname, "../public/thumbnails/")
+    const form = new formidable.IncomingForm();
+
+    form.multiples = false;
+    form.maxFileSize = 100 * 1024 * 1024;
     
-    let title;
-    let price;
-    let description;
+    form.parse(req, async (err, fields, files) => {
+        const title = fields.title;
+        const price = fields.price;
+        const description = fields.description;
+        const thumbnail = files.thumbnail;
+        const media = files.media;
+        const parsePrice = parseInt(price);
+        
+        // check if inputfields are filled in ->
+        if(title != "" && price != "" && description != "") {
+            // check if price is a integer ->
+            if(!isNaN(parsePrice)) {
+                if(thumbnail.size != 0 && media.size != 0) {
+                    // check if file is podcast or video ->
+                    if(media.mimetype == "audio/mpeg") {
+                        // save in podcasts
+                            const thumbnailFileName = encodeURIComponent(createUniqueFileName(thumbnail.originalFilename).replace(/\s/g, "-"));
+                            const podcastFileName = encodeURIComponent(createUniqueFileName(media.originalFilename).replace(/\s/g, "-"));
+                            // write thumbnail file to the thumbnail folder ->
+                            try {
+                                fs.renameSync(thumbnail.filepath, path.join(thumbnailUploadPath, thumbnailFileName));
+                            } catch(err) {
+                                console.log(err)
+                                res.status(400).json({message : "Bestanden niet correct geupload vraag de beheerder voor meer informatie"});
+                            }
+                            // write podcast and thumbnail to the database ->
+                            try {
+                                const podcast = await Podcast.create({
+                                    title : title,
+                                    price : convertPrice(price),
+                                    desciption : description,
+                                    thumbnailPath : podcastFileName,
+                                    podcastPath : "podcast.mp4"
+                                });
 
-    const form = new formidable.IncomingForm({maxFileSize: 100000000000/*Dit is 100 gB*/});
+                                res.status(200).json({message : "Podcast geupload!"});
 
-    form.parse(req, async function (err, fields, files) {
-        console.log(fields.title)
-        title = fields.title;
-        price = fields.price;
-        description = fields.description;
+                            } catch (err) {
+                                console.log(err)
+                                res.status(400).send(err);
+                            }   
+                    } else {
+                        if(true) {// checkMimeType(thumbnail, video)
+                            const thumbnailFileName = encodeURIComponent(createUniqueFileName(thumbnail.originalFilename).replace(/\s/g, "-"));
+                            const videoFileName = encodeURIComponent(createUniqueFileName(media.originalFilename).replace(/\s/g, "-"));
+                            // write thumbnail file to the thumbnail folder ->
+                            try {
+                                fs.renameSync(thumbnail.filepath, path.join(thumbnailUploadPath, thumbnailFileName));
+                            } catch(err) {
+                                console.log(err)
+                                res.status(400).json({message : "Bestanden niet correct geupload vraag de beheerder voor meer informatie"});
+                            }
+                            // write video and thumbnail to the database ->
+                            try {
+                                const vid = await Video.create({
+                                    title : title,
+                                    price : convertPrice(price),
+                                    description : description,
+                                    thumbnailPath : videoFileName,
+                                    videoPath : "video.mp3"
+                                });
 
+                                res.status(200).json({message : "video geupload!"});
 
-        if (files.filetoupload.originalFilename.endsWith(".mp4"))//Kijk of het een filmje is
-        {
-            const oldpath = files.filetoupload.filepath;
-            const oldpathThumbnail = files.thumbnail.filepath;
+                            } catch (err) {
+                                console.log(err)
+                                res.status(400).send(err);
+                            }   
 
-            const video = await Video.create({ title, price, description });//Zet alles in de database en doe dan de upload naar de server
-            {
-                const newpath = './media/videos/' + video._id + '.mp4';
-                const videoUpload = fs.rename(oldpath, newpath, async function (err) {
-                    if (err) throw err;
-                    return true;
-                });
-
-                const newpathThumbnail = './public/images/thumbnails/' + video._id + '.jpg';
-                const thumbnailUpload = fs.rename(oldpathThumbnail, newpathThumbnail,  async function (err) {
-                    if (err) throw err;
-                    return true;
-                });
-
-                await (videoUpload && thumbnailUpload)//Deze await de upload van de video en de thumbnail
-                {
-                    res.status(200).json({ id: video._id });
+                        } else {
+                            res.status(400).json({message : "De thumbnail moet de volgende extentie bevatten: jpg, jpeg, png. Video moet de extentie mp4 hebben."});
+                        }
+                    }                      
+                } else {
+                    res.status(400).json({message : "Geen video of thumbnail geupload"})
                 }
+            } else {
+                res.status(400).json({message : "Prijs moet een getal zijn"});
             }
+        } else {
+            res.status(400).json({message : "Vul alle velden in voordat u een video aanmaakt"});
         }
-        else if (files.filetoupload.originalFilename.endsWith(".mp3"))//Kijk of het een podcast is
-        {
-            const oldpath = files.filetoupload.filepath;
-
-            const podcast = await Podcast.create({ title, price, description });//Zet alles in de database
-            {
-                const newpath = './media/podcasts/' + podcast._id + '.mp3';
-                fs.rename(oldpath, newpath, function (err) {
-                    if (err) throw err;
-                    res.status(200).json({ id: podcast._id });
-                });
-            }
-        }
-        else//Gooi een error is het geen van beiden is
-        {
-            res.sendStatus(415);
-        }
-    })
+    });
 };
+
+function checkMimeType(thumbnail, video) {
+    if(thumbnail.type != "image/jpeg" || thumbnail.type != "image/png" || thumbnail.type != "image/jpg") {
+        return false;
+    }
+    if(video.type != "video/mp4") {
+        return false;
+    }
+    return true
+}
+function createUniqueFileName (media) {
+    const unix = Math.round((new Date()).getTime() / 1000);
+    const fileName = unix.toString().concat(media);
+    return fileName;
+}
+// Convert price(String) to valid price string
+const convertPrice = (price) => {
+    const length = price.length;
+    price = price.toString();
+    if (length != 5) {
+        if (!price.includes(".")) {
+            price += ".00";
+        } else {
+            const num = price.split(".")[0];
+            const decimals = price.split(".")[1];
+            if (decimals.length != 2) {
+                price = num + "." + "" + decimals[0] + "" + decimals[1];
+            }
+        }
+    }
+
+    return price;
+}

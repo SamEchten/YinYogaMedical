@@ -119,16 +119,28 @@ function addVideo () {
     if(roleCheck()) {
         Swal.fire({
             title: 'Video toevoegen',
+            text: "Voeg hier een video of podcast toe met daarbij een thumbnail.",
             html: html,
-            showCancelButton: true,
-            text: "",
-            confirmButtonColor: '#D5CA9B',
-            confirmButtonText: 'Toevoegen',
-            cancelButtonText: 'Terug'
-          })
-          $("test").on("click", function( ) {
-            document.forms['sumbitVideo'].submit();
-          })
+            showCancelButton: false,
+            showConfirmButton: false,
+            
+          });
+
+        $("#submitVideo").on("click", function() {
+          let title = $("#title").val();
+          let price = $("#price").val();
+          let desciption = $("#description").val();
+          let thumbnail = $("#thumbnail").val();
+          let media = $("#media").val();
+
+          if(title == "" || price == "" || desciption == "" || thumbnail == "" || media == "") {
+            errorText("Vul alle velden in!");
+          } else {
+            document.forms['submitVideo'].submit();
+            Swal.close();
+            toastPopUp("Video geupload!", "success");
+          }
+        });
     }
 }
 // Append the videos to the correct DOM elements
@@ -180,7 +192,7 @@ function adminActions() {
   if(roleCheck()) {
     showAdminItems();// show admin items ->
     $(".editVideo").on("click", function() {
-     let id = $(this).parent().parent().parent().children(".videoIdRow").children().attr("id");
+     let id = $(this).parent().parent().parent().parent().parent().children(".videoIdRow").children().attr("id");
      Swal.fire({
         title: "you want to edit this video",
         text: id,
@@ -193,6 +205,7 @@ function adminActions() {
 }
 function showAdminItems() {
   $(".editVideo").css("display", "block");
+  $(".removeVideo").css("display", "block");
 }
 
 function addEventHandlers(bought, id) {
@@ -219,7 +232,6 @@ function addEventHandlers(bought, id) {
       });
     }
 }
-
 
 function nonUserAction(id) {
   toastPopUp("log eerst in voordat u de video koopt", "info");

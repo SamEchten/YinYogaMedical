@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/videoController");
+const uploadController = require("../controllers/mediaUploadController");
 
-router.use(express.json());
-
+// Upload a video in form format and save it on the server ->
+router.post("/", uploadController.upload)
 //Stream het bestand van een video
 router.get("/stream/:id", controller.streamFile);
 
