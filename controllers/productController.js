@@ -158,15 +158,14 @@ module.exports.delete = async (req, res) => {
 module.exports.purchase = async (req, res) => {
     const id = req.params.id;
     const userId = req.body.userId;
-    const mandate = req.body.mandate;
 
     if (id && userId) {
         Product.findOne({ _id: id }, async (err, product) => {
             if (product) {
                 User.findOne({ _id: userId }, async (err, user) => {
                     if (user) {
-                        const checkOutUrl = await purchaseProduct(userId, product, mandate);
-                        res.status(200).json({ redirectUrl: checkOutUrl });
+                        const purchaseInfo = await purchaseProduct(product, user);
+                        res.status(200).json({ purchaseInfo });
                     } else {
                         res.status(404).json({ message: "Er is geen gebruiker gevonden met id id" })
                     }
@@ -180,35 +179,43 @@ module.exports.purchase = async (req, res) => {
     }
 }
 
-const purchaseProduct = async (userId, product, mandate) => {
-    let checkOutUrl;
+const purchaseProduct = async (product, user) => {
     if (product.recurring) {
-        checkOutUrl = await createSubscription(product, userId, mandate);
+        return await startSubscription(product, user);
     } else {
-        checkOutUrl = await createPayment(product, userId);
+        return await createPayment(product, user.id);
     }
-    return checkOutUrl;
 }
 
-const createSubscription = async (product, userId, mandate) => {
-    const price = product.price;
-    const discription = product.productName;
-    const redirectUrl = config.ngrok.url + "/api/product/succes/" + product._id + "";
-    const webHookUrl = config.ngrok.url + "/api/product/webhook";
-    const productId = product.id;
-    let subscription;
-
-    if (mandate) {
-        User.findOne({ _id: userId }, async (err, user) => {
-            if (user) {
-                subscription = await mollieClient.createSubscription(price, discription, webHookUrl,
-                    productId, userId, user.customerId, user.mandateId);
-                console.log(subscription);
-            } else {
-                throw Error({ message: "Geen gebruiker gevonden met dit id" });
-            }
-        });
+const startSubscription = async (product, user) => {
+    let customerId;
+    //Check if user is customer
+    if (!isCustomer(user)) {
+        customerId = await mollieClient.createCustomer(user.id);
+        user = await User.findOne({ _id: user.id });
+    } else {
+        customerId = user.customerId;
     }
+
+    const payment = await mollieClient.createFirstPayment(product, user);
+    const checkOutUrl = payment.getCheckoutUrl();
+    return { checkOutUrl: checkOutUrl };
+}
+
+const createSubscription = async (customerId, amount, description) => {
+    const webhookUrl = config.ngrok.url + "/api/product/subscriptions/webhook";
+    const subscription = await mollieClient.createSubscription(customerId, amount, description, webhookUrl);
+    return subscription;
+}
+
+const isCustomer = (user) => {
+    if (user) {
+        if (user.customerId) {
+            return true
+        }
+    }
+
+    return false;
 }
 
 const isAdmin = async (userId) => {
@@ -309,24 +316,46 @@ const getExpireDate = (validFor) => {
 }
 
 module.exports.webHook = async (req, res) => {
+    console.log("product webhook");
     const paymentId = req.body.id;
 
     const payment = await mollieClient.getPaymentInfo(paymentId);
     const productId = payment.metadata.productId;
+    const product = await Product.findOne({ _id: productId });
     const userId = payment.metadata.userId;
-    if (payment.isPaid()) {
-        User.findOne({ _id: userId }, (err, user) => {
-            if (user) {
-                Product.findOne({ _id: productId }, (err, product) => {
-                    if (product) {
-                        addClassPass(user, product, paymentId);
-                        //TODO: Send confirmation mail
-                        res.sendStatus(200);
-                    }
-                });
-            }
-        });
+
+    console.log(payment);
+    if (await mollieClient.isPaid(paymentId)) {
+        if (!product.recurring) {
+            //Normal payment
+            User.findOne({ _id: userId }, (err, user) => {
+                if (user) {
+                    addClassPass(user, product, paymentId);
+                    //TODO: Send confirmation mail
+                    res.sendStatus(200);
+                }
+            });
+        } else {
+            //Subscription payment
+            const customerId = payment.customerId;
+            console.log(customerId);
+            const amount = payment.amount.value;
+            const description = payment.description;
+            await createSubscription(customerId, amount, description);
+            res.sendStatus(200);
+        }
+    } else {
+        console.log("Nog niet betaald");
     }
+
+}
+
+module.exports.subscriptionWebhook = async (req, res) => {
+    console.log("subscription webhook");
+    const id = req.body.id;
+    const payment = await mollieClient.getPaymentInfo(id);
+    console.log(payment);
+    res.sendStatus(200);
 }
 
 module.exports.view = (req, res) => {

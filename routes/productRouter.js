@@ -7,6 +7,8 @@ const { validateAdmin } = require("../middleware/validator");
 //Accessible by anyone (mollie api)
 //Webhook for mollie to send payment info to
 router.post("/webhook", controller.webHook);
+//Webhook for mollie to send subscription info to
+router.post("/subscriptions/webhook", controller.subscriptionWebhook);
 //Succes page after payments is succesfull
 router.get("/succes/:id", controller.succes);
 
