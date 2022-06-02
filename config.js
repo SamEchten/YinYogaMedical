@@ -19,7 +19,7 @@ module.exports.config = {
         testKey: "test_S8PSzbrv35kNh3FasVgsUbRDU3gVPj"
     },
     ngrok: {
-        url: "https://baed-31-137-90-113.eu.ngrok.io"
+        url: "https://23d9-2a02-a467-14f7-1-344e-6ed9-747c-63a5.eu.ngrok.io"
     },
     server: {
         password: "YinYogaMedicalServer",

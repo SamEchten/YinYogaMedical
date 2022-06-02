@@ -55,10 +55,6 @@ const userSchema = new mongoose.Schema({
     customerId: {
         type: String,
         default: null
-    },
-    mandateId: {
-        type: String,
-        default: null
     }
 });
 

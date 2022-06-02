@@ -5,12 +5,12 @@ const Podcast = require("../models/Podcast");
 
 module.exports.post = async (req, res) => {
     //Er moet hier nog een checkje dat je wel een admin bent
-    
+
     let title;
     let price;
     let description;
 
-    const form = new formidable.IncomingForm({maxFileSize: 100000000000/*Dit is 100 gB*/});
+    const form = new formidable.IncomingForm({ maxFileSize: 100000000000/*Dit is 100 gB*/ });
 
     form.parse(req, async function (err, fields, files) {
         console.log(fields.title)
@@ -33,7 +33,7 @@ module.exports.post = async (req, res) => {
                 });
 
                 const newpathThumbnail = './public/images/thumbnails/' + video._id + '.jpg';
-                const thumbnailUpload = fs.rename(oldpathThumbnail, newpathThumbnail,  async function (err) {
+                const thumbnailUpload = fs.rename(oldpathThumbnail, newpathThumbnail, async function (err) {
                     if (err) throw err;
                     return true;
                 });

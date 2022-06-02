@@ -19,7 +19,8 @@ const productSchema = mongoose.Schema({
     },
     amountOfHours: {
         type: Number,
-        required: false
+        required: false,
+        minimum: 0
     },
     toSchedule: {
         type: Boolean,
@@ -27,7 +28,8 @@ const productSchema = mongoose.Schema({
     },
     validFor: {
         type: Number,
-        default: 1
+        default: 1,
+        minimum: 0
     },
     recurring: {
         type: Boolean,
