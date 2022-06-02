@@ -40,19 +40,25 @@ function addVideoTemplate () {
     return html
 }
 
-function videoTemplate (title, description) {
+function videoTemplate (title, description, videoId) {
     let html = `
-    <div class="col-md-3 h-100 p-4">
-        <div class="row h-60">
-            <div class="col-md videoThumbnail">
-            
+    <div class="col-md-3 test h-100 p-4">
+        <div class="row h-60 videoIdRow ">
+            <div id=${videoId} class="col-md videoThumbnail">
+                <div class="row h-100 align-items-center">
+                    <div class="col-md text-center">
+                        <i class="bi bi-lock lockIcon text-center"></i>
+                    </div> 
+                </div>
+                
             </div>
         </div>
         <div class="row h-40">
             <div class="col-md videoInfo">
-            <h4 class="lead p-1 font-weight-bold">${title}</h4>
-            <hr class="m-0">
-            <p class="p-2"><small>${description}</small></p>
+                <h4 class="lead p-1 font-weight-bold">${title}</h4>
+                <hr class="m-0">
+                <p class="p-2"><small>${description}</small></p>
+                <i class="bi bi-pencil cursor text-end editVideo"></i>
             </div>
         </div>
     </div>
