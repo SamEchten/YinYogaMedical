@@ -16,10 +16,10 @@ module.exports.config = {
         password: "YinYogaMedicalServer"
     },
     mollie: {
-        testKey: "test_S8PSzbrv35kNh3FasVgsUbRDU3gVPj"
+        testKey: "test_8hvpFkP5GGngwbWJdrwU5DGAS4CnAg"
     },
     ngrok: {
-        url: "https://23d9-2a02-a467-14f7-1-344e-6ed9-747c-63a5.eu.ngrok.io"
+        url: "https://da00-194-171-182-60.eu.ngrok.io"
     },
     server: {
         password: "YinYogaMedicalServer",
