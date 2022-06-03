@@ -346,4 +346,19 @@ class ApiCaller {
         }
     }
 
+    static uploadVideo = async (data) => {
+        let url = "/api/video/";
+        console.log(data)
+        let options = {
+            method: 'POST',
+            body: data
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
 }

@@ -10,7 +10,7 @@ module.exports.upload = async (req, res) => {
     const thumbnailUploadPath = path.join(__dirname, "../public/thumbnails/");
     const videoUploadPath = path.join(__dirname, "../public/thumbnails/")
     const form = new formidable.IncomingForm();
-
+    console.log(form);
     form.multiples = false;
     form.maxFileSize = 100 * 1024 * 1024;
     

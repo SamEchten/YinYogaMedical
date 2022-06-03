@@ -126,23 +126,22 @@ function addVideo () {
             
           });
 
-        $("#submitVideo").on("click", function() {
-          let title = $("#title").val();
-          let price = $("#price").val();
-          let desciption = $("#description").val();
-          let thumbnail = $("#thumbnail").val();
-          let media = $("#media").val();
+        $("#submitVid").on("submit", async function(e) {
+          e.preventDefault();
+          // const uploadForm = new FormData($("#submitVid").get(0));
+          
+          const res = await ApiCaller.uploadVideo(new FormData($("#submitVid").get(0)));
+          const json = await res.json();
 
-          if(title == "" || price == "" || desciption == "" || thumbnail == "" || media == "") {
-            errorText("Vul alle velden in!");
+          if(res.status == 200) {
+            toastPopUp(json.message, "success");
           } else {
-            document.forms['submitVideo'].submit();
-            Swal.close();
-            toastPopUp("Video geupload!", "success");
+            errorText(json.message);
           }
         });
     }
 }
+
 // Append the videos to the correct DOM elements
 function displayVideos (i) {
   $(".videoRowTop").empty();
@@ -209,7 +208,7 @@ function showAdminItems() {
 }
 
 function addEventHandlers(bought, id) {
-    if(bought) { // click event user that bought video
+    if(bought || user.subscription == "videoAccess") { // click event user that bought video
       $("#" + id).addClass("bought");
       $("#" + id).children().remove();
       $("#" + id).parent().parent().find(".videoInfo").children("h4").append(`<i class="bi bi-unlock unlockIcon"></i>`);
