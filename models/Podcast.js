@@ -15,7 +15,6 @@ const podcastSchema = mongoose.Schema({
     },
     thumbnailPath : {
         type : String,
-        required: [true, "Thumbnail is verplicht"]
     },
     podcastPath : {
         type : String,
