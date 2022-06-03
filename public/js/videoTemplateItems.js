@@ -4,14 +4,14 @@ function addVideoTemplate () {
     <div class="container">
         <div class="row">
             <div class="col-md">
-                <form name="submitVideo" action="/api/video/" method="post" enctype="multipart/form-data" class="row g-3">
+                <form id="submitVid" name="submitVideo" class="row g-3">
                     <div class="col-md-6 text-start">
                         <label for="title" class="form-label lbs">Titel</label>
                         <input type="text" name="title" class="form-control" id="title">
                     </div>
                     <div class="col-md-6 text-start">
                         <label for="price" class="form-label lbs">Prijs</label>
-                        <input type="text" name="price" class="form-control" id="price">
+                        <input type="number" name="price" class="form-control" id="price">
                     </div>
                     <div class="col-12 text-start">
                         <label for="description" class="form-label  lbs">Beschrijving</label>
@@ -19,14 +19,14 @@ function addVideoTemplate () {
                     </div>
                     <div class="col-12 text-start">
                         <label for="thumbnail" class="form-label lbs">Thumbnail</label>
-                        <input type="file" name="thumbnail" class="form-control" id="thumbnail" placeholder="">
+                        <input type="file" name="thumbnail" accept=".png, .jpg, .jpeg" class="form-control" id="thumbnail" placeholder="">
                     </div>
                     <div class="col-12 text-start">
                         <label for="fileToInput" class="form-label lbs">Video</label>
-                        <input type="file" name="media" class="form-control" id="media" placeholder="">
+                        <input type="file" name="media" accept=".mp4, .mov , .mp3" class="form-control" id="media" placeholder="">
                     </div>
                     <div class="col-12">
-                        <button type="button" id="submitVideo" class="btn btn-primary">Upload media</button>
+                        <button type="submit" id="submitVideo" class="btn btn-primary">Upload media</button>
                     </div>
                     <div class="col-12">
                         <div class="alert alert-warning close errorBox" role="alert">
@@ -36,12 +36,6 @@ function addVideoTemplate () {
         </div>
     </div>
     `
-    // name = fileToUpload
-    // thumbnail
-    // title 
-    // price 
-    // discription
-
     return html
 }
 
@@ -79,10 +73,6 @@ function videoTemplate (title, description, videoId) {
                         <i class="bi bi-trash cursor  removeVideo"></i>
                     </div>
                 </div>
-                
-                
-                
-                
             </div>
         </div>
     </div>

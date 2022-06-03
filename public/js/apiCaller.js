@@ -252,7 +252,28 @@ class ApiCaller {
         }
     }
 
-    // Add a user to a session with or without extra participants ->
+    // Gift a product to a user -> *ADMIN*
+    // Gift a product to another user -> *USER*
+    static giftProduct = async (data, productId) => {
+        let url = "/api/product/gift/" + productId;
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }    
+
+    // Buy a product as a user ->
     static buyUserProduct = async (data, productId) => {
         let url = "/api/product/purchase/" + productId;
         let options = {
@@ -337,6 +358,21 @@ class ApiCaller {
             headers: {
                 'Content-Type': 'application/json'
             }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    static uploadVideo = async (data) => {
+        let url = "/api/video/";
+        console.log(data)
+        let options = {
+            method: 'POST',
+            body: data
         };
         try {
             let response = await fetch(url, options);

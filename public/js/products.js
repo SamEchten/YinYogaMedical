@@ -24,13 +24,24 @@ async function loadProducts() {
   for (r in res) {
     const row = res[r]
     const products = row.products;
-    const category = '<h2 class="lbs categoryTitle lead">' + row.category + '</h2>';
-    $(category).appendTo("#category")
-    //set category to html
-    for (i in products) {
-      const product = products[i];
-      let price = parseInt(product.price).toFixed(2).replace(".", ",");
-      loadProductItem(product._id, product.productName, price, product.validFor);
+    if (row.category == "Strippenkaarten") {
+      for (i in products) {
+        const product = products[i];
+        let price = parseInt(product.price).toFixed(2).replace(".", ",");
+        loadProductItem(product._id, product.productName, price, product.validFor, "stripcards");
+      }
+    } else if (row.category == "Abonnementen") {
+      for (i in products) {
+        const product = products[i];
+        let price = parseInt(product.price).toFixed(2).replace(".", ",");
+        loadProductItem(product._id, product.productName, price, product.validFor, "subscriptions");
+      }
+    } else {
+      for (i in products) {
+        const product = products[i];
+        let price = parseInt(product.price).toFixed(2).replace(".", ",");
+        loadProductItem(product._id, product.productName, price, product.validFor, "otherProducts");
+      }
     }
   }
   addEventHandlersSession();
@@ -39,14 +50,16 @@ async function loadProducts() {
 }
 
 async function reloadProducts() {
-  $("#category").empty();
+  $("#stripcards").empty();
+  $("#subscriptions").empty();
+  $("#otherProducts").empty();
   loadProducts();
 }
 
-function loadProductItem(id, productName, price, validFor) {
-  let html = loadSingleProductItem(id, productName, price, validFor);
+function loadProductItem(id, productName, price, validFor, category) {
+  let html = loadSingleProductItem(id, productName, price, validFor, category);
 
-  $(html).appendTo("#category");
+  $(html).appendTo("#" + category);
 }
 
 function addEventHandlersSession() {
@@ -64,7 +77,7 @@ function addEventHandlersSession() {
 
 // Add eventlisteners for button that render in after dom has loaded ->
 function clickEvents() {
-  
+
   if (roleCheck()) {
     // Add tooltips on icons
     createToolTip($(".editProduct"), "Wijzigen van product", "top");
@@ -97,9 +110,10 @@ function clickEvents() {
   });
 }
 
+// Edit a product as Admin
 async function editProduct(productId) {
   try {
-    let res = await ApiCaller.getSingleProduct(productId); // Get all the infomation from the session
+    let res = await ApiCaller.getSingleProduct(productId); // Get all the infomation from the product
     let json = await res.json();
     let html = swalItemEditProduct(json.category);
 
@@ -124,23 +138,10 @@ async function editProduct(productId) {
           let resUpdate = await ApiCaller.updateProduct(jsonData, productId);
           let resJson = await resUpdate.json();
           if (resUpdate.status == 200) {
-            Swal.fire({
-              title: "Product " + $("#productName").val() + " is gewijzigd!",
-              icon: 'success',
-              text: "Er zal een Email gestuurd worden naar alle leden die dit product hebben gekocht!",
-              showCloseButton: true,
-              confirmButtonColor: '#D5CA9B'
-            });
-
+            toastPopUp("Product " + $("#productName").val() + " is gewijzigd!", "success");
             reloadProducts();
           } else {
-            Swal.fire({
-              title: "Oops!",
-              icon: 'warning',
-              text: resJson.message,
-              showCloseButton: true,
-              confirmButtonColor: '#D5CA9B'
-            });
+            toastPopUp("Er is iets misgegaan", "error");
           }
         } catch (err) {
           console.log(err);
@@ -211,25 +212,38 @@ function loopAndAddElements(userArray, productId) {
   for (item in userArray) {
     $(".userItem").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
     $('[data-toggle="tooltip"]').tooltip();
-    $("#" + userArray[item].id).on("click", function () {
-      giftProduct(userArray[item].id, productId);
-    $('[data-toggle="tooltip"]').tooltip('hide');
+    $("#" + userArray[item].id).on("click", function () { 
+      let data = {
+        "userId": $(this).attr("id")
+      };
+      giftProduct(data, productId);
+      $('[data-toggle="tooltip"]').tooltip('hide');
     });
   }
 }
 
-async function giftProduct(userId, productId){
-  let data = {
-    "userId": userId,
-  };
+async function giftProduct(data, productId) {
   try {
-    // TODO: make gifting possible.
-    let res = await ApiCaller.buyUserProduct(data, productId);
-    // let json = await res.json();
+    let res = await ApiCaller.giftProduct(data, productId);
+    let json = await res.json();
     if (res.status == 200) {
-      toastPopUp("Product is verstuurd.", "success");
+      toastPopUp(json.message, "success");
     } else {
-      toastPopUp("Error","error");
+      toastPopUp(json.message, "error");
+    }
+  } catch (err) {
+  }
+}
+
+async function giftProductAsUser(data, productId){
+  try {
+    let res = await ApiCaller.giftProduct(data, productId);
+    let json = await res.json();
+    if (res.status == 200) {
+      // Redirects to mollie.
+      location.href = json.redirectUrl;
+    } else {
+      toastPopUp("Er is iets misgegaan", "error");
     }
   } catch (err) {
   }
@@ -301,16 +315,6 @@ async function addProduct() {
       "toSchedule": false,
       "validFor": $("#productValid").val()
     }
-  } else if (category == "Abonnementen") {
-    json = {
-      "category": category,
-      "productName": $("#productName").val(),
-      "price": $("#productPrice").val(),
-      "discription": $("#productDescription").val(),
-      "amountOfHours": '',
-      "toSchedule": false,
-      "validFor": $("#productValid").val()
-    }
   } else {
     json = {
       "category": category,
@@ -365,17 +369,20 @@ function buyProduct(product, id) {
           confirmButtonText: 'Stuur cadeau',
           confirmButtonColor: '#D5CA9B',
           cancelButtonText: 'Cancel'
-        }).then(() => {
-          buyAProduct(user.userId, id);
+        }).then((result) => {
+          if (result.isConfirmed) {
+            let tempdata = {
+              "userId" : user.userId,
+              "email" : $("#giftEmail").val()
+            }
+            giftProductAsUser(tempdata, id);
+          }
         });
       }
     });
 }
 
-async function buyAProduct(userId, productId){
-  let data = {
-    "userId": userId,
-  };
+async function buyAProduct(data, productId) {
   try {
     let res = await ApiCaller.buyUserProduct(data, productId);
     let json = await res.json();
@@ -383,7 +390,7 @@ async function buyAProduct(userId, productId){
       // Redirects to mollie.
       location.href = json.redirectUrl;
     } else {
-      toastPopUp("Er is iets misgegaan","error");
+      toastPopUp("Er is iets misgegaan", "error");
     }
   } catch (err) {
   }
