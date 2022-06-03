@@ -167,6 +167,7 @@ function displayVideos (i) {
 // load items into the correct row 
 // param: videoIndex -> the page you want to be on
 function loadVideos (index) {
+  // await api call get all videos
   let array = sortVideoArray(json, 4);
   let videos = [array[index], array[index + 1]];
   videoIndex = index + 2;
