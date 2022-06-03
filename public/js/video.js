@@ -42,7 +42,6 @@ let json = [
     "thumbnail" : "public/images/yoga.png",
     "title" : "Het eigen wijze lichaam",
     "description" : "dit is een mooie video" ,
-    "bought": true
   },
   {
     "id" : "2377722452354234",
@@ -76,8 +75,7 @@ let json = [
     "id" : "234523542311234",
     "thumbnail" : "public/images/yoga.png",
     "title" : "Het eigen wijze lichaam",
-    "description" : "dit is een mooie video" ,
-    "bought": true
+    "description" : "dit is een mooie video" 
   },
   {
     "id" : "234523542345466677",
@@ -128,8 +126,7 @@ function addVideo () {
 
         $("#submitVid").on("submit", async function(e) {
           e.preventDefault();
-          // const uploadForm = new FormData($("#submitVid").get(0));
-          
+
           const res = await ApiCaller.uploadVideo(new FormData($("#submitVid").get(0)));
           const json = await res.json();
 
