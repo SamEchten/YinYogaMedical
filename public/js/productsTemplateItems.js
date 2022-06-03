@@ -131,11 +131,6 @@ function swalItemAddProductCategory(){
     </div>
     <div class="row">
       <div class="col-md-12">
-        <button id="Abonnementen" class="btn btn-primary yinStyle categoryButton">Abonnementen</button>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
         <button id="Overige producten" class="btn btn-primary yinStyle categoryButton">Overige producten</button>
       </div>
     </div>
@@ -155,7 +150,7 @@ function swalGiftProduct() {
         <h3 class="lead lbs"><b>Volledige naam:</b></h3>
         <input id="Name" class="swal2-input" type="text">
         <h3 class="lead lbs"><b>E-mailadres:</b></h3>
-        <input id="Name" class="swal2-input" type="email">
+        <input id="giftEmail" class="swal2-input" type="email">
       </div>
     </div>
   </div>`;
@@ -313,35 +308,64 @@ function swalItemAddProduct(category){
   return template;
 }
 
-function loadSingleProductItem(id, productName, price, validFor){
+function loadSingleProductItem(id, productName, price, validFor, category){
   let date = new Date();
   date.setFullYear(date.getFullYear() + validFor);
-  let template = `
-  <div id="${id}" class="row productItem align-items-center">
-    <div class="col-md-8 productnameTitle" id="productNameText">
-      <h4 id="title" class="text-left lead fw-bold productTitle">${productName}</h4>
-      <p id="subtitle" class="productSubtitle">Geldig tot ${dateFormat(date).date}</p>
-    </div>
-    <div class="col-md text-md-end">
-      <h4 id="price" class="lead fw-bold productPrice">€${price}</h4>
-    </div>
-    <div class="col-md-1">
-      <div class="row">
-        <div class="col-md-4 col-2 text-md-end text-start">
-          <i class="bi bi-pencil hiding editProduct icons"></i>
-        </div>
-        <div class="col-md-4 col-2 text-md-end text-start">
-          <i class="bi bi-trash3 hiding removeProduct icons"></i>
-        </div>
-        <div class="col-md-4 col-8 text-md-end text-start">
-        <i class="bi bi-person-check hiding addPeople icons"></i>
+  console.log(category);
+  let template = '';
+  if(category == "subscriptions"){
+    template = `
+    <div id="${id}" class="row productItem align-items-center">
+      <div class="col-md-8 productnameTitle" id="productNameText">
+        <h4 id="title" class="text-left lead fw-bold productTitle">${productName}</h4>
+        <p id="subtitle" class="productSubtitle">Geldig tot ${dateFormat(date).date}</p>
+      </div>
+      <div class="col-md text-md-end">
+        <h4 id="price" class="lead fw-bold productPrice">€${price}</h4>
+      </div>
+      <div class="col-md-1">
+        <div class="row">
+          <div class="col-md-4 col-2 text-md-end text-start">
+            <i class="bi bi-pencil hiding editProduct icons"></i>
+          </div>
+          <div class="col-md-4 col-2 text-md-end text-start"></div>
+          <div class="col-md-4 col-8 text-md-end text-start">
+            <i class="bi bi-person-check hiding addPeople icons"></i>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-md text-end">
-      <button type="submit" class="btn btn-primary yinStyle BuyNow">+ Koop nu</button>
-    </div>
-  </div>`
+      <div class="col-md text-end">
+        <button type="submit" class="btn btn-primary yinStyle BuyNow">+ Koop nu</button>
+      </div>
+    </div>`
+  } else {
+    template = `
+    <div id="${id}" class="row productItem align-items-center">
+      <div class="col-md-8 productnameTitle" id="productNameText">
+        <h4 id="title" class="text-left lead fw-bold productTitle">${productName}</h4>
+        <p id="subtitle" class="productSubtitle">Geldig tot ${dateFormat(date).date}</p>
+      </div>
+      <div class="col-md text-md-end">
+        <h4 id="price" class="lead fw-bold productPrice">€${price}</h4>
+      </div>
+      <div class="col-md-1">
+        <div class="row">
+          <div class="col-md-4 col-2 text-md-end text-start">
+            <i class="bi bi-pencil hiding editProduct icons"></i>
+          </div>
+          <div class="col-md-4 col-2 text-md-end text-start">
+            <i class="bi bi-trash3 hiding removeProduct icons"></i>
+          </div>
+          <div class="col-md-4 col-8 text-md-end text-start">
+          <i class="bi bi-person-check hiding addPeople icons"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md text-end">
+        <button type="submit" class="btn btn-primary yinStyle BuyNow">+ Koop nu</button>
+      </div>
+    </div>`
+  }
   return template;
 }
 
