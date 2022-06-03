@@ -11,7 +11,6 @@ module.exports.upload = async (req, res) => {
     const videoUploadPath = path.join(__dirname, "../videos/");
     const podcastUploadPath = path.join(__dirname, "../podcasts/");
     const form = new formidable.IncomingForm();
-    console.log(form);
     form.multiples = false;
     form.maxFileSize = 100 * 1024 * 1024;
     
@@ -104,10 +103,10 @@ module.exports.upload = async (req, res) => {
 };
 
 function checkMimeType(thumbnail, video) {
-    if(thumbnail.type != "image/jpeg" || thumbnail.type != "image/png" || thumbnail.type != "image/jpg") {
+    if(thumbnail.mimetype != "image/jpeg" && thumbnail.mimetype != "image/png" && thumbnail.mimetype != "image/jpg") {
         return false;
     }
-    if(video.type != "video/mp4") {
+    if(video.mimetype != "video/mp4") {
         return false;
     }
     return true
