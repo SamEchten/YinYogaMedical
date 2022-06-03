@@ -14,10 +14,6 @@ const validateJwt = (req, res, next) => {
     if (token) {
         const decodedToken = verifyJwt(token);
         if (decodedToken != null) {
-            if (!decodedToken.isEmployee) {
-                //Valid token ->
-                req.body.userId = decodedToken.id;
-            }
             next();
         } else {
             res.redirect("/login");
@@ -46,12 +42,19 @@ const validateAdmin = async (req, res, next) => {
                     if (doc.isEmployee) {
                         //Request was made by admin ->
                         next();
+                    } else {
+                        res.redirect("/login");
                     }
                 } else {
                     res.redirect("/login");
                 }
             });
+        } else {
+            res.redirect("/login");
+
         }
+    } else {
+        res.redirect("/login");
     }
 }
 

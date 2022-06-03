@@ -10,7 +10,7 @@ $(async function () {
   schedule = res;
   loadAgenda(weekNumb);
   //scrollDownToCurrDay();
-  
+
 });
 
 // Loading agenda data per week ->
@@ -142,31 +142,31 @@ function sessionDetails(data) {
 
 async function showAllParticipants(data) {
   $(".sessionUsers").empty();
-    if(data.length <= 0) {
-      $(".sessionUsers").append(`<p class="lead"></i>Nog geen aanmeldingen <i class="bi bi-emoji-frown"></p>`);
-    } else {
-      for (users in data) {
-        // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT 
-        try {
-          let res = await ApiCaller.getUserInfo(data[users].userId);
-          let json = await res.json();
-          if (res.status == 200) {
-            $(".sessionUsers").append(`<p class="lead userSessionDetails"><i class="bi bi-person"></i> ${json.fullName}</p>`);
-    
-            //Add coming With participants
-            for (i in data[users].comingWith) {
-              const participant = data[users].comingWith[i];
-              $(".sessionUsers").append(`<p class="lead userSessionDetails ms-3"><i class="bi bi-arrow-return-right"></i> ${participant.name}</p>`);
-            }
-          } else {
-            toastPopUp(json.message);
+  if (data.length <= 0) {
+    $(".sessionUsers").append(`<p class="lead"></i>Nog geen aanmeldingen <i class="bi bi-emoji-frown"></p>`);
+  } else {
+    for (users in data) {
+      // @TODO : CREATE API CALL FOR EVERY USER ID AND PUT THE INFO IN OF THE USER IN THE CONTAINER AND APPEND IT 
+      try {
+        let res = await ApiCaller.getUserInfo(data[users].userId);
+        let json = await res.json();
+        if (res.status == 200) {
+          $(".sessionUsers").append(`<p class="lead userSessionDetails"><i class="bi bi-person"></i> ${json.fullName}</p>`);
+
+          //Add coming With participants
+          for (i in data[users].comingWith) {
+            const participant = data[users].comingWith[i];
+            $(".sessionUsers").append(`<p class="lead userSessionDetails ms-3"><i class="bi bi-arrow-return-right"></i> ${participant.name}</p>`);
           }
-        } catch (err) {
-    
+        } else {
+          toastPopUp(json.message);
         }
+      } catch (err) {
+
+      }
     }
   }
-  
+
   $(".sessionUsers").addClass("hideScrollbar");
 }
 // Loads all session items and puts them into the right day ->
@@ -174,11 +174,11 @@ function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipan
   let itemLayout = templateLoadSession(id, date, title, teacher, amountOfParticipants, maxAmountOfParticipants);
 
   $(itemLayout).appendTo("#" + day);
-  
-  if(roleCheck()){
+
+  if (roleCheck()) {
     $("#" + id).children().children().children(".participantsColor").css("color", checkSessionSize(amountOfParticipants, maxAmountOfParticipants));
   }
-  
+
   checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date);
 }
 
@@ -200,7 +200,7 @@ function addEventHandlersSession() {
 //  > Remove session : Admin can delete/cancel a session
 function clickEvents() {
   if (roleCheck()) {
-    
+
     // Add tooltips on icons
     createToolTip($(".editSession"), "Wijzigen van een les", "top");
     createToolTip($(".removeSession"), "Verwijderen van een les", "top");
@@ -251,6 +251,7 @@ function loopAndAddElements(userArray, sessionId) {
     $('[data-toggle="tooltip"]').tooltip();
     $("#" + userArray[item].id).on("click", function () {
       addUserToSessionAsAdmin(sessionId, this.id);
+      $('[data-toggle="tooltip"]').tooltip('hide');
     });
     $("#_" + userArray[item].id).on("click", function () {
       removeUserFromSessionAsAdmin(sessionId, this.id.substring(1));
@@ -274,6 +275,7 @@ async function addUserToSessionAsAdmin(sessionId, userId) {
 }
 // Remove a user from a session as admin ->
 async function removeUserFromSessionAsAdmin(sessionId, userId) {
+  $('[data-toggle="tooltip"]').tooltip('hide');
   let data = { userId };
   swal.fire({
     title: "Weet u zeker dat u deze gebruiker wilt verwijderen uit de les?",
@@ -392,7 +394,7 @@ async function editSession(sessionId) {
     });
 
     $("#lessonName").val(json.title);
-    $("#lessionDescription").val(json.description);
+    $("#lessonDescription").val(json.description);
     $("#lessonLocation").val(json.location);
     $("#lessonDay").val(date.toISOString().split("T")[0]);
     $("#lessonDuration").val(json.duration);

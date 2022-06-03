@@ -93,33 +93,6 @@
     border-color: #dc3545 !important;
 }
 
-.tooltip-inner {
-    background-color: white !important;
-    border: 1px solid #D5CA9B !important;
-    opacity: 1 !important;
-    color: black !important;
-}
-
-.tooltip.bs-tooltip-right .tooltip-arrow::before {
-    border-right-color: #D5CA9B !important;
-}
-
-.tooltip.bs-tooltip-left .tooltip-arrow::before {
-    border-left-color: #D5CA9B !important;
-}
-
-.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
-    border-bottom-color: #D5CA9B !important;
-}
-
-.tooltip.bs-tooltip-top .tooltip-arrow::before {
-    border-top-color: #D5CA9B !important;
-}
-
-.tooltip.bs-tooltip-top .arrow:before {
-    border-top-color: #ff0000 !important;
-}
-
 .main-wrapper {
     height: calc(100vh - 58px);
 }
@@ -209,13 +182,13 @@ body {
 }
 
 .prevWeek {
-    font-size: 20px;
+
     cursor: pointer;
     transition: 0.3s;
 }
 
 .nextWeek {
-    font-size: 20px;
+
     cursor: pointer;
     transition: 0.3s;
 }

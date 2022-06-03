@@ -1,21 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/videoController");
+const uploadController = require("../controllers/mediaUploadController");
 
-router.use(express.json());
-
+// Upload a video in form format and save it on the server ->
+router.post("/", uploadController.upload)
 //Stream het bestand van een video
 router.get("/stream/:id", controller.streamFile);
 
-//krijg info over een, of alle videos
+//Krijg het mp4-bestand van een video
 router.get("/:id", controller.get)
 router.get("/", controller.get)
 
-//verwijderen
-router.delete("/:id", controller.delete);
-
-//updaten
-router.put("/:id", controller.update)
+router.get("/", controller.get)
 
 
 module.exports = router;

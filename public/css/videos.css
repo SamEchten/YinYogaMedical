@@ -15,6 +15,9 @@ body {
     height: 262px !important;
     width: 333px !important;
 }
+.addVideo {
+    cursor: pointer;
+}
 .contentRow {
     
     height: 90%;
@@ -34,11 +37,38 @@ body {
     border-top: 1px solid rgb(209, 209, 209);
     border-left: 1px solid rgb(209, 209, 209);
     border-right: 1px solid rgb(209, 209, 209);
-    transition: 0.4s;
+    filter: grayscale(1);
 }
 .videoThumbnail:hover {
     cursor: pointer;
-    opacity: 0.7;
+    /* filter: none; */
+}
+.test {
+    transform: translateY(0);
+    transition: 0.3s;
+ }
+.test:hover {
+    transform: translateY(-10px)
+}
+.removeVideo {
+    display: none;
+}
+
+.unlockIcon {
+    color: green;
+    font-size: 20px;
+    padding: 10px;
+}
+.lockIcon {
+    font-size: 70px;
+    font-weight: 500;
+    color: rgb(0, 0, 0);
+}
+.bought {
+    filter: none;
+}
+.editVideo {
+    display: none;
 }
 .h-60 {
     height: 60% !important;
@@ -58,3 +88,13 @@ body {
 .videoInfo::-webkit-scrollbar {
     display: none;
 }
+.videoRowTop {
+    height: 47.5%;
+}
+.videoRowBottom {
+    height: 47.5%;
+}
+.videoRowHeader {
+    height: 5%; 
+}
+
