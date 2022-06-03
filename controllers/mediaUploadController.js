@@ -8,7 +8,8 @@ const { compareSync } = require("bcryptjs");
 module.exports.upload = async (req, res) => {
     //Er moet hier nog een checkje dat je wel een admin bent
     const thumbnailUploadPath = path.join(__dirname, "../public/thumbnails/");
-    const videoUploadPath = path.join(__dirname, "../public/thumbnails/")
+    const videoUploadPath = path.join(__dirname, "../videos/");
+    const podcastUploadPath = path.join(__dirname, "../podcasts/");
     const form = new formidable.IncomingForm();
     console.log(form);
     form.multiples = false;
@@ -35,6 +36,7 @@ module.exports.upload = async (req, res) => {
                             // write thumbnail file to the thumbnail folder ->
                             try {
                                 fs.renameSync(thumbnail.filepath, path.join(thumbnailUploadPath, thumbnailFileName));
+                                fs.renameSync(media.filepath, path.join(podcastUploadPath, podcastFileName));
                             } catch(err) {
                                 console.log(err)
                                 res.status(400).json({message : "Bestanden niet correct geupload vraag de beheerder voor meer informatie"});
@@ -62,10 +64,12 @@ module.exports.upload = async (req, res) => {
                             // write thumbnail file to the thumbnail folder ->
                             try {
                                 fs.renameSync(thumbnail.filepath, path.join(thumbnailUploadPath, thumbnailFileName));
+                                fs.renameSync(media.filepath, path.join(videoUploadPath, videoFileName));
                             } catch(err) {
                                 console.log(err)
                                 res.status(400).json({message : "Bestanden niet correct geupload vraag de beheerder voor meer informatie"});
                             }
+                            
                             // write video and thumbnail to the database ->
                             try {
                                 const vid = await Video.create({
