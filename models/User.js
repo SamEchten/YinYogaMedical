@@ -39,8 +39,10 @@ const userSchema = new mongoose.Schema({
         required: [true, "Uw niet aangegeven of de gebruiker een medewerker is"]
     },
     subscription: {
-        type: subscriptionSchema,
-        default: {}
+        type: String
+    },
+    subscriptionData: {
+        type: Array
     },
     familyMembers: {
         type: Array

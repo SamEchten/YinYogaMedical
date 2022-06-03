@@ -11,11 +11,11 @@ router.post("/webhook", controller.webHook);
 router.post("/subscriptions/webhook", controller.subscriptionWebhook);
 //Succes page after payments is succesfull
 router.get("/succes/:id", controller.succes);
+//Get all products
+router.get("/", controller.get);
 
 //Accessible by logged in users
 router.use(validateJwt);
-//Get all products
-router.get("/", controller.get);
 //Get Single product by id
 router.get("/:id", controller.get);
 //Buy product

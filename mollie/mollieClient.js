@@ -21,7 +21,8 @@ module.exports.createPayment = async (amount, description, redirectUrl, webhookU
         customerId: customerId,
         metadata: {
             productId,
-            userId
+            userId,
+            customerId
         }
     });
 
@@ -46,7 +47,7 @@ module.exports.createSubscription = async (customerId, amount, description, webh
         },
         interval: '1 month',
         description: description,
-        webhookUrl: webhookUrl,
+        webhookUrl: webhookUrl
     });
     return subscription;
 }
