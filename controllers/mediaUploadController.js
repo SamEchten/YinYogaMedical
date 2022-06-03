@@ -58,7 +58,7 @@ module.exports.upload = async (req, res) => {
                                 res.status(400).send(err);
                             }   
                     } else {
-                        if(true) {// checkMimeType(thumbnail, video)
+                        if(checkMimeType(thumbnail, media)){
                             const thumbnailFileName = encodeURIComponent(createUniqueFileName(thumbnail.originalFilename).replace(/\s/g, "-"));
                             const videoFileName = encodeURIComponent(createUniqueFileName(media.originalFilename).replace(/\s/g, "-"));
                             // write thumbnail file to the thumbnail folder ->
