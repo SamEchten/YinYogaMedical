@@ -10,6 +10,10 @@ body {
     height: calc(100vh - 58px);
 }
 
+.contentcontainer::-webkit-scrollbar {
+    display: none;
+}
+
 .headerText {
     font-size: 18pt !important;
     padding: 15px 0px 20px 35px;
