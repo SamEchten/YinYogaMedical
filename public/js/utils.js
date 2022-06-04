@@ -177,7 +177,7 @@ function toastPopUp(header, icon, message) {
     text: message,
     target: '#custom-target',
     toast: true,
-    position: 'bottom-right',
+    position: 'top-right',
     showConfirmButton: false,
     timer: 3000
   });

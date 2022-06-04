@@ -46,8 +46,8 @@ module.exports.upload = async (req, res) => {
                                     title : title,
                                     price : convertPrice(price),
                                     desciption : description,
-                                    thumbnailPath : podcastFileName,
-                                    podcastPath : "podcast.mp4"
+                                    thumbnailPath : thumbnailFileName,
+                                    podcastPath : podcastFileName
                                 });
 
                                 res.status(200).json({message : "Podcast geupload!"});
@@ -75,8 +75,8 @@ module.exports.upload = async (req, res) => {
                                     title : title,
                                     price : convertPrice(price),
                                     description : description,
-                                    thumbnailPath : videoFileName,
-                                    videoPath : "video.mp3"
+                                    thumbnailPath : thumbnailFileName,
+                                    videoPath : videoFileName
                                 });
 
                                 res.status(200).json({message : "video geupload!"});
