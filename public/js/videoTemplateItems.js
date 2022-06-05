@@ -25,7 +25,7 @@ function addVideoTemplate () {
                     <div class="col-12 text-start">
                         <label for="fileToInput" class="form-label lbs">Video</label>
                         <input type="file" name="media" accept=".mp4, .mov , .mp3" class="form-control" id="media" placeholder="">
-                        <small id="" class="form-text text-muted">Drag and Drop</small>
+                        <small id="fileSize" class="form-text text-muted">Drag and Drop</small>
                     </div>
                     <div class="col-12">
                         <button type="submit" id="submitVideo" class="btn btn-primary">Upload media</button>

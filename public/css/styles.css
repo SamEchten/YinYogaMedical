@@ -21,7 +21,12 @@ button {
 .cursor {
         cursor: pointer;
 }
-
+.successColor {
+        color: green !important;
+}
+.failedColor {
+        color: red !important;
+}
 .gift {
         padding-right: 4px !important;
 }
