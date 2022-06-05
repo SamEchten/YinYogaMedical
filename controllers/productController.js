@@ -409,7 +409,7 @@ module.exports.webHook = async (req, res) => {
                 res.sendStatus(200);
             }
         } else {
-            if (payment.sequenceType == "first") {
+            if (payment.sequenceType == "first" || payment.sequenceType == "firstoff") {
                 //Subscription payment
                 const customerId = payment.customerId;
                 const amount = payment.amount.value;
@@ -432,10 +432,25 @@ module.exports.subscriptionWebhook = async (req, res) => {
     const id = req.body.id;
     const payment = await mollieClient.getPaymentInfo(id);
     const customerId = payment.customerId;
+    const transactions = await Transactions.findOne({ customerId: customerId });
+    let subscriptionPayments = transactions.subscriptionPayments;
+    console.log(transactions);
 
+    for (i in subscriptionPayments) {
+        let subInfo = subscriptionPayments[i];
+        if (subInfo.subscriptionId == payment.subscriptionId) {
+            subInfo.payments.push({
+                description: payment.description,
+                amount: payment.amount,
+                status: payment.status,
+                createdAt: payment.createdAt
+            });
+        }
+    }
+
+    await Transactions.updateOne({ customerId: customerId }, { $set: { subscriptionPayments: subscriptionPayments } })
+    console.log(transactions);
     console.log(payment);
-
-    await savePaymentData(customerId, payment);
     res.sendStatus(200);
 }
 
