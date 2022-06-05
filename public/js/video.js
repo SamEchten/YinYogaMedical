@@ -140,6 +140,7 @@ function adminActions() {
           cancenlButtonText: "Terug"
         });
       }); 
+      
     // Remove video as ADMIN ->
     $(".removeVideo").on("click", function() {
       let id = $(this).parent().parent().parent().parent().parent().children(".videoIdRow").children().attr("id");

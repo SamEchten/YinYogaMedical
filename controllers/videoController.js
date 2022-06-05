@@ -106,14 +106,14 @@ module.exports.delete = async (req, res) => {
                     if(err && err.code == "ENOENT") {
                         res.status(400).json({message: "File does not exist"});
                     }else {
-                        console.log("Thumbnail removed")
+                        console.log("Thumbnail removed");
                     }
                 });
                 fs.unlink(videoPath, function(err) {
                     if(err && err.code == "ENOENT") {
                         res.status(400).json({message: "File does not exist"});
                     }else {
-                        console.log("video removed")
+                        console.log("video removed");
                     }
                 });
                 res.status(200).json({message: "Video verwijderd"});
@@ -126,5 +126,22 @@ module.exports.delete = async (req, res) => {
         }
     } catch (err) {
         res.status(400).json({message: "Gegeven ID niet correct ID format"});
+    }
+}
+
+module.exports.update = async (req, res) => {
+    const id = req.params.id;
+    const body = req.body;
+    try {
+        Video.findOne({ _id: id }, async (err, product) => {
+            if (product) {
+                await Video.updateOne({ _id: id }, { $set: body });
+                res.status(200).json({message: "Video gewijzigd"});
+            } else {
+                res.status(404).json({ message: "Er is geen Video gevonden met dit id" });
+            }
+        });
+    } catch (err) {
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
 }
