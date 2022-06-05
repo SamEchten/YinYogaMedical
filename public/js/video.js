@@ -69,10 +69,12 @@ function addVideo () {
 
 // Append the videos to the correct DOM elements
 async function displayVideos (i) {
+  loader(true);
+  $(".page").text(videoIndex);
   $(".vidBot").empty();
   $(".vidTop").empty();
-  videoIndex = 0;
   let videos = await loadVideos(i);
+  console.log(videos)
   if(videos == false){
     $(".vidTop").html(`<div class="col-md text-center"><h2 class="lead">Geen video's beschikbaar</h2></div>`);
   } else {
@@ -93,6 +95,7 @@ async function displayVideos (i) {
     } 
     //add event handlers for admin action : edit ->
     adminActions();
+    loader(false);
     }
 }
 
@@ -154,7 +157,7 @@ function adminActions() {
             let json = await res.json();
             if(res.status == 200) {
               toastPopUp(json.message, "success");
-              await displayVideos(videoIndex);
+              displayVideos(0);
             } else {
               toastPopUp(json.message, "warning");
             }
@@ -169,6 +172,7 @@ function adminActions() {
 function showAdminItems() {
   $(".editVideo").css("display", "block");
   $(".removeVideo").css("display", "block");
+  $(".hiding").css("display", "block");
 }
 
 function addEventHandlers(bought, id) {
@@ -200,7 +204,6 @@ async function setAllVideosObject() {
   let res =  await ApiCaller.getAllVideos();
   let json = await res.json();
   allVideos = json;
-
 }
 
 function nonUserAction(id) {

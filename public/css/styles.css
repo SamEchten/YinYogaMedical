@@ -16,16 +16,17 @@ input {
 }
 .loader {
         position: absolute;
-        border: 10px solid #f3f3f3;
+        border: 1px solid #f3f3f3;
         border-radius: 50%;
-        border-top: 10px solid #D5CA9B;
-        width: 70px;
+        border-top: 5px solid #D5CA9B;
+        width: 70px !important;
         height: 70px;
         top: 50%;
         left: 48%;
-        -webkit-animation: spin 1s linear infinite; /* Safari */
+        -webkit-animation: spin 1s linear infinite;
         animation: spin 1s linear infinite;
         z-index: 1062;
+        display: none;
 }
 .backgroundLoader {
         width: 100vw;
@@ -36,7 +37,7 @@ input {
         z-index: 1061;
 }
 .outerLoader {
-        display: none;
+        display: block;
         transition: 1s;
 }
       
