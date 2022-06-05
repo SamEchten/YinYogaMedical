@@ -3,6 +3,7 @@ const { handleUserErrors } = require("./errorHandler");
 const bcrypt = require("bcryptjs");
 const path = require("path");
 const mollieClient = require("../mollie/mollieClient");
+const Transactions = require("../models/Transactions");
 
 module.exports.get = async (req, res) => {
     const { id } = req.params;
@@ -50,9 +51,11 @@ module.exports.get = async (req, res) => {
 }
 
 module.exports.add = async (req, res) => {
-    const { fullName, email, phoneNumber, password, notes, isEmployee } = req.body;
+    const { fullName, email, phoneNumber, password, notes } = req.body;
     try {
-        const user = await User.create({ fullName, email, password, phoneNumber, notes, isEmployee });
+        const user = await User.create({ fullName, email, password, phoneNumber, notes });
+        await createTransactions(user.id);
+
         res.status(201).json({
             id: user._id,
             fullName: user.fullName
@@ -62,6 +65,16 @@ module.exports.add = async (req, res) => {
         res.status(400).json(errors);
     }
 }
+
+const createTransactions = async (userId) => {
+    const customerId = await mollieClient.createCustomer(userId);
+    await Transactions.create({
+        customerId: customerId,
+        transactions: [],
+        subscriptions: []
+    });
+}
+
 
 module.exports.update = async (req, res) => {
     const id = req.params.id;

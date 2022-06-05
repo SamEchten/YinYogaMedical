@@ -27,7 +27,11 @@ module.exports.createEvent = async (title, location, description, startTime, end
 }
 
 module.exports.deleteEvent = async (id) => {
-    nylas.events.delete(id.toString());
+    try {
+        nylas.events.delete(id.toString());
+    } catch (err) {
+
+    }
 }
 
 module.exports.updateEvent = async (id, newEvent) => {
