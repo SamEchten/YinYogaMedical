@@ -14,14 +14,44 @@
 input {
         box-shadow: none !important;
 }
-
+.loader {
+        position: absolute;
+        border: 10px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 10px solid #D5CA9B;
+        width: 70px;
+        height: 70px;
+        top: 50%;
+        left: 48%;
+        -webkit-animation: spin 1s linear infinite; /* Safari */
+        animation: spin 1s linear infinite;
+        z-index: 1062;
+}
+.backgroundLoader {
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        opacity: 0.5;
+        background: #000000;
+        z-index: 1061;
+}
+.outerLoader {
+        display: none;
+        transition: 1s;
+}
+      
 button {
         box-shadow: none !important;
 }
 .cursor {
         cursor: pointer;
 }
-
+.successColor {
+        color: green !important;
+}
+.failedColor {
+        color: red !important;
+}
 .gift {
         padding-right: 4px !important;
 }
@@ -42,6 +72,9 @@ button {
 }
 .h-33 {
         height: 33%;
+}
+.hiding {
+        display: none;
 }
 b {
         font-weight: bold !important;
@@ -570,5 +603,16 @@ border-top-color: #ff0000 !important;
           -webkit-transform: translateX(-8px) translateY(8px);
                   transform: translateX(-8px) translateY(8px);
         }
+      }
+
+        /* LOADER */
+      @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
       }
       

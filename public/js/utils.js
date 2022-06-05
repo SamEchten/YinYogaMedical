@@ -8,6 +8,7 @@ $(async function () {
   setUserItemsNav();
   updateSaldo();
   showWelcomMessage();
+  $("body").prepend(`<div class="outerLoader"><div class="backgroundLoader"></div><div class="loader"></div></div>`);
 });
 
 // Update users saldo 
@@ -67,7 +68,14 @@ function errorText(errMessage) {
     $(".errorBox").slideUp(400);
   }, 3000)
 }
-
+// Show loader 
+function loader(state) {
+  if(state) {
+    $(".outerLoader").css("display" ,"block");
+  } else {
+    $(".outerLoader").css("display" ,"none");
+  }
+}
 function checkLogin() {
   if (cookie) {
     return true;

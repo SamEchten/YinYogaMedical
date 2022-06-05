@@ -39,13 +39,24 @@ function addVideo () {
           showConfirmButton: false,
           
         });
-
+      $("#media").on("change", function() {
+        let size = Math.round(this.files[0].size / 1024 / 1024);
+        if(size > 100) {
+          $("#fileSize").text("Bestandsgrootte : " + size + " MB");
+          $("#fileSize").addClass("failedColor").removeClass("text-muted");
+        } else {
+          $("#fileSize").text("Bestandsgrootte : " + size + " MB");
+          
+          $("#fileSize").addClass("successColor").removeClass("text-muted");
+        }
+        
+      });
       $("#submitVid").on("submit", async function(e) {
         e.preventDefault();
-
+        loader(true);
         const res = await ApiCaller.uploadVideo(new FormData($("#submitVid").get(0)));
         const json = await res.json();
-
+        loader(false);
         if(res.status == 200) {
           toastPopUp(json.message, "success");
           await displayVideos(videoIndex);
