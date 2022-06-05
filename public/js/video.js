@@ -53,10 +53,10 @@ function addVideo () {
       });
       $("#submitVid").on("submit", async function(e) {
         e.preventDefault();
-
+        loader(true);
         const res = await ApiCaller.uploadVideo(new FormData($("#submitVid").get(0)));
         const json = await res.json();
-
+        loader(false);
         if(res.status == 200) {
           toastPopUp(json.message, "success");
           await displayVideos(videoIndex);

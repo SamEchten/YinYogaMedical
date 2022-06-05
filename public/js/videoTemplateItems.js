@@ -1,6 +1,7 @@
 function addVideoTemplate () {
     let html = `
     <hr>
+    
     <div class="container">
         <div class="row">
             <div class="col-md">

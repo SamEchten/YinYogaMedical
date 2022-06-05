@@ -6,7 +6,9 @@ let weekNumb = getCurrentWeekNumber();
 //  > Document.getready! first render. 
 $(async function () {
   setWeekData(weekNumb);
+  loader(true);
   const res = await (await ApiCaller.getAllSessions()).json();
+  loader(false);
   schedule = res;
   loadAgenda(weekNumb);
   //scrollDownToCurrDay();
@@ -15,7 +17,9 @@ $(async function () {
 
 // Loading agenda data per week ->
 async function loadAgenda(weekNumber) {
+  loader(true);
   const res = await (await ApiCaller.getAllSessions()).json();
+  loader(false);
   schedule = res;
   showOrhideElements();
   let week = schedule[weekNumber];

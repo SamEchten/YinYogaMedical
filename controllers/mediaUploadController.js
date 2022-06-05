@@ -14,7 +14,6 @@ module.exports.upload = async (req, res) => {
     form.multiples = false;
     form.maxFileSize = 100 * 1024 * 1024;
         
-
     form.parse(req, async (err, fields, files) => {
         if(err) {
             res.status(400).json({message: "Bestand te groot om te uploaden"});
