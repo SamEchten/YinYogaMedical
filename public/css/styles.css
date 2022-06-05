@@ -73,6 +73,9 @@ button {
 .h-33 {
         height: 33%;
 }
+.hiding {
+        display: none;
+}
 b {
         font-weight: bold !important;
 }
