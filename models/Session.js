@@ -40,6 +40,9 @@ const sessionSchema = mongoose.Schema({
     private: {
         type: Boolean,
         default: false
+    },
+    eventId: {
+        type: String
     }
 });
 

@@ -36,21 +36,22 @@ const userSchema = new mongoose.Schema({
     },
     isEmployee: {
         type: Boolean,
-        required: [true, "Uw niet aangegeven of de gebruiker een medewerker is"]
+        default: false
     },
     subscription: {
-        type: subscriptionSchema,
-        default: {}
+        type: String,
+        default: null
     },
     familyMembers: {
-        type: Array
-    },
-    purchases: {
         type: Array
     },
     classPassHours: {
         type: Number,
         default: 0
+    },
+    customerId: {
+        type: String,
+        default: null
     }
 });
 

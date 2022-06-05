@@ -8,11 +8,7 @@ const sessionController = require("../controllers/sessionController");
 const userController = require("../controllers/userController");
 const profileController = require("../controllers/profileController");
 const productController = require("../controllers/productController");
-
-//Tijdelijke test voor video
-router.get("/videos", validateJwt, (req, res) => {
-    res.render(path.join(__dirname, "../views/videotester"));
-});
+const videoController = require("../controllers/videoController");
 
 //Auth ->
 router.get("/login", authController.login_get);
@@ -26,6 +22,8 @@ router.get("/agenda", sessionController.view);
 //TODO: add jwt validation
 router.get("/producten", productController.view);
 
+//Videos ->
+router.get("/videos", videoController.view);
 //profile ->
 //TODO: add jwt validation
 router.get("/profile/", profileController.viewProfile);

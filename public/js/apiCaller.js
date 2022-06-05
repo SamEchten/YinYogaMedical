@@ -251,6 +251,47 @@ class ApiCaller {
             //error
         }
     }
+
+    // Gift a product to a user -> *ADMIN*
+    // Gift a product to another user -> *USER*
+    static giftProduct = async (data, productId) => {
+        let url = "/api/product/gift/" + productId;
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }    
+
+    // Buy a product as a user ->
+    static buyUserProduct = async (data, productId) => {
+        let url = "/api/product/purchase/" + productId;
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try
+        {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err)
+        {
+            //error
+        }
+    }
     
     // Gets all users with information -> *ADMIN*
     static getAllUsers = async () => {
@@ -317,6 +358,51 @@ class ApiCaller {
             headers: {
                 'Content-Type': 'application/json'
             }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+    // upload a video + thumbnail OR mp3 + thumbnail ->
+    // DATA OBJECT MUST BE OF FORMDATA!
+    static uploadVideo = async (data) => {
+        let url = "/api/video/";
+        let options = {
+            method: 'POST',
+            body: data
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+    // Get all videos ->
+    static getAllVideos = async () => {
+        let url = "/api/video/";
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    // Delete video and thumbnail ->
+    static deleteVideo = async (id) => {
+        let url = "/api/video/" + id;
+        let options = {
+            method: 'DELETE',
         };
         try {
             let response = await fetch(url, options);

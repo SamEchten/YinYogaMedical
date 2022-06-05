@@ -2,8 +2,7 @@ const Session = require("../models/Session");
 const User = require("../models/User");
 const path = require("path");
 const { handleSessionErrors } = require("./errorHandler");
-const { update } = require("./userController");
-const { Console } = require("console");
+const { createEvent, deleteEvent, updateEvent } = require("./calendarController");
 
 //TODO: only show non private session
 //do show if req was made by admin or participants
@@ -182,7 +181,7 @@ module.exports.add = async (req, res) => {
 
         if (duration > 0) {
             if (maxAmountOfParticipants > 0) {
-                const sessions = await Session.create({
+                const session = await Session.create({
                     title,
                     location,
                     date,
@@ -194,7 +193,10 @@ module.exports.add = async (req, res) => {
                     weekly,
                     private
                 });
-                res.status(201).json({ id: sessions.id });
+
+                const eventId = await createSessionEvent(session);
+                await updateSession(session.id, { eventId: eventId });
+                res.status(201).json({ id: session.id });
             } else {
                 res.status(400).json({ message: "Maximaal aantal deelnemers moet meer zijn dan 0" });
             }
@@ -207,6 +209,28 @@ module.exports.add = async (req, res) => {
     }
 }
 
+const createSessionEvent = async (session) => {
+    const date = session.date;
+    const duration = session.duration / 60;
+    const time = converTime(date, duration);
+
+    return await createEvent(session.title, session.location, session.description, time.startTime, time.endTimeUnix, session.id);
+}
+
+const converTime = (sessionDate, duration) => {
+    const date = new Date(sessionDate);
+    const startTime = toUnix(date);
+    const endTime = date.setTime(date.getTime() + duration * 60 * 60 * 1000);
+    const endTimeUnix = toUnix(endTime);
+
+    return { startTime, endTimeUnix };
+}
+
+const toUnix = (date) => {
+    const unix = parseInt((new Date(date).getTime() / 1000).toFixed(0));
+    return unix - 7200; //remove 2 hours
+}
+
 module.exports.update = async (req, res) => {
     const { id } = req.params;
     const body = req.body;
@@ -216,7 +240,10 @@ module.exports.update = async (req, res) => {
         if (session) {
             if (body.duration > 0) {
                 if (body.maxAmountOfParticipants > 0) {
-                    await Session.updateOne({ _id: id }, { $set: body });
+                    await updateSession(id, body);
+                    Session.findOne({ _id: id }, async (err, session) => {
+                        await updateSessionEvent(session);
+                    })
                     res.status(200).json({ id: session._id });
                 } else {
                     res.status(400).json({ message: "Maximaal aantal deelnemers moet meer zijn dan 0" });
@@ -233,13 +260,30 @@ module.exports.update = async (req, res) => {
     }
 }
 
+const updateSession = async (id, body) => {
+    await Session.updateOne({ _id: id }, { $set: body });
+    return id;
+}
+
+const updateSessionEvent = async (session) => {
+    const time = converTime(session.date, (session.duration / 60));
+    updateEvent(session.eventId, {
+        title: session.title,
+        location: session.location,
+        description: session.description,
+        when: { startTime: time.startTime, endTime: time.endTimeUnix }
+    });
+}
+
 module.exports.delete = async (req, res) => {
     const { id } = req.params;
 
     try {
         const session = await Session.findOne({ _id: id });
         if (session) {
+            const eventId = session.eventId;
             session.remove();
+            deleteEvent(eventId);
             //Send email to participants
             //Set back hours of participants
             res.status(200).json({ message: "Sessie is verwijderd" });

@@ -5,12 +5,12 @@ const { validateJwt } = require("../middleware/validator");
 const { validateAdmin } = require("../middleware/validator");
 
 //Accessible by logged in users
-router.use(validateJwt);
+//router.use(validateJwt);
 //Get all users
 router.get("/:id", controller.get);
 
 //Accessible by admin
-router.use(validateAdmin);
+//router.use(validateAdmin);
 //Get single user
 router.get("/", controller.get);
 //Add a new user
