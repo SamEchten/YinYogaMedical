@@ -4,6 +4,7 @@ const mollieClient = require("../mollie/mollieClient");
 const config = require("../config").config;
 const path = require("path");
 const User = require("../models/User");
+const Transactions = require("../models/Transactions");
 const mailController = require("../controllers/mailController");
 
 module.exports.get = async (req, res) => {
@@ -188,14 +189,7 @@ const purchaseProduct = async (product, user) => {
 }
 
 const startSubscription = async (product, user) => {
-    let customerId;
-    //Check if user is customer
-    if (!isCustomer(user)) {
-        customerId = await mollieClient.createCustomer(user.id);
-        user = await User.findOne({ _id: user.id });
-    } else {
-        customerId = user.customerId;
-    }
+    const customerId = user.customerId;
 
     const hasMandate = await mollieClient.hasMandate(customerId);
     if (!hasMandate) {
@@ -212,6 +206,7 @@ const startSubscription = async (product, user) => {
         const description = product.productName;
         try {
             const subscription = await createSubscription(user, customerId, amount, description);
+            await saveSubscriptionData(customerId, subscription);
         } catch (err) {
             return { error: "Abbonement is al gekocht" }
         }
@@ -223,31 +218,68 @@ const createSubscription = async (user, customerId, amount, description) => {
     //Create subscription with mollie api
     const webhookUrl = config.ngrok.url + "/api/product/subscriptions/webhook";
     const subscription = await mollieClient.createSubscription(customerId, amount, description, webhookUrl);
-    await saveSubscriptionData(user, subscription);
     return subscription;
 }
 
-const saveSubscriptionData = async (user, subscription) => {
+const savePaymentData = async (customerId, payment) => {
+    const paymentId = payment.id;
+    const description = payment.description;
+    const createdAt = payment.createdAt;
+    const status = payment.status;
+    const subId = payment.subscriptionId;
+
+    const transactions = await Transactions.findOne({ customerId: customerId });
+    for (i in transactions.transactionPayments) {
+        let subInfo = transactionPayments[i];
+        if (subInfo.subscriptionId == subId) {
+            subInfo.push({
+                paymentId,
+                description,
+                status,
+                createdAt
+            });
+        }
+    }
+}
+
+const saveSubscriptionData = async (customerId, subscription) => {
     const createdAt = subscription.createdAt;
     const description = subscription.description;
     const amount = subscription.amount;
     const id = subscription.id;
 
-    const subscriptionData = user.subscriptionData;
+    const transactions = await Transactions.findOne({ customerId: customerId });
+    console.log(transactions);
+
     let exists = false;
-    for (i in subscriptionData) {
-        let sub = subscriptionData[i];
-        if (sub.id == id) {
-            sub.transactions.push({ createdAt, description, amount })
+    let subscriptionInfo;
+    for (i in transactions.subscriptionPayments) {
+        let subInfo = transactions.subscriptionPayments[i];
+        if (subInfo.subscriptionId == id) {
+            subscriptionInfo = subInfo;
             exists = true;
         }
     }
 
-    if (exists == false) {
-        subscriptionData.push({ id: id, transactions: [{ createdAt, description, amount }] });
+    if (!exists) {
+        transactions.subscriptionPayments.push({
+            subscriptionId: id,
+            payments: [{
+                firstPayment: true,
+                description,
+                amount,
+                createdAt
+            }]
+        })
+    } else {
+        subscriptionInfo.payments.push({
+            description,
+            amount,
+            createdAt
+        });
     }
 
-    await User.updateOne({ _id: user.id }, { $set: { subscriptionData: subscriptionData, subscription: description } });
+    transactions.save();
 }
 
 const isCustomer = (user) => {
@@ -368,7 +400,6 @@ module.exports.webHook = async (req, res) => {
     const userId = payment.metadata.userId;
     const user = await User.findOne({ _id: userId });
 
-    console.log(payment);
     if (await mollieClient.isPaid(paymentId)) {
         if (!product.recurring) {
             //Normal payment=
@@ -381,10 +412,11 @@ module.exports.webHook = async (req, res) => {
             if (payment.sequenceType == "first") {
                 //Subscription payment
                 const customerId = payment.customerId;
-                console.log(customerId);
                 const amount = payment.amount.value;
                 const description = payment.description;
-                await createSubscription(user, customerId, amount, description);
+
+                const subscription = await createSubscription(user, customerId, amount, description);
+                await saveSubscriptionData(customerId, subscription);
             }
 
             res.sendStatus(200);
@@ -399,8 +431,11 @@ module.exports.subscriptionWebhook = async (req, res) => {
     console.log("subscription webhook");
     const id = req.body.id;
     const payment = await mollieClient.getPaymentInfo(id);
-    await saveSubscriptionData()
+    const customerId = payment.customerId;
+
     console.log(payment);
+
+    await savePaymentData(customerId, payment);
     res.sendStatus(200);
 }
 

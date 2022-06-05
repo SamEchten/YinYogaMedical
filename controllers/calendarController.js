@@ -32,7 +32,7 @@ module.exports.deleteEvent = async (id) => {
     } catch (err) {
         console.log(err)
     }
-    
+
 }
 
 module.exports.updateEvent = async (id, newEvent) => {
@@ -47,6 +47,6 @@ module.exports.updateEvent = async (id, newEvent) => {
         });
     } catch(err) {
         console.log(err)
-    }   
-    
+    }
+
 }

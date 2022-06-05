@@ -4,6 +4,8 @@ const path = require("path");
 const secret = require("../config").config.secret;
 const { handleUserErrors } = require("./errorHandler");
 const { signUpMail } = require("../controllers/mailController");
+const mollieClient = require("../mollie/mollieClient");
+const Transactions = require("../models/Transactions");
 const maxAge = 24 * 60 * 60;
 
 //Login_post
@@ -38,6 +40,7 @@ module.exports.signup_post = async (req, res) => {
     try {
         //Insert user into database
         const user = await User.create({ fullName, email, password, phoneNumber, notes, isEmployee: false });
+        await createTransactions(user.id);
 
         //Send jwt cookie to client
         sendCookies(res, user._id, user.fullName, user.email, user.isEmployee, user.classPassHours);
@@ -57,10 +60,21 @@ module.exports.signup_post = async (req, res) => {
 
 
     } catch (err) {
+        console.log(err);
         let errors = handleUserErrors(err);
         res.status(400).json(errors);
     }
 }
+
+const createTransactions = async (userId) => {
+    const customerId = await mollieClient.createCustomer(userId);
+    await Transactions.create({
+        customerId: customerId,
+        transactions: [],
+        subscriptions: []
+    });
+}
+
 
 //SendJwtCookie
 //Params:   res
