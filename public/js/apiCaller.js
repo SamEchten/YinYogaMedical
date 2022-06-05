@@ -366,13 +366,43 @@ class ApiCaller {
             //error
         }
     }
-
+    // upload a video + thumbnail OR mp3 + thumbnail ->
+    // DATA OBJECT MUST BE OF FORMDATA!
     static uploadVideo = async (data) => {
         let url = "/api/video/";
-        console.log(data)
         let options = {
             method: 'POST',
             body: data
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+    // Get all videos ->
+    static getAllVideos = async () => {
+        let url = "/api/video/";
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    // Delete video and thumbnail ->
+    static deleteVideo = async (id) => {
+        let url = "/api/video/" + id;
+        let options = {
+            method: 'DELETE',
         };
         try {
             let response = await fetch(url, options);

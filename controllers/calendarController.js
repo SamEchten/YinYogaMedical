@@ -30,17 +30,23 @@ module.exports.deleteEvent = async (id) => {
     try {
         nylas.events.delete(id.toString());
     } catch (err) {
-
+        console.log(err)
     }
+
 }
 
 module.exports.updateEvent = async (id, newEvent) => {
-    nylas.events.find(id.toString()).then(event => {
-        event.title = newEvent.title;
-        event.location = newEvent.location;
-        event.description = newEvent.description;
-        event.when.startTime = newEvent.when.startTime;
-        event.when.endTime = newEvent.when.endTime;
-        event.save();
-    });
+    try {
+        nylas.events.find(id.toString()).then(event => {
+            event.title = newEvent.title;
+            event.location = newEvent.location;
+            event.description = newEvent.description;
+            event.when.startTime = newEvent.when.startTime;
+            event.when.endTime = newEvent.when.endTime;
+            event.save();
+        });
+    } catch(err) {
+        console.log(err)
+    }
+
 }

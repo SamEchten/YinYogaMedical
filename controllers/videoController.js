@@ -76,12 +76,55 @@ module.exports.get = async (req, res) => {
                     id: video._id,
                     title: video.title,
                     price: video.price,
-                    description: video.description
+                    description: video.description,
+                    thumbnailPath: video.thumbnailPath,
+                    videoPath: video.videoPath
                 });
             }
             res.status(200).json(allVideos);
         } catch (err) {
             res.status(400).json({ message: "Er is iets fout gegaan", error: err });
         }
+    }
+}
+
+module.exports.delete = async (req, res) => {
+    const id = req.params.id;
+    const thumbnailPathServer = path.join(__dirname,"../public/thumbnails/");
+    const videoPathServer = path.join(__dirname,"../videos/");
+
+    try {
+        let video = await Video.findOne({_id : id});
+        if(video){
+            video.remove();
+            try {
+                let thumbnailPath = thumbnailPathServer + video.thumbnailPath;
+                let videoPath = videoPathServer + video.videoPath;
+                console.log(thumbnailPath);
+                console.log(videoPath);
+                fs.unlink(thumbnailPath, function(err) {
+                    if(err && err.code == "ENOENT") {
+                        res.status(400).json({message: "File does not exist"});
+                    }else {
+                        console.log("Thumbnail removed")
+                    }
+                });
+                fs.unlink(videoPath, function(err) {
+                    if(err && err.code == "ENOENT") {
+                        res.status(400).json({message: "File does not exist"});
+                    }else {
+                        console.log("video removed")
+                    }
+                });
+                res.status(200).json({message: "Video verwijderd"});
+                
+            } catch(err) {
+                res.status(400).send(err);
+            } 
+        } else {    
+            res.status(400).json({message: "Video met opgegeven ID niet gevonden"});
+        }
+    } catch (err) {
+        res.status(400).json({message: "Gegeven ID niet correct ID format"});
     }
 }
