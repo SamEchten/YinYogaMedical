@@ -11,12 +11,10 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -31,12 +29,10 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -49,12 +45,10 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -68,12 +62,10 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -87,12 +79,10 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -106,12 +96,10 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -126,12 +114,10 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             console.log(err)
         }
     }
@@ -147,12 +133,10 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -166,12 +150,10 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -184,12 +166,10 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -203,12 +183,10 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -223,12 +201,10 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -242,12 +218,10 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -263,15 +237,13 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
-    }    
+    }
 
     // Buy a product as a user ->
     static buyUserProduct = async (data, productId) => {
@@ -283,16 +255,14 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
-    
+
     // Gets all users with information -> *ADMIN*
     static getAllUsers = async () => {
         let url = "/api/user/";
@@ -302,16 +272,14 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
-    
+
     // Gets the info of the user
     static getUserInfo = async (id) => {
         let url = "/api/user/" + id;
@@ -321,12 +289,10 @@ class ApiCaller {
                 'Content-Type': 'application/json'
             }
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -340,12 +306,10 @@ class ApiCaller {
             },
             body: JSON.stringify(data)
         };
-        try
-        {
+        try {
             let response = await fetch(url, options);
             return response;
-        } catch (err)
-        {
+        } catch (err) {
             //error
         }
     }
@@ -424,7 +388,7 @@ class ApiCaller {
             //error
         }
     }
-    static updateVideo = async (id,data) => {
+    static updateVideo = async (id, data) => {
         let url = "/api/video/" + id;
         let options = {
             method: 'PUT',

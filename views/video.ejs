@@ -15,7 +15,9 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+    integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <script src="./js/bootstrap.min.js"></script>
@@ -51,12 +53,17 @@
       </ul>
     </div>
     <div class="dropdown">
-      <button class="btn dropdown-toggle bi bi-icons pe-3 me-1" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button class="btn dropdown-toggle bi bi-icons pe-3 me-1" id="dropdownMenuButton" data-bs-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
         <i class="bi bi-person"></i>
       </button>
       <div class="dropdown-menu dropdown-menu-right profileItemNav me-4" aria-labelledby="dropdownMenuButton">
+        <h6 class="dropdown-header profileHeader">Profiel</h6>
         <a class="dropdown-item userNameNav" href="#"></a>
         <a class="dropdown-item userSaldo" href="/producten"></a>
+        <div class="dropdown-divider"></div>
+        <h6 class="dropdown-header subscriptionHeader">Abonnement</h6>
+        <a class="dropdown-item userSubscription" href="/producten">Geen abonnement</a>
         <div class="dropdown-divider navSwitch"></div>
       </div>
     </div>
@@ -73,14 +80,14 @@
           <div class="col-md-12 h-100">
             <div class="row align-items-center videoRowHeader">
               <div class="col text-start">
-                
+
               </div>
               <div class="col text-end">
                 <i class="bi bi-chevron-left cursor prevPage "></i>
               </div>
               <div class="col">
                 <p class="lead page text-center m-0">
-                  
+
                 </p>
               </div>
               <div class="col text-start">
@@ -89,18 +96,19 @@
               <div class="col text-end">
                 <div class="row align-items-center">
                   <div class="col-md-9 text-end">
-                    
+
                   </div>
                   <div class="col-md-3">
-                    <i class="bi bi-plus-circle addVideo" data-toggle="tooltip" data-placement="left" title="Voeg hier een les toe"></i>
+                    <i class="bi bi-plus-circle addVideo" data-toggle="tooltip" data-placement="left"
+                      title="Voeg hier een les toe"></i>
                   </div>
-                </div> 
+                </div>
               </div>
             </div>
             <div class="row videoRowTop">
               <div class="col h-100">
                 <div class="row vidTop h-100">
-                  
+
                 </div>
               </div>
             </div>

@@ -5,10 +5,6 @@ const User = require("../models/User");
 const mollieClient = createMollieClient({ apiKey: config.mollie.testKey });
 
 module.exports.createPayment = async (amount, description, redirectUrl, webhookUrl, productId, userId, customerId, sequenceType) => {
-    if (sequenceType == null) {
-        sequenceType = "oneoff"
-    }
-
     const payment = await mollieClient.payments.create({
         amount: {
             value: amount,
@@ -26,12 +22,13 @@ module.exports.createPayment = async (amount, description, redirectUrl, webhookU
         }
     });
 
+    console.log(payment);
     return payment;
 }
 
 module.exports.createFirstPayment = async (product, user) => {
-    const redirectUrl = config.ngrok.url + "/api/product/succes/" + product._id + "";
-    const webHookUrl = config.ngrok.url + "/api/product/webhook/";
+    const redirectUrl = config.server.url + "/producten?succes=true&productId=" + product.id + "";
+    const webHookUrl = config.server.url + "/api/product/webhook/";
     const payment = await this.createPayment(
         product.price, product.productName, redirectUrl, webHookUrl, product.id, user.id, user.customerId, "first"
     );

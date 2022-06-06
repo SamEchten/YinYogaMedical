@@ -16,7 +16,7 @@ async function updateSaldo() {
   if (user) {
     let res = await ApiCaller.getUserInfo(user.userId);
     let json = await res.json();
-    $(".userSaldo").html(`<i class="bi bi-wallet2"></i>  ` + json.saldo + " uur");
+    $(".userSaldo").html(`<i class="bi bi-clock"></i>  ` + json.saldo + " uur");
   }
 }
 
@@ -35,11 +35,23 @@ function showWelcomMessage() {
 function setUserItemsNav() {
   let username = $(".userNameNav");
   let saldo = $(".userSaldo");
+  let subscription = $(".userSubscription");
   let switchNav = $(".navSwitch")
 
   if (user) {
     username.html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
-    saldo.html(`<i class="bi bi-wallet2"></i>  ` + user.saldo + " uur");
+    saldo.append(`<i class="bi bi-clock"></i>  ` + user.saldo + " uur");
+    if (user.subscription) {
+      if (user.subscription == "Video") {
+        subscription.html(`<i class="bi bi-camera-video"></i>  ` + user.subscription);
+      } else if (user.subscription == "Podcast") {
+        subscription.html(`<i class="bi bi-mic"></i>  ` + user.subscription);
+      } else {
+        subscription.html(`<i class="bi bi-camera-video"></i> <i class="bi bi-mic"></i>  ` + user.subscription);
+      }
+
+    }
+
     switchNav.after(`<a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Uitloggen</a>`);
   } else {
     username.remove();
@@ -50,9 +62,9 @@ function setUserItemsNav() {
 }
 function createToolTip(item, title, position) {
   item.attr({
-    "data-toggle" : "tooltip",
-    "data-placement" : position,
-    "title" : title
+    "data-toggle": "tooltip",
+    "data-placement": position,
+    "title": title
   })
   // data-toggle="tooltip" data-placement="top" title="Tooltip on top"
 }
@@ -70,10 +82,10 @@ function errorText(errMessage) {
 }
 // Show loader 
 function loader(state) {
-  if(state) {
-    $(".loader").css("display" ,"block");
+  if (state) {
+    $(".loader").css("display", "block");
   } else {
-    $(".loader").css("display" ,"none");
+    $(".loader").css("display", "none");
   }
 }
 function checkLogin() {
@@ -219,11 +231,11 @@ function filterData(filterValue) {
 
 function checkSessionSize(amountOfParticipants, maxAmountOfParticipants) {
   let threshold = maxAmountOfParticipants / 2;
-  if(amountOfParticipants == maxAmountOfParticipants) {
-      return "red";
-  } else if(amountOfParticipants < threshold ) {
-      return "green";
-  } else if(amountOfParticipants >= threshold) {
-      return "orange";
+  if (amountOfParticipants == maxAmountOfParticipants) {
+    return "red";
+  } else if (amountOfParticipants < threshold) {
+    return "green";
+  } else if (amountOfParticipants >= threshold) {
+    return "orange";
   }
 }

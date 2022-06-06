@@ -10,7 +10,7 @@ const transactionsSchema = mongoose.Schema({
         type: Array,
         required: true,
     },
-    subscriptionPayments: {
+    subscriptions: {
         type: Array,
         required: true
     }

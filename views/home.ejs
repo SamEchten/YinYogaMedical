@@ -41,6 +41,21 @@
         </li>
       </ul>
     </div>
+    <div class="dropdown">
+      <button class="btn dropdown-toggle bi bi-icons pe-3 me-1" id="dropdownMenuButton" data-bs-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        <i class="bi bi-person"></i>
+      </button>
+      <div class="dropdown-menu dropdown-menu-right profileItemNav me-4" aria-labelledby="dropdownMenuButton">
+        <h6 class="dropdown-header profileHeader">Profiel</h6>
+        <a class="dropdown-item userNameNav" href="#"></a>
+        <a class="dropdown-item userSaldo" href="/producten"></a>
+        <div class="dropdown-divider"></div>
+        <h6 class="dropdown-header subscriptionHeader">Abonnement</h6>
+        <a class="dropdown-item userSubscription" href="/producten">Geen abonnement</a>
+        <div class="dropdown-divider navSwitch"></div>
+      </div>
+    </div>
   </nav>
   <div class="main-wrapper container-fluid">
     <div class="row h-100">
@@ -64,7 +79,8 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+  <script type="text/javascript"
+    src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <script src="./js/bootstrap.min.js"></script>
   <script src="static/apiCaller.js"></script>
   <script src="static/utils.js"></script>
