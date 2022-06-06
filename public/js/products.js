@@ -24,13 +24,13 @@ async function loadProducts() {
   for (r in res) {
     const row = res[r]
     const products = row.products;
-    if (row.category == "Strippenkaart") {
+    if (row.category == "Strippenkaarten") {
       for (i in products) {
         const product = products[i];
         let price = product.price.replace(".", ",");
         loadProductItem(product._id, product.productName, price, product.validFor, "stripcards");
       }
-    } else if (row.category == "Abonnement") {
+    } else if (row.category == "Abonnementen") {
       for (i in products) {
         const product = products[i];
         let price = product.price.replace(".", ",");
