@@ -189,9 +189,11 @@ function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipan
 function addEventHandlersSession() {
   $(".sessionDetails").on("click", async function () {
     try {
+      loader(true);
       const id = $(this).parent().attr('id');
       const res = await ApiCaller.getSingleSession(id);
       const json = await res.json();
+      loader(false);
       sessionDetails(json);
     } catch (err) {
       console.log(err)

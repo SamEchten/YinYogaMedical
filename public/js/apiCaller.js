@@ -412,4 +412,33 @@ class ApiCaller {
         }
     }
 
+    static getSingleVideo = async (id) => {
+        let url = "/api/video/" + id;
+        let options = {
+            method: 'GET',
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+    static updateVideo = async (id,data) => {
+        let url = "/api/video/" + id;
+        let options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
 }
