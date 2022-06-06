@@ -53,13 +53,15 @@ function addVideo () {
       });
       $("#submitVid").on("submit", async function(e) {
         e.preventDefault();
+        $("#submitVideo").addClass("disabled");
         loader(true);
         const res = await ApiCaller.uploadVideo(new FormData($("#submitVid").get(0)));
         const json = await res.json();
         loader(false);
+        $("#submitVideo").removeClass("disabled");
         if(res.status == 200) {
           toastPopUp(json.message, "success");
-          await displayVideos(videoIndex);
+          displayVideos(0);
         } else {
           errorText(json.message);
         }
@@ -77,6 +79,10 @@ async function displayVideos (i) {
   console.log(videos)
   if(videos == false){
     $(".vidTop").html(`<div class="col-md text-center"><h2 class="lead">Geen video's beschikbaar</h2></div>`);
+    if(roleCheck()) {
+      $(".addVideo").css("display", "block");
+    }
+    loader(false);
   } else {
     for(index in videos) {
       for(item in videos[index]) {
@@ -129,17 +135,38 @@ function adminActions() {
     showAdminItems();// show admin items ->
 
     // Edit video as ADMIN ->
-    $(".editVideo").on("click", function() {
+    $(".editVideo").on("click", async function() {
       let html = editVideoDetails();
       let id = $(this).parent().parent().parent().parent().parent().children(".videoIdRow").children().attr("id");
+      let res = await ApiCaller.getSingleVideo(id);
+      let json = await res.json();
+      
       Swal.fire({
           confirmButtonText: "Wijzig video",
           html: html,
           confirmButtonColor: '#D5CA9B',
           showCancelButton: "true",
-          cancenlButtonText: "Terug"
+          cancenlButtonText: "Terug",
+          preConfirm: async() => {
+              let body = {title: $("#videoTitle").val(),description: $("#videoDescription").val()}
+              let resUpdate = await ApiCaller.updateVideo(id, body);
+              let jsonUpdate = await resUpdate.json();
+              if(resUpdate.status = 200){
+                toastPopUp("Video gewijziged", "success");
+                displayVideos(0)
+              } else {
+                toastPopUp(jsonUpdate.message);
+              }
+            } 
         });
-      }); 
+
+        if(res.status == 200) {
+          $("#videoTitle").val(json.title);
+          $("#videoDescription").val(json.description);
+        }
+      });
+
+
       
     // Remove video as ADMIN ->
     $(".removeVideo").on("click", function() {
@@ -173,7 +200,6 @@ function adminActions() {
 function showAdminItems() {
   $(".editVideo").css("display", "block");
   $(".removeVideo").css("display", "block");
-  $(".hiding").css("display", "block");
 }
 
 function addEventHandlers(bought, id) {
@@ -226,6 +252,7 @@ function nonUserAction(id) {
 
 function userActionBought(id) {
   toastPopUp("Go to the video page","success")
+  location.href = "videos/" + id; 
 }
 
 // ! FEATURE NOT IMPLEMENTED !
