@@ -24,22 +24,22 @@ async function loadProducts() {
   for (r in res) {
     const row = res[r]
     const products = row.products;
-    if (row.category == "Strippenkaarten") {
+    if (row.category == "Strippenkaart") {
       for (i in products) {
         const product = products[i];
-        let price = parseInt(product.price).toFixed(2).replace(".", ",");
+        let price = product.price.replace(".", ",");
         loadProductItem(product._id, product.productName, price, product.validFor, "stripcards");
       }
-    } else if (row.category == "Abonnementen") {
+    } else if (row.category == "Abonnement") {
       for (i in products) {
         const product = products[i];
-        let price = parseInt(product.price).toFixed(2).replace(".", ",");
+        let price = product.price.replace(".", ",");
         loadProductItem(product._id, product.productName, price, product.validFor, "subscriptions");
       }
     } else {
       for (i in products) {
         const product = products[i];
-        let price = parseInt(product.price).toFixed(2).replace(".", ",");
+        let price = product.price.replace(".", ",");
         loadProductItem(product._id, product.productName, price, product.validFor, "otherProducts");
       }
     }
@@ -212,7 +212,7 @@ function loopAndAddElements(userArray, productId) {
   for (item in userArray) {
     $(".userItem").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
     $('[data-toggle="tooltip"]').tooltip();
-    $("#" + userArray[item].id).on("click", function () { 
+    $("#" + userArray[item].id).on("click", function () {
       let data = {
         "userId": $(this).attr("id")
       };
@@ -235,7 +235,7 @@ async function giftProduct(data, productId) {
   }
 }
 
-async function giftProductAsUser(data, productId){
+async function giftProductAsUser(data, productId) {
   try {
     let res = await ApiCaller.giftProduct(data, productId);
     let json = await res.json();
@@ -372,8 +372,8 @@ function buyProduct(product, id) {
         }).then((result) => {
           if (result.isConfirmed) {
             let tempdata = {
-              "userId" : user.userId,
-              "email" : $("#giftEmail").val()
+              "userId": user.userId,
+              "email": $("#giftEmail").val()
             }
             giftProductAsUser(tempdata, id);
           }
@@ -384,11 +384,13 @@ function buyProduct(product, id) {
 
 async function buyAProduct(data, productId) {
   try {
+    data = { userId: data };
     let res = await ApiCaller.buyUserProduct(data, productId);
     let json = await res.json();
+    console.log(json);
     if (res.status == 200) {
       // Redirects to mollie.
-      location.href = json.redirectUrl;
+      location.href = json.purchaseInfo.checkOutUrl;
     } else {
       toastPopUp("Er is iets misgegaan", "error");
     }

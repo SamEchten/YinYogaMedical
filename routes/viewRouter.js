@@ -23,7 +23,8 @@ router.get("/agenda", sessionController.view);
 router.get("/producten", productController.view);
 
 //Videos ->
-router.get("/videos", videoController.view);
+router.get("/videos/", videoController.view);
+router.get("/videos/:id", videoController.videoDisplay);
 //profile ->
 //TODO: add jwt validation
 router.get("/profile/", profileController.viewProfile);
