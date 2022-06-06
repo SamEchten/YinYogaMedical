@@ -80,7 +80,10 @@ module.exports.createCustomer = async (userId) => {
     if (user) {
         const customer = await mollieClient.customers.create({
             name: user.fullName,
-            email: user.email
+            email: user.email,
+            metadata: {
+                userId
+            }
         });
         await User.updateOne({ _id: userId }, { $set: { customerId: customer.id } });
         return customer.id;

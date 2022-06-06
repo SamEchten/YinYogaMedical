@@ -76,7 +76,9 @@ module.exports.get = async (req, res) => {
                     id: video._id,
                     title: video.title,
                     price: video.price,
-                    description: video.description
+                    description: video.description,
+                    thumbnailPath: video.thumbnailPath,
+                    videoPath: video.videoPath
                 });
             }
             res.status(200).json(allVideos);
@@ -88,32 +90,58 @@ module.exports.get = async (req, res) => {
 
 module.exports.delete = async (req, res) => {
     const id = req.params.id;
-    if (id) {
-        try {
-            let video = await Video.findOne({ _id: id });
-            //Check if video exists ->
-            if (video) {
-                //Delete user ->
-                await video.remove();
-                res.status(200).send();
-            } else {
-                //Video does not exit ->
-                res.status(404).send();
-            }
-        } catch (err) {
-            res.sendStatus(400);
+    const thumbnailPathServer = path.join(__dirname,"../public/thumbnails/");
+    const videoPathServer = path.join(__dirname,"../videos/");
+
+    try {
+        let video = await Video.findOne({_id : id});
+        if(video){
+            video.remove();
+            try {
+                let thumbnailPath = thumbnailPathServer + video.thumbnailPath;
+                let videoPath = videoPathServer + video.videoPath;
+                console.log(thumbnailPath);
+                console.log(videoPath);
+                fs.unlink(thumbnailPath, function(err) {
+                    if(err && err.code == "ENOENT") {
+                        res.status(400).json({message: "File does not exist"});
+                    }else {
+                        console.log("Thumbnail removed");
+                    }
+                });
+                fs.unlink(videoPath, function(err) {
+                    if(err && err.code == "ENOENT") {
+                        res.status(400).json({message: "File does not exist"});
+                    }else {
+                        console.log("video removed");
+                    }
+                });
+                res.status(200).json({message: "Video verwijderd"});
+                
+            } catch(err) {
+                res.status(400).send(err);
+            } 
+        } else {    
+            res.status(400).json({message: "Video met opgegeven ID niet gevonden"});
         }
-    } else {
-        //Id was not provided ->
-        res.sendStatus(400);
+    } catch (err) {
+        res.status(400).json({message: "Gegeven ID niet correct ID format"});
     }
 }
 
 module.exports.update = async (req, res) => {
-    const id = req.params.id
+    const id = req.params.id;
     const body = req.body;
-
-    Video.findOne({ _id: id }, async (err, user) => {
-        await Video.updateOne({ _id: id }, { $set: body });
-    });
+    try {
+        Video.findOne({ _id: id }, async (err, product) => {
+            if (product) {
+                await Video.updateOne({ _id: id }, { $set: body });
+                res.status(200).json({message: "Video gewijzigd"});
+            } else {
+                res.status(404).json({ message: "Er is geen Video gevonden met dit id" });
+            }
+        });
+    } catch (err) {
+        res.status(400).json({ message: "Er is iets fout gegaan", error: err });
+    }
 }

@@ -132,7 +132,7 @@ function swalItemAddSession() {
           <div class="row">
             <div class="col-md-12">
               <h2>Voeg nieuwe les toe</h2>
-              <p>Plan hier u les, navigeer naar het plus icoontje aan de rechter kant van het datum veld, zo kunt u meerdere lessen tegelijk plannen.</p>
+              <p>Plan hier uw les, navigeer naar het plus icoontje aan de rechter kant van het datum veld, zo kunt u meerdere lessen tegelijk plannen.</p>
               <hr>
             </div>
           </div>
