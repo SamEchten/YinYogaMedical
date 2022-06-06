@@ -440,6 +440,7 @@ module.exports.subscriptionWebhook = async (req, res) => {
         let subInfo = subscriptionPayments[i];
         if (subInfo.subscriptionId == payment.subscriptionId) {
             subInfo.payments.push({
+                paymentId: payment.id,
                 description: payment.description,
                 amount: payment.amount,
                 status: payment.status,
