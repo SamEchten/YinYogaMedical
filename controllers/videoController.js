@@ -1,6 +1,7 @@
 // in the imports above
 const fs = require("fs");
 const path = require("path");
+const { runInNewContext } = require("vm");
 const Video = require("../models/Video");
 
 module.exports.streamFile = async (req, res) => {
@@ -45,6 +46,7 @@ module.exports.streamFile = async (req, res) => {
 module.exports.view = (req, res) => {
     res.render(path.join(__dirname, "../views/video"), { isAdmin: false });
 }
+
 
 module.exports.get = async (req, res) => {
     const { id } = req.params;
@@ -145,3 +147,8 @@ module.exports.update = async (req, res) => {
         res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
 }
+
+module.exports.videoDisplay = (req, res) => {
+    console.log(req.params.id);
+    res.render(path.join(__dirname, "../views/videoDisplay"));
+} 
