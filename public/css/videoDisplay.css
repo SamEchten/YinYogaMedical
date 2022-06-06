@@ -5,7 +5,10 @@
     height: 10%;
 }
 body {
-    background-color: rgb(219, 159, 159) !important;
+    background-image: url("./background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
 }
 .headerText {
     padding: 10px;
