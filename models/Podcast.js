@@ -12,13 +12,6 @@ const podcastSchema = mongoose.Schema({
     description: {
         type: String,
         required: [true, "Beschrijving is verplicht"]
-    },
-    thumbnailPath : {
-        type : String,
-    },
-    podcastPath : {
-        type : String,
-        required: [true, "Podcast is verplicht"]
     }
 });
 
