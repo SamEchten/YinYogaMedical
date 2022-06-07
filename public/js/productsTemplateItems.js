@@ -1,8 +1,8 @@
-function swalProductDetails(data){
+function swalProductDetails(data) {
   const currentdate = new Date();
   currentdate.setFullYear(currentdate.getFullYear() + data.validFor);
   let template = '';
-  if (data.amountOfHours){
+  if (data.amountOfHours) {
     template = `
     <div class="alerttitle">
       <h2>${data.productName}<h2>
@@ -55,7 +55,7 @@ function swalProductDetails(data){
       </div>
     </div>`
   }
-  
+
   return template;
 }
 
@@ -121,7 +121,7 @@ function createUserItem(fullName, email, phoneNumber, id) {
   return element;
 }
 
-function swalItemAddProductCategory(){
+function swalItemAddProductCategory() {
   let template = `
   <div class="container">
     <div class="row">
@@ -159,10 +159,10 @@ function swalGiftProduct() {
 }
 
 // Edit a product ->
-function swalItemEditProduct(category){
+function swalItemEditProduct(category) {
   let template = '';
-  if (category == "Strippenkaarten"){
-     template = `
+  if (category == "Strippenkaarten") {
+    template = `
     <h2>Wijzig strippenkaart</h2>
     <hr>
     <div class="row width">
@@ -183,7 +183,7 @@ function swalItemEditProduct(category){
       </div>
       <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`;
-  } else if(category == "Abonnementen") {
+  } else if (category == "Abonnementen") {
     template = `
     <h2>Wijzig abonnement</h2>
     <hr>
@@ -229,15 +229,15 @@ function swalItemEditProduct(category){
       <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`;
   }
-   
+
   return template;
 }
 
 // Add a product ->
-function swalItemAddProduct(category){
+function swalItemAddProduct(category) {
   let template = '';
-  if (category == "Strippenkaarten"){
-     template = `
+  if (category == "Strippenkaarten") {
+    template = `
     <h2>Voeg nieuwe strippenkaart toe</h2>
     <hr>
     <div class="row width">
@@ -258,7 +258,7 @@ function swalItemAddProduct(category){
       </div>
       <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`;
-  } else if(category == "Abonnementen") {
+  } else if (category == "Abonnementen") {
     template = `
     <h2>Voeg nieuw abonnement toe</h2>
     <hr>
@@ -304,16 +304,16 @@ function swalItemAddProduct(category){
       <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`;
   }
-   
+
   return template;
 }
 
-function loadSingleProductItem(id, productName, price, validFor, category){
+function loadSingleProductItem(id, productName, price, validFor, category) {
   let date = new Date();
   date.setFullYear(date.getFullYear() + validFor);
   console.log(category);
   let template = '';
-  if(category == "subscriptions"){
+  if (category == "subscriptions") {
     template = `
     <div id="${id}" class="row productItem align-items-center">
       <div class="col-md-8 productnameTitle" id="productNameText">
@@ -369,7 +369,7 @@ function loadSingleProductItem(id, productName, price, validFor, category){
   return template;
 }
 
-function swalBuyProductCheck(product){
+function swalBuyProductCheck(product) {
   let template = `
   <h2>Product kopen</h2>
   <hr>

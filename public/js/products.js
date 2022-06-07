@@ -18,29 +18,42 @@ $(async function () {
   loadProducts();
 });
 
+async function loadSingleProduct(product, category) {
+  let price = product.price.replace(".", ",");
+  loadProductItem(product._id, product.productName, price, product.validFor, category);
+
+  if (hasBought(user, product)) {
+
+  }
+}
+
+async function hasBought(product) {
+  if (user) {
+    for (i in user.subscriptions) {
+      let subscription = user.subscriptions[i];
+      if (subscription == product.description) {
+        return true;
+      }
+    }
+    return false;
+  }
+  return false;
+}
+
 // Loading product data  ->
 async function loadProducts() {
   const res = await (await ApiCaller.getAllProducts()).json();
   for (r in res) {
     const row = res[r]
     const products = row.products;
-    if (row.category == "Strippenkaarten") {
-      for (i in products) {
-        const product = products[i];
-        let price = product.price.replace(".", ",");
-        loadProductItem(product._id, product.productName, price, product.validFor, "stripcards");
-      }
-    } else if (row.category == "Abonnementen") {
-      for (i in products) {
-        const product = products[i];
-        let price = product.price.replace(".", ",");
-        loadProductItem(product._id, product.productName, price, product.validFor, "subscriptions");
-      }
-    } else {
-      for (i in products) {
-        const product = products[i];
-        let price = product.price.replace(".", ",");
-        loadProductItem(product._id, product.productName, price, product.validFor, "otherProducts");
+    for (i in products) {
+      const product = products[i];
+      if (row.category == "Strippenkaarten") {
+        loadSingleProduct(product, "stripcards");
+      } else if (row.category == "Abonnementen") {
+        loadSingleProduct(product, "subscriptions");
+      } else {
+        loadSingleProduct(product, "otherProducts");
       }
     }
   }
@@ -227,7 +240,7 @@ async function giftProduct(data, productId) {
     let res = await ApiCaller.giftProduct(data, productId);
     let json = await res.json();
     if (res.status == 200) {
-      toastPopUp(json.message, "success");
+      location.href = json.purchaseInfo.checkOutUrl;
     } else {
       toastPopUp(json.message, "error");
     }
@@ -360,6 +373,7 @@ function buyProduct(product, id) {
   })
     .then(async (result) => {
       if (result.isConfirmed) {
+        console.log(user.userid);
         buyAProduct(user.userId, id);
       } else if (result.isDenied) {
         Swal.fire({
@@ -392,7 +406,7 @@ async function buyAProduct(data, productId) {
       // Redirects to mollie.
       location.href = json.purchaseInfo.checkOutUrl;
     } else {
-      toastPopUp("Er is iets misgegaan", "error");
+      toastPopUp(json.purchaseInfo.message, "error");
     }
   } catch (err) {
   }

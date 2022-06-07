@@ -167,11 +167,16 @@ module.exports.purchase = async (req, res) => {
                 User.findOne({ _id: userId }, async (err, user) => {
                     if (user) {
                         const purchaseInfo = await purchaseProduct(product, user);
-                        res.status(200).json({ purchaseInfo });
+                        if (purchaseInfo.message) {
+                            res.status(400)
+                        } else {
+                            res.status(200);
+                        }
+                        res.json({ purchaseInfo });
                     } else {
                         res.status(404).json({ message: "Er is geen gebruiker gevonden met id id" })
                     }
-                })
+                });
             } else {
                 res.status(404).json({ message: "Er is geen product gevonden met dit Id" });
             }
@@ -190,37 +195,39 @@ const purchaseProduct = async (product, user) => {
 }
 
 const startSubscription = async (product, user) => {
-    const customerId = user.customerId;
+    const description = product.productName;
 
-    const hasMandate = await mollieClient.hasMandate(customerId);
-    if (!hasMandate) {
-        //Create first payment to start the scubscription
-        const payment = await mollieClient.createFirstPayment(product, user);
-        const checkOutUrl = payment.getCheckoutUrl();
-        return { checkOutUrl: checkOutUrl };
-    } else {
-        //Create normal payment
-        const checkOutUrl = await createPayment(product, user);
-
-        //Create subscription
-        const amount = product.price;
-        const description = product.productName;
+    if (!hasSubscription(user, description)) {
         try {
-            const subscription = await createSubscription(user, customerId, amount, description);
-            await saveSubscriptionData(customerId, subscription);
+            //Create first payment to start the scubscription
+            const payment = await mollieClient.createFirstPayment(product, user);
+            const checkOutUrl = payment.getCheckoutUrl();
+            return { checkOutUrl: checkOutUrl };
         } catch (err) {
-            return { error: "Abbonement is al gekocht" }
+            return { message: "U heeft dit abonnement al gekocht" };
         }
-        return { checkOutUrl: checkOutUrl };
+    } else {
+        return { message: "U heeft dit abonnement al gekocht" };
     }
+}
+
+const hasSubscription = (user, description) => {
+    for (i in user.subscriptions) {
+        let subscription = user.subscriptions[i];
+        if (subscription == description) {
+            return true;
+        }
+    }
+    return false;
 }
 
 const createSubscription = async (user, customerId, amount, description) => {
     //Create subscription with mollie api
-    const webhookUrl = config.server.url + "/api/product/subscriptions/webhook";
+    const webhookUrl = config.ngrok.url + "/api/product/subscriptions/webhook";
     const subscription = await mollieClient.createSubscription(customerId, amount, description, webhookUrl);
-
-    await User.updateOne({ _id: user.id }, { $set: { subscription: description } });
+    let subscriptions = user.subscriptions;
+    subscriptions.push(description);
+    await User.updateOne({ _id: user.id }, { $set: { subscriptions: subscriptions } });
     return subscription;
 }
 
@@ -240,7 +247,7 @@ const savePaymentData = async (customerId, payment) => {
         paidAt: createdAt,
         status: status,
         method: method
-    })
+    });
 
     transactions.markModified("transactions");
     await transactions.save();
@@ -304,8 +311,8 @@ const isAdmin = async (userId) => {
 const createPayment = async (product, user) => {
     const price = product.price;
     const discription = product.productName;
-    const redirectUrl = config.server.url + "/producten?succes=true&productId=" + product.id + "";
-    const webHookUrl = config.server.url + "/api/product/webhook";
+    const redirectUrl = config.ngrok.url + "/producten?succes=true&productId=" + product.id + "";
+    const webHookUrl = config.ngrok.url + "/api/product/webhook";
     const productId = product.id;
     const customerId = user.customerId;
 

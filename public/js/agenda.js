@@ -54,7 +54,7 @@ async function loadAgenda(weekNumber) {
 function loadAndSetFullAgenda() {
   setWeekData(weekNumb);
   loadAgenda(weekNumb);
-  updateSaldo();
+  updateNav();
 }
 // scrolls down to the current day in the agenda
 function scrollDownToCurrDay() {

@@ -38,8 +38,8 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    subscription: {
-        type: String,
+    subscriptions: {
+        type: Array,
         default: null
     },
     familyMembers: {
