@@ -27,28 +27,27 @@ $(".setting").on("click", async function () {
 
 
 
-function changeInfo(sort) {
-    let name = user.fullName;
-    let email = user.email;
-    let phoneNumber = user.phoneNumber;
+async function changeInfo(sort) {
+    const userConst = await ApiCaller.getUserInfo(user.userId);
+    const json = await userConst.json();
     console.log(sort);
     if(sort == "name"){
         $("#accountName").html(
-            `<input id = "nameChange" type = "text" value = "` + name + `"> 
+            `<input id = "nameChange" type = "text" value = "` + json.fullName + `"> 
             <i class="bi bi-check-circle" onclick="acceptName('name')"></i>
-            <i class="bi bi-x-circle" onclick="denyName(name)"></i>`
+            <i class="bi bi-x-circle" onclick="denyName()"></i>`
             )
     }else if(sort == "email"){
         $("#accountEmail").html(
-            `<input id = "changeEmail" type = "text" value = "` + email + `"> 
+            `<input id = "changeEmail" type = "text" value = "` + json.email + `"> 
             <i class="bi bi-check-circle" onclick="acceptName('email')"></i>
-            <i class="bi bi-x-circle" onclick="denyName(email)"></i>`
+            <i class="bi bi-x-circle" onclick="denyName()"></i>`
             )
     }else if(sort == "phoneNumber"){
         $("#accountPhoneNumber").html(
-            `<input id = "changePhoneNumber" type = "text" value = "` + phoneNumber + `"> 
+            `<input id = "changePhoneNumber" type = "text" value = "` + json.phoneNumber + `"> 
             <i class="bi bi-check-circle" onclick="acceptName('phone')"></i>
-            <i class="bi bi-x-circle" onclick="denyName(phone)"></i>`
+            <i class="bi bi-x-circle" onclick="denyName()"></i>`
             )
     }
 }
@@ -63,7 +62,7 @@ function acceptName(type) {
         console.log(updatedEmail);
     }
     else if(type == "phone"){
-        let updatedPhone = $("changePhoneNumber").val();
+        let updatedPhone = $("#changePhoneNumber").val();
         console.log(updatedPhone);
     }
 }
