@@ -47,7 +47,7 @@ module.exports.upload = async (req, res) => {
 
                             // write media to folder ->
                             try {
-                                const newpath = './media/podcasts/' + id + '.mp3';
+                                const newpath = path.join(__dirname,"../media/podcasts/" + id + ".mp3");
                                 fs.renameSync(media.filepath, newpath);
                             } catch (err) {
                                 //If the media can't be uploaded, it will be removed from the database
@@ -79,7 +79,7 @@ module.exports.upload = async (req, res) => {
 
                             // write media to folder ->
                             try {
-                                const newpath = './media/videos/' + id + '.mp4';
+                                const newpath = (__dirname,"../media/videos/" + id + ".mp3");
                                 fs.renameSync(media.filepath, newpath);
                             } catch (err) {
                                 console.log(err)
@@ -91,12 +91,12 @@ module.exports.upload = async (req, res) => {
                         if (thumbnail.size != 0)
                         {
                             if (thumbnail.mimetype == "image/jpeg" || thumbnail.mimetype != "image/jpg") {
-                                const newpath = './public/images/thumbnails/' + id + '.jgp';
+                                const newpath = path.join(__dirname,'../public/images/thumbnails/' + id + '.png');
                                 fs.renameSync(media.filepath, newpath);
                                 res.status(200).json({message: "Media geüpload met thumbnail"});
                             }
                             else if (thumbnail.mimetype == "image/png") {
-                                const newpath = './public/images/thumbnails/' + id + '.png';
+                                const newpath = path.join(__dirname,'../public/images/thumbnails/' + id + '.png');
                                 fs.renameSync(media.filepath, newpath);
                                 res.status(200).json({message: "Media geüpload met thumbnail"});
                             }
