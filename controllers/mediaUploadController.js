@@ -12,7 +12,7 @@ module.exports.upload = async (req, res) => {
     const podcastUploadPath = path.join(__dirname, "../podcasts/");
     const form = new formidable.IncomingForm();
     form.multiples = false;
-    form.options.maxFileSize = 100 * 1024 * 1024 * 10;;
+    form.options.maxFileSize = 100 * 1024 * 1024 * 10;
     form.maxFileSize = 100 * 1024 * 1024 * 10;
 
     form.parse(req, async (err, fields, files) => {
