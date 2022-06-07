@@ -18,29 +18,25 @@ $(async function () {
   loadProducts();
 });
 
+async function loadSingleProduct(product, category) {
+  let price = product.price.replace(".", ",");
+  loadProductItem(product, price, category);
+}
+
 // Loading product data  ->
 async function loadProducts() {
   const res = await (await ApiCaller.getAllProducts()).json();
   for (r in res) {
     const row = res[r]
     const products = row.products;
-    if (row.category == "Strippenkaarten") {
-      for (i in products) {
-        const product = products[i];
-        let price = product.price.replace(".", ",");
-        loadProductItem(product._id, product.productName, price, product.validFor, "stripcards");
-      }
-    } else if (row.category == "Abonnementen") {
-      for (i in products) {
-        const product = products[i];
-        let price = product.price.replace(".", ",");
-        loadProductItem(product._id, product.productName, price, product.validFor, "subscriptions");
-      }
-    } else {
-      for (i in products) {
-        const product = products[i];
-        let price = product.price.replace(".", ",");
-        loadProductItem(product._id, product.productName, price, product.validFor, "otherProducts");
+    for (i in products) {
+      const product = products[i];
+      if (row.category == "Strippenkaarten") {
+        loadSingleProduct(product, "stripcards");
+      } else if (row.category == "Abonnementen") {
+        loadSingleProduct(product, "subscriptions");
+      } else {
+        loadSingleProduct(product, "otherProducts");
       }
     }
   }
@@ -56,8 +52,8 @@ async function reloadProducts() {
   loadProducts();
 }
 
-function loadProductItem(id, productName, price, validFor, category) {
-  let html = loadSingleProductItem(id, productName, price, validFor, category);
+function loadProductItem(product, price, category) {
+  let html = loadSingleProductItem(product, price, category);
 
   $(html).appendTo("#" + category);
 }
@@ -129,7 +125,7 @@ async function editProduct(productId) {
         let jsonData = {
           "productName": $("#productName").val(),
           "price": $("#productPrice").val(),
-          "discription": $("#productDescription").val(),
+          "description": $("#productDescription").val(),
           "amountOfHours": $("#productHours").val(),
           "toSchedule": $("#toschedule").is(":checked"),
           "validFor": $("#productValid").val()
@@ -153,7 +149,7 @@ async function editProduct(productId) {
     });
 
     $("#productName").val(json.productName);
-    $("#productDescription").val(json.discription);
+    $("#productDescription").val(json.description);
     $("#productValid").val(json.validFor);
     $("#productPrice").val(json.price);
     $("#productHours").val(json.amountOfHours);
@@ -227,7 +223,7 @@ async function giftProduct(data, productId) {
     let res = await ApiCaller.giftProduct(data, productId);
     let json = await res.json();
     if (res.status == 200) {
-      toastPopUp(json.message, "success");
+      location.href = json.purchaseInfo.checkOutUrl;
     } else {
       toastPopUp(json.message, "error");
     }
@@ -310,7 +306,7 @@ async function addProduct() {
       "category": category,
       "productName": $("#productName").val(),
       "price": $("#productPrice").val(),
-      "discription": $("#productDescription").val(),
+      "description": $("#productDescription").val(),
       "amountOfHours": $("#productHours").val(),
       "toSchedule": false,
       "validFor": $("#productValid").val()
@@ -320,7 +316,7 @@ async function addProduct() {
       "category": category,
       "productName": $("#productName").val(),
       "price": $("#productPrice").val(),
-      "discription": $("#productDescription").val(),
+      "description": $("#productDescription").val(),
       "amountOfHours": '',
       "toSchedule": checkedToSchedule,
       "validFor": $("#productValid").val()
@@ -341,6 +337,7 @@ async function addProduct() {
 
 // buy product
 function buyProduct(product, id) {
+  console.log(product);
   let html1 = swalBuyProductCheck(product);
   let html2 = swalGiftProduct();
   Swal.fire({
@@ -392,7 +389,7 @@ async function buyAProduct(data, productId) {
       // Redirects to mollie.
       location.href = json.purchaseInfo.checkOutUrl;
     } else {
-      toastPopUp("Er is iets misgegaan", "error");
+      toastPopUp(json.purchaseInfo.message, "error");
     }
   } catch (err) {
   }
