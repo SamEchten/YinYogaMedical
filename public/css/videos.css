@@ -33,7 +33,6 @@ img {
     object-fit: cover;
 }
 .videoThumbnail  {
-    background-image: url("./pexels-cliff-booth-4056723.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
