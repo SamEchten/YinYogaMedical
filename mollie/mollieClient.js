@@ -22,13 +22,12 @@ module.exports.createPayment = async (amount, description, redirectUrl, webhookU
         }
     });
 
-    console.log(payment);
     return payment;
 }
 
 module.exports.createFirstPayment = async (product, user) => {
-    const redirectUrl = config.server.url + "/producten?succes=true&productId=" + product.id + "";
-    const webHookUrl = config.server.url + "/api/product/webhook/";
+    const redirectUrl = config.webhookUrl + "/producten?succes=true&productId=" + product.id + "";
+    const webHookUrl = config.webhookurl + "/api/product/webhook/";
     const payment = await this.createPayment(
         product.price, product.productName, redirectUrl, webHookUrl, product.id, user.id, user.customerId, "first"
     );

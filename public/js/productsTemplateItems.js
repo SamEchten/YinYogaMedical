@@ -1,8 +1,8 @@
-function swalProductDetails(data){
+function swalProductDetails(data) {
   const currentdate = new Date();
   currentdate.setFullYear(currentdate.getFullYear() + data.validFor);
   let template = '';
-  if (data.amountOfHours){
+  if (data.amountOfHours) {
     template = `
     <div class="alerttitle">
       <h2>${data.productName}<h2>
@@ -12,7 +12,7 @@ function swalProductDetails(data){
       <div class="row width">
         <div class="col-md-7">          
           <h3 class="lbs">Beschrijving</h3>
-          <p>${data.discription}<p>
+          <p>${data.description}<p>
         </div>
         <div class="col-md-5">
           <h3 class="lbs">Prijs</h3> 
@@ -40,7 +40,7 @@ function swalProductDetails(data){
       <div class="row width">
         <div class="col-md-7">          
           <h3 class="lbs">Beschrijving</h3>
-          <p>${data.discription}<p>
+          <p>${data.description}<p>
         </div>
         <div class="col-md-5">
           <h3 class="lbs">Prijs</h3> 
@@ -55,7 +55,7 @@ function swalProductDetails(data){
       </div>
     </div>`
   }
-  
+
   return template;
 }
 
@@ -121,7 +121,7 @@ function createUserItem(fullName, email, phoneNumber, id) {
   return element;
 }
 
-function swalItemAddProductCategory(){
+function swalItemAddProductCategory() {
   let template = `
   <div class="container">
     <div class="row">
@@ -159,10 +159,10 @@ function swalGiftProduct() {
 }
 
 // Edit a product ->
-function swalItemEditProduct(category){
+function swalItemEditProduct(category) {
   let template = '';
-  if (category == "Strippenkaarten"){
-     template = `
+  if (category == "Strippenkaarten") {
+    template = `
     <h2>Wijzig strippenkaart</h2>
     <hr>
     <div class="row width">
@@ -183,7 +183,7 @@ function swalItemEditProduct(category){
       </div>
       <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`;
-  } else if(category == "Abonnementen") {
+  } else if (category == "Abonnementen") {
     template = `
     <h2>Wijzig abonnement</h2>
     <hr>
@@ -229,15 +229,15 @@ function swalItemEditProduct(category){
       <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`;
   }
-   
+
   return template;
 }
 
 // Add a product ->
-function swalItemAddProduct(category){
+function swalItemAddProduct(category) {
   let template = '';
-  if (category == "Strippenkaarten"){
-     template = `
+  if (category == "Strippenkaarten") {
+    template = `
     <h2>Voeg nieuwe strippenkaart toe</h2>
     <hr>
     <div class="row width">
@@ -258,7 +258,7 @@ function swalItemAddProduct(category){
       </div>
       <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`;
-  } else if(category == "Abonnementen") {
+  } else if (category == "Abonnementen") {
     template = `
     <h2>Voeg nieuw abonnement toe</h2>
     <hr>
@@ -304,16 +304,39 @@ function swalItemAddProduct(category){
       <div class="alert alert-warning errorBox" role="alert"></div>
     </div>`;
   }
-   
+
   return template;
 }
 
-function loadSingleProductItem(id, productName, price, validFor, category){
+function hasSubscription(product) {
+  if (user) {
+    for (i in user.subscriptions) {
+      let subscription = user.subscriptions[i];
+      if (subscription == product.productName) {
+        return true;
+      }
+    }
+    return false;
+  }
+  return false;
+}
+
+function loadSingleProductItem(product, price, category) {
+  console.log(product);
+  const id = product._id;
+  const productName = product.productName;
+  const validFor = product.validFor;
+
   let date = new Date();
   date.setFullYear(date.getFullYear() + validFor);
-  console.log(category);
+
+  let btnClass;
+  if (hasSubscription(product)) {
+    btnClass = "disabled";
+  }
+
   let template = '';
-  if(category == "subscriptions"){
+  if (category == "subscriptions") {
     template = `
     <div id="${id}" class="row productItem align-items-center">
       <div class="col-md-8 productnameTitle" id="productNameText">
@@ -335,7 +358,7 @@ function loadSingleProductItem(id, productName, price, validFor, category){
         </div>
       </div>
       <div class="col-md text-end">
-        <button type="submit" class="btn btn-primary yinStyle BuyNow">+ Koop nu</button>
+        <button type="submit" class="btn btn-primary yinStyle ${btnClass} BuyNow">+ Koop nu</button>
       </div>
     </div>`
   } else {
@@ -369,7 +392,7 @@ function loadSingleProductItem(id, productName, price, validFor, category){
   return template;
 }
 
-function swalBuyProductCheck(product){
+function swalBuyProductCheck(product) {
   let template = `
   <h2>Product kopen</h2>
   <hr>

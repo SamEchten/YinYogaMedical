@@ -1,23 +1,29 @@
 let cookie = $.cookie("user");
-let allUsers;
 let user;
+let allUsers;
+if (cookie) {
+  user = JSON.parse(cookie);
+}
 
 $(async function () {
-  roleCheck();
   getAndSetAllUsers();
   setUserItemsNav();
-  updateSaldo();
+  updateNav();
   showWelcomMessage();
   $(".contentRow").prepend(`<div class="loader"></div>`);
 });
 
 // Update users saldo 
-async function updateSaldo() {
+async function updateNav() {
+  await updateUser(user.userId);
   if (user) {
-    let res = await ApiCaller.getUserInfo(user.userId);
-    let json = await res.json();
-    $(".userSaldo").html(`<i class="bi bi-clock"></i>  ` + json.saldo + " uur");
+    setUserItemsNav();
   }
+}
+
+async function updateUser(userId) {
+  let res = await ApiCaller.getUserInfo(userId);
+  user = await res.json();
 }
 
 function showWelcomMessage() {
@@ -35,27 +41,33 @@ function showWelcomMessage() {
 function setUserItemsNav() {
   let username = $(".userNameNav");
   let saldo = $(".userSaldo");
-  let subscription = $(".userSubscription");
+  let subscriptionNav = $(".userSubscription");
   let switchNav = $(".navSwitch")
+  let authNav = $(".authNav");
+
+  //Clear nav dropdown box
+  subscriptionNav.html("");
+  saldo.html("");
 
   if (user) {
     username.html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
     saldo.append(`<i class="bi bi-clock"></i>  ` + user.saldo + " uur");
-    if (user.subscription) {
-      if (user.subscription == "Video") {
-        subscription.html(`<i class="bi bi-camera-video"></i>  ` + user.subscription);
-      } else if (user.subscription == "Podcast") {
-        subscription.html(`<i class="bi bi-mic"></i>  ` + user.subscription);
-      } else {
-        subscription.html(`<i class="bi bi-camera-video"></i> <i class="bi bi-mic"></i>  ` + user.subscription);
+    for (i in user.subscriptions) {
+      let subscription = user.subscriptions[i];
+      if (subscription) {
+        if (subscription == "Video") {
+          subscriptionNav.append(`<div class='row'><div class='col-md-3'><i class="bi bi-camera-video"></i></div  <div class='col-md-9'>` + subscription + `</div></div>`);
+        } else if (subscription == "Podcast") {
+          subscriptionNav.append(`<div class='row'><div class='col-md-3'><i class="bi bi-mic"></i></div  <div class='col-md-9'>` + subscription + `</div></div>`);
+        } else {
+          subscriptionNav.append(`<div class='row'><div class='col-md-3'><i class="bi bi-camera-video"></i> <i class="bi bi-mic"></i></div>  <div class='col-md-9'>` + subscription + `</div></div>`);
+        }
       }
-
     }
-
-    switchNav.after(`<a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Uitloggen</a>`);
   } else {
     username.remove();
     saldo.remove();
+    authNav.remove();
     switchNav.after(`<a class="dropdown-item" href="/login"><i class="bi bi-box-arrow-in-right"></i> Inloggen</a>`);
     switchNav.remove();
   }

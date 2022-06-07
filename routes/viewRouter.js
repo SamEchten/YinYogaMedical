@@ -30,7 +30,9 @@ router.get("/videos/:id", videoController.videoDisplay);
 router.get("/profile/", profileController.viewProfile);
 router.get("/profile/myProfile", profileController.viewMyProfile);
 router.get("/profile/myPoducts", profileController.viewMyProducts);
-router.get("/profile/myEnrollments", profileController.viewMyEnrollments);
+router.get("/profile/myPayments", profileController.viewMyPayments);
+router.get("/profile/mySubscription", profileController.viewMySubscriptions);
+router.get("/profile/settings", profileController.viewSettings);
 
 
 // Home ->

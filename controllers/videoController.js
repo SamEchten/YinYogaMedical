@@ -5,41 +5,40 @@ const { runInNewContext } = require("vm");
 const Video = require("../models/Video");
 
 module.exports.streamFile = async (req, res) => {
-    const { id } = req.params;
-
+    const id  = req.params.id;
     // Ensure there is a range given for the video
     const range = req.headers.range;
-    console.log(range)
-    if (range) {
+    if (!range) {
         res.status(400).send("Requires Range header");
-        return;
     }
-
     // get video stats (about 61MB)
-    const videoPath = path.join(__dirname, "../videos/" + id);
-    const videoSize = fs.statSync(__dirname, "../videos/" + id).size;
+    try{
+        const videoPath = path.join(__dirname, "../media/videos/" + id);
+        const videoSize = fs.statSync(path.join(__dirname, "../media/videos/" + id)).size;
+        //console.log(videoPath)
+        // Parse Range
+        // Example: "bytes=32324-"
+        const CHUNK_SIZE = 10 ** 6; // 1MB
+        const start = Number(range.replace(/\D/g, ""));
+        const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+        // Create headers
+        const contentLength = end - start + 1;
+        const headers = {
+            "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+            "Accept-Ranges": "bytes",
+            "Content-Length": contentLength,
+            "Content-Type": "video/mp4",
+        };
+        res.writeHead(206, headers);
+        // create video read stream for this particular chunk
+        const videoStream = fs.createReadStream(videoPath, { start, end });
+        
+        // Stream the video chunk to the client
+        videoStream.pipe(res);
 
-    console.log(videoPath, "asd")
-    // Parse Range
-    // Example: "bytes=32324-"
-    const CHUNK_SIZE = 10 ** 6; // 1MB
-
-
-    // Create headers
-
-    const headers = {
-        "Accept-Ranges": "bytes",
-        "Content-Type": "video/mp4",
-    };
-
-    // HTTP Status 206 for Partial Content
-    res.writeHead(206, headers);
-
-    // create video read stream for this particular chunk
-    const videoStream = fs.createReadStream(videoPath);
-
-    // Stream the video chunk to the client
-    videoStream.pipe(res);
+    } catch(err) {
+        console.log(err);
+    }
 };
 
 // Render video page
@@ -59,7 +58,10 @@ module.exports.get = async (req, res) => {
                 res.status(200).json({
                     title: video.title,
                     price: video.price,
-                    description: video.description
+                    description: video.description,
+                    thumbnailPath: video.thumbnailPath,
+                    videoPath: video.videoPath
+
                 });
             } else {
                 res.status(404).json({ message: "Geen video gevonden met dit id" });
@@ -92,8 +94,8 @@ module.exports.get = async (req, res) => {
 
 module.exports.delete = async (req, res) => {
     const id = req.params.id;
-    const thumbnailPathServer = path.join(__dirname,"../public/thumbnails/");
-    const videoPathServer = path.join(__dirname,"../videos/");
+    const thumbnailPathServer = path.join(__dirname,"../public/images/thumbnails/");
+    const videoPathServer = path.join(__dirname,"../media/videos/");
 
     try {
         let video = await Video.findOne({_id : id});
@@ -148,7 +150,17 @@ module.exports.update = async (req, res) => {
     }
 }
 
-module.exports.videoDisplay = (req, res) => {
-    console.log(req.params.id);
-    res.render(path.join(__dirname, "../views/videoDisplay"));
+module.exports.videoDisplay = async (req, res) => {
+   let id = req.params.id;
+    try {
+        let video = await Video.findOne({__id: id})
+        if(video) {
+            res.render(path.join(__dirname, "../views/videoDisplay"));
+        } else {
+            res.redirect("/videos");
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    
 } 
