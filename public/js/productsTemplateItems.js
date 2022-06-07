@@ -12,7 +12,7 @@ function swalProductDetails(data) {
       <div class="row width">
         <div class="col-md-7">          
           <h3 class="lbs">Beschrijving</h3>
-          <p>${data.discription}<p>
+          <p>${data.description}<p>
         </div>
         <div class="col-md-5">
           <h3 class="lbs">Prijs</h3> 
@@ -40,7 +40,7 @@ function swalProductDetails(data) {
       <div class="row width">
         <div class="col-md-7">          
           <h3 class="lbs">Beschrijving</h3>
-          <p>${data.discription}<p>
+          <p>${data.description}<p>
         </div>
         <div class="col-md-5">
           <h3 class="lbs">Prijs</h3> 
@@ -308,10 +308,33 @@ function swalItemAddProduct(category) {
   return template;
 }
 
-function loadSingleProductItem(id, productName, price, validFor, category) {
+function hasSubscription(product) {
+  if (user) {
+    for (i in user.subscriptions) {
+      let subscription = user.subscriptions[i];
+      if (subscription == product.productName) {
+        return true;
+      }
+    }
+    return false;
+  }
+  return false;
+}
+
+function loadSingleProductItem(product, price, category) {
+  console.log(product);
+  const id = product._id;
+  const productName = product.productName;
+  const validFor = product.validFor;
+
   let date = new Date();
   date.setFullYear(date.getFullYear() + validFor);
-  console.log(category);
+
+  let btnClass;
+  if (hasSubscription(product)) {
+    btnClass = "disabled";
+  }
+
   let template = '';
   if (category == "subscriptions") {
     template = `
@@ -335,7 +358,7 @@ function loadSingleProductItem(id, productName, price, validFor, category) {
         </div>
       </div>
       <div class="col-md text-end">
-        <button type="submit" class="btn btn-primary yinStyle BuyNow">+ Koop nu</button>
+        <button type="submit" class="btn btn-primary yinStyle ${btnClass} BuyNow">+ Koop nu</button>
       </div>
     </div>`
   } else {

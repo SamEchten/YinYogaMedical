@@ -18,9 +18,6 @@ module.exports.config = {
     mollie: {
         testKey: "test_8hvpFkP5GGngwbWJdrwU5DGAS4CnAg"
     },
-    ngrok: {
-        url: "https://1032-194-171-182-60.eu.ngrok.io"
-    },
     server: {
         password: "YinYogaMedicalServer",
         github: {
@@ -28,5 +25,6 @@ module.exports.config = {
             password: "Yin!Yoga@Medical#Server?"
         },
         url: "https://het-eigen-wijze-lichaam.nl"
-    }
+    },
+    webhookUrl: "https://het-eigen-wijze-lichaam.nl"
 }

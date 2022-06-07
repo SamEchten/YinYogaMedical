@@ -9,7 +9,7 @@ const productSchema = mongoose.Schema({
         type: String,
         required: [true, "Prijs is verplicht"]
     },
-    discription: {
+    description: {
         type: String
     },
     category: {

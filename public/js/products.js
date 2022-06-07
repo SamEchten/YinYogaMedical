@@ -20,24 +20,7 @@ $(async function () {
 
 async function loadSingleProduct(product, category) {
   let price = product.price.replace(".", ",");
-  loadProductItem(product._id, product.productName, price, product.validFor, category);
-
-  if (hasBought(user, product)) {
-
-  }
-}
-
-async function hasBought(product) {
-  if (user) {
-    for (i in user.subscriptions) {
-      let subscription = user.subscriptions[i];
-      if (subscription == product.description) {
-        return true;
-      }
-    }
-    return false;
-  }
-  return false;
+  loadProductItem(product, price, category);
 }
 
 // Loading product data  ->
@@ -69,8 +52,8 @@ async function reloadProducts() {
   loadProducts();
 }
 
-function loadProductItem(id, productName, price, validFor, category) {
-  let html = loadSingleProductItem(id, productName, price, validFor, category);
+function loadProductItem(product, price, category) {
+  let html = loadSingleProductItem(product, price, category);
 
   $(html).appendTo("#" + category);
 }
@@ -142,7 +125,7 @@ async function editProduct(productId) {
         let jsonData = {
           "productName": $("#productName").val(),
           "price": $("#productPrice").val(),
-          "discription": $("#productDescription").val(),
+          "description": $("#productDescription").val(),
           "amountOfHours": $("#productHours").val(),
           "toSchedule": $("#toschedule").is(":checked"),
           "validFor": $("#productValid").val()
@@ -166,7 +149,7 @@ async function editProduct(productId) {
     });
 
     $("#productName").val(json.productName);
-    $("#productDescription").val(json.discription);
+    $("#productDescription").val(json.description);
     $("#productValid").val(json.validFor);
     $("#productPrice").val(json.price);
     $("#productHours").val(json.amountOfHours);
@@ -323,7 +306,7 @@ async function addProduct() {
       "category": category,
       "productName": $("#productName").val(),
       "price": $("#productPrice").val(),
-      "discription": $("#productDescription").val(),
+      "description": $("#productDescription").val(),
       "amountOfHours": $("#productHours").val(),
       "toSchedule": false,
       "validFor": $("#productValid").val()
@@ -333,7 +316,7 @@ async function addProduct() {
       "category": category,
       "productName": $("#productName").val(),
       "price": $("#productPrice").val(),
-      "discription": $("#productDescription").val(),
+      "description": $("#productDescription").val(),
       "amountOfHours": '',
       "toSchedule": checkedToSchedule,
       "validFor": $("#productValid").val()
@@ -354,6 +337,7 @@ async function addProduct() {
 
 // buy product
 function buyProduct(product, id) {
+  console.log(product);
   let html1 = swalBuyProductCheck(product);
   let html2 = swalGiftProduct();
   Swal.fire({
@@ -373,7 +357,6 @@ function buyProduct(product, id) {
   })
     .then(async (result) => {
       if (result.isConfirmed) {
-        console.log(user.userid);
         buyAProduct(user.userId, id);
       } else if (result.isDenied) {
         Swal.fire({

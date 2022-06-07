@@ -1,9 +1,11 @@
 let cookie = $.cookie("user");
-let allUsers;
 let user;
+let allUsers;
+if (cookie) {
+  user = JSON.parse(cookie);
+}
 
 $(async function () {
-  await updateUser(cookie.userId);
   getAndSetAllUsers();
   setUserItemsNav();
   updateNav();
@@ -13,14 +15,13 @@ $(async function () {
 
 // Update users saldo 
 async function updateNav() {
-  await updateUser(user.id);
+  await updateUser(user.userId);
   if (user) {
     setUserItemsNav();
   }
 }
 
 async function updateUser(userId) {
-  console.log(userId);
   let res = await ApiCaller.getUserInfo(userId);
   user = await res.json();
 }
@@ -49,7 +50,6 @@ function setUserItemsNav() {
   saldo.html("");
 
   if (user) {
-    console.log(user);
     username.html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
     saldo.append(`<i class="bi bi-clock"></i>  ` + user.saldo + " uur");
     for (i in user.subscriptions) {

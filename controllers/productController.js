@@ -223,7 +223,7 @@ const hasSubscription = (user, description) => {
 
 const createSubscription = async (user, customerId, amount, description) => {
     //Create subscription with mollie api
-    const webhookUrl = config.ngrok.url + "/api/product/subscriptions/webhook";
+    const webhookUrl = config.webhookUrl + "/api/product/subscriptions/webhook";
     const subscription = await mollieClient.createSubscription(customerId, amount, description, webhookUrl);
     let subscriptions = user.subscriptions;
     subscriptions.push(description);
@@ -286,16 +286,6 @@ const saveSubscriptionData = async (customerId, subscription) => {
     await transactions.save();
 }
 
-const isCustomer = (user) => {
-    if (user) {
-        if (user.customerId) {
-            return true
-        }
-    }
-
-    return false;
-}
-
 const isAdmin = async (userId) => {
     const user = await User.findOne({ _id: userId });
     if (user) {
@@ -310,13 +300,13 @@ const isAdmin = async (userId) => {
 
 const createPayment = async (product, user) => {
     const price = product.price;
-    const discription = product.productName;
-    const redirectUrl = config.ngrok.url + "/producten?succes=true&productId=" + product.id + "";
-    const webHookUrl = config.ngrok.url + "/api/product/webhook";
+    const description = product.productName;
+    const redirectUrl = config.webhookUrl + "/producten?succes=true&productId=" + product.id + "";
+    const webHookUrl = config.webhookUrl + "/api/product/webhook";
     const productId = product.id;
     const customerId = user.customerId;
 
-    let payment = await mollieClient.createPayment(price, discription, redirectUrl, webHookUrl, productId, user.id, customerId, "oneoff");
+    let payment = await mollieClient.createPayment(price, description, redirectUrl, webHookUrl, productId, user.id, customerId, "oneoff");
     let checkOutUrl = payment.getCheckoutUrl();
     return { checkOutUrl };
 }
