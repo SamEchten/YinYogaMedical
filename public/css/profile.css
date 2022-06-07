@@ -50,7 +50,7 @@ option:focus-within {
 }
 
 .notes {
-    height: 7vh;
+    height: 14vh;
     overflow-y: auto;
 }
 

@@ -1,12 +1,17 @@
 //click on nav and change the content
-$(".setting").on("click", function () {
+$(".setting").on("click", async function () {
     $(".settingsContent").empty();
-    let name = user.fullName;
+    const userConst = await ApiCaller.getUserInfo(user.userId);
+    const json = await userConst.json();
+    console.log(json);
     if (this.id == "profiel")
     {
-        console.log(name);
         
-        $(".settingsContent").load("profile/myProfile");
+        $(".settingsContent").load("profile/myProfile", function (){
+            $("#accountName").html(``+ json.fullName +`<i class="bi bi-pencil" onclick="changeInfo('name')"></i>`);
+            $("#accountEmail").html(``+ json.email +`<i class="bi bi-pencil" onclick="changeInfo('email')"></i>`);
+            $("#accountPhoneNumber").html(``+ json.phoneNumber +`<i class="bi bi-pencil" onclick="changeInfo('phoneNumber')"></i>`);
+        });
         // this.nameRow.innerHTML = '<p>'+ name +'<i class="bi bi-pencil" onclick="changeName()"></i></p>';
         // $(".")
     }
@@ -19,47 +24,58 @@ $(".setting").on("click", function () {
         $(".settingsContent").load("profile/myEnrollments");
     }
 })
-// Render lesrooster from apiCaller and format it on date ->
-// $(async function () {
-//     setWeekData(weekNumb);
-//     const res = await (await ApiCaller.getAllSessions()).json();
-//     schedule = res;
-//     loadAgenda(weekNumb);
-// });
-// console.log()
 
 
-function changeName() {
-    let name = user.fullName;
-    console.log(this.name)
 
-    this.nameRow.innerHTML = `<input id = "nameChange" type = "text" value = "` + name + `"> 
-                                <i class="bi bi-check-circle" onclick="acceptName()"></i>
-                                <i class="bi bi-x-circle" onclick="denyName()"></i>`
+async function changeInfo(sort) {
+    const userConst = await ApiCaller.getUserInfo(user.userId);
+    const json = await userConst.json();
+    console.log(sort);
+    if(sort == "name"){
+        $("#accountName").html(
+            `<input id = "nameChange" type = "text" value = "` + json.fullName + `"> 
+            <i class="bi bi-check-circle" onclick="acceptName('name')"></i>
+            <i class="bi bi-x-circle" onclick="denyName()"></i>`
+            )
+    }else if(sort == "email"){
+        $("#accountEmail").html(
+            `<input id = "changeEmail" type = "text" value = "` + json.email + `"> 
+            <i class="bi bi-check-circle" onclick="acceptName('email')"></i>
+            <i class="bi bi-x-circle" onclick="denyName()"></i>`
+            )
+    }else if(sort == "phoneNumber"){
+        $("#accountPhoneNumber").html(
+            `<input id = "changePhoneNumber" type = "text" value = "` + json.phoneNumber + `"> 
+            <i class="bi bi-check-circle" onclick="acceptName('phone')"></i>
+            <i class="bi bi-x-circle" onclick="denyName()"></i>`
+            )
+    }
 }
 
-// function acceptName() {
-//     let updatedName = document.getElementById("nameChange").value;
-//     try
-//     {
-//         let res = await ApiCaller.getSingleSession(sessionId); // Get all the infomation from the session
-//         let json = await res.json();
-//         Swal.fire({
-//             title: "Uw naam is geupdate naar " + updatedName,
-//             icon: 'succes',
-//             showCloseButton: true,
-//             confirmButtonColor: '#D5CA9B'
-//         });
-//         $(".settingsContent").empty();
-//         $(".settingsContent").load("profile/myProfile");
-//     }
-//     catch {
+function acceptName(type) {
+    if(type == "name"){
+        let updatedName = $("#nameChange").val();
+        console.log(updatedName);
+    }
+    else if(type == "email"){
+        let updatedEmail = $("#changeEmail").val();
+        console.log(updatedEmail);
+    }
+    else if(type == "phone"){
+        let updatedPhone = $("#changePhoneNumber").val();
+        console.log(updatedPhone);
+    }
+}
 
-//     }
-// }
-
-// function denyName() {
-//         $(".settingsContent").empty();
-//         $(".settingsContent").load("profile/myProfile");
-//     }
+async function denyName() {
+    const userConst = await ApiCaller.getUserInfo(user.userId);
+    const json = await userConst.json();
+    console.log(json);
+    $(".settingsContent").empty();
+    $(".settingsContent").load("profile/myProfile", function (){
+        $("#accountName").html(``+ json.fullName +`<i class="bi bi-pencil" onclick="changeInfo('name')"></i>`);
+        $("#accountEmail").html(``+ json.email +`<i class="bi bi-pencil" onclick="changeInfo('email')"></i>`);
+        $("#accountPhoneNumber").html(``+ json.phoneNumber +`<i class="bi bi-pencil" onclick="changeInfo('phoneNumber')"></i>`);
+    })
+}
 
