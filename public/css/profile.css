@@ -49,6 +49,10 @@ option:focus-within {
     overflow-y: auto;
 }
 
+#paymentContent p{
+    font-size: 12px;
+}
+
 .notes {
     height: 21vh;
     overflow-y: auto;

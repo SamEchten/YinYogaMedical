@@ -24,7 +24,10 @@ $(".setting").on("click", async function () {
     }
     else if (this.id == "payment")
     {
-        $(".settingsContent").load("profile/myPayments");
+        $(".settingsContent").load("profile/myPayments", async function(){
+            //json something to array
+            $("#paymentContent").html()
+        });
     }
     else if(this.id == "settings") 
     {
