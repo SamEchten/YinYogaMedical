@@ -31,7 +31,7 @@ module.exports.get = async (req, res) => {
                     id: podcast._id,
                     title: podcast.title,
                     price: podcast.price,
-                    description: podcast.description,
+                    description: podcast.description
                     //thumbnailPath: video.thumbnailPath,
                     //videoPath: video.videoPath
                 });

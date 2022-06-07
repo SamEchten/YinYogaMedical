@@ -200,6 +200,7 @@ function adminActions() {
 function showAdminItems() {
   $(".editVideo").css("display", "block");
   $(".removeVideo").css("display", "block");
+  $(".addVideo").css("display", "block");
 }
 
 function addEventHandlers(bought, id) {
