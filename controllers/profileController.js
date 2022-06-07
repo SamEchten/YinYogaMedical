@@ -12,6 +12,12 @@ module.exports.viewMyProducts = (req, res) => {
     res.render(path.join(__dirname, "../views/profile/myProducts"));
 }
 
-module.exports.viewMyEnrollments = (req, res) => {
-    res.render(path.join(__dirname, "../views/profile/myEnrollments"));
+module.exports.viewMyPayments = (req, res) => {
+    res.render(path.join(__dirname, "../views/profile/myPayments"));
+}
+module.exports.viewMySubscriptions = (req, res) => {
+    res.render(path.join(__dirname, "../views/profile/mySubscription"));
+}
+module.exports.viewSettings = (req, res) => {
+    res.render(path.join(__dirname, "../views/profile/settings"));
 }
