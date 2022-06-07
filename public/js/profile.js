@@ -19,9 +19,17 @@ $(".setting").on("click", async function () {
     {
         $(".settingsContent").load("profile/myPoducts");
     }
-    else if (this.id == "enrollments")
+    else if(this.id == "abonnement")
     {
-        $(".settingsContent").load("profile/myEnrollments");
+        $(".settingsContent").load("profile/mySubscription")
+    }
+    else if (this.id == "payment")
+    {
+        $(".settingsContent").load("profile/myPayments");
+    }
+    else if(this.id == "settings") 
+    {
+        $(".settingsContent").load("profile/settings");
     }
 })
 
