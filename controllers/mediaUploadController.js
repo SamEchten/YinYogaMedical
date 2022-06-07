@@ -30,6 +30,7 @@ module.exports.upload = async (req, res) => {
                 if (!isNaN(parsePrice)) {
                     if (media.size != 0) {
                         let id;
+                        let mediaUploadVlag = false;
                         // check if file is podcast or video ->
                         if (media.mimetype == "audio/mpeg") {
                             // write podcast to the database ->
@@ -47,8 +48,9 @@ module.exports.upload = async (req, res) => {
 
                             // write media to folder ->
                             try {
-                                const newpath = path.join(__dirname,"../media/podcasts/" + id + ".mp3");
+                                const newpath = path.join(__dirname,"./media/podcasts/" + id + ".mp3");
                                 fs.renameSync(media.filepath, newpath);
+                                mediaUploadVlag = true;
                             } catch (err) {
                                 //If the media can't be uploaded, it will be removed from the database
                                 Podcast.findOne({ _id: id }, (err, podcast) => {
@@ -58,7 +60,7 @@ module.exports.upload = async (req, res) => {
                                 console.log(err)
                                 res.status(400).json({message: "Bestanden niet correct geüpload, vraag de beheerder voor meer informatie"});
                             };
-                        } else if (media.mimetype == "video/mp4") {
+                        } else if (media.mimetype == "video/mp4" && thumbnail.size != 0) {
                             // write video and thumbnail to the database ->
                             try {
                                 vid = await Video.create({
@@ -79,33 +81,35 @@ module.exports.upload = async (req, res) => {
 
                             // write media to folder ->
                             try {
-                                const newpath = (__dirname,"../media/videos/" + id + ".mp3");
-                                fs.renameSync(media.filepath, newpath);
+                                const newpath = (__dirname, "./media/videos/" + id + ".mp4");
+                                fs.renameSync(media.filepath,
+                                    newpath);
+                                mediaUploadVlag = true;
                             } catch (err) {
                                 console.log(err)
                                 res.status(400).json({message: "Bestanden niet correct geüpload, vraag de beheerder voor meer informatie"});
                             }
                         } else {
-                            res.status(400).json({message: "Media om te uploaden moet een mp4-video of mp3-podcast zijn"});
+                            res.status(400).json({message: "Media om te uploaden moet een mp4-video of mp3-podcast zijn. Bij een video is een thumbnail verplicht"});
                         }
-                        if (thumbnail.size != 0)
+                        if (thumbnail.size != 0  && mediaUploadVlag)
                         {
                             if (thumbnail.mimetype == "image/jpeg" || thumbnail.mimetype != "image/jpg") {
                                 const newpath = path.join(__dirname,'../public/images/thumbnails/' + id + '.png');
-                                fs.renameSync(media.filepath, newpath);
+                                fs.renameSync(thumbnail.filepath, newpath);
                                 res.status(200).json({message: "Media geüpload met thumbnail"});
                             }
                             else if (thumbnail.mimetype == "image/png") {
-                                const newpath = path.join(__dirname,'../public/images/thumbnails/' + id + '.png');
-                                fs.renameSync(media.filepath, newpath);
+                                const newpath = path.join(__dirname, '../public/images/thumbnails/' + id + '.png');
+                                fs.renameSync(thumbnail.filepath, newpath);
                                 res.status(200).json({message: "Media geüpload met thumbnail"});
                             }
                             else {
                                 res.status(400).json({message: "Alleen png- en jgp-thumbnails zijn toegestaan"})
                             }
                         }
-                        else {
-                            res.status(200).json({message: "Meda geüpload zonder thumbnail"});
+                        else if ( mediaUploadVlag) {
+                            res.status(200).json({message: "Media geüpload zonder thumbnail"});
                         }
                     } else {
                         res.status(400).json({message: "Geen media geüpload"})
