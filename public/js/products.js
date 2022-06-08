@@ -337,7 +337,6 @@ async function addProduct() {
 
 // buy product
 function buyProduct(product, id) {
-  console.log(product);
   let html1 = swalBuyProductCheck(product);
   let html2 = swalGiftProduct();
   Swal.fire({
@@ -384,7 +383,6 @@ async function buyAProduct(data, productId) {
     data = { userId: data };
     let res = await ApiCaller.buyUserProduct(data, productId);
     let json = await res.json();
-    console.log(json);
     if (res.status == 200) {
       // Redirects to mollie.
       location.href = json.purchaseInfo.checkOutUrl;

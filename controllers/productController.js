@@ -202,12 +202,14 @@ const startSubscription = async (product, user) => {
             //Create first payment to start the scubscription
             const payment = await mollieClient.createFirstPayment(product, user);
             const checkOutUrl = payment.getCheckoutUrl();
+            console.log("sub started")
             return { checkOutUrl: checkOutUrl };
         } catch (err) {
+            console.log(err);
             return { message: "U heeft dit abonnement al gekocht" };
         }
     } else {
-        return { message: "U heeft dit abonnement al gekocht" };
+        return { message: "U heeft dit abonnement al gekocht 2" };
     }
 }
 
@@ -222,6 +224,7 @@ const hasSubscription = (user, description) => {
 }
 
 const createSubscription = async (user, customerId, amount, description) => {
+    
     //Create subscription with mollie api
     const webhookUrl = config.webhookUrl + "/api/product/subscriptions/webhook";
     const subscription = await mollieClient.createSubscription(customerId, amount, description, webhookUrl);
