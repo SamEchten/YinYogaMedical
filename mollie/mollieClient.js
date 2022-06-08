@@ -25,9 +25,19 @@ module.exports.createPayment = async (amount, description, redirectUrl, webhookU
     return payment;
 }
 
+module.exports.getSubscription = async (subId) => {
+    const subscription = await mollieClient.customers_subscriptions.get({ id: subId });
+    return subscription;
+}
+
+module.exports.cancelSubscription = async (subId, customerId) => {
+    const subscription = await mollieClient.customers_subscriptions.cancel(subId, { customerId: customerId });
+    return subscription;
+}
+
 module.exports.createFirstPayment = async (product, user) => {
     const redirectUrl = config.webhookUrl + "/producten?succes=true&productId=" + product.id + "";
-    const webHookUrl = config.webhookurl + "/api/product/webhook/";
+    const webHookUrl = config.webhookUrl + "/api/product/webhook/";
     const payment = await this.createPayment(
         product.price, product.productName, redirectUrl, webHookUrl, product.id, user.id, user.customerId, "first"
     );
