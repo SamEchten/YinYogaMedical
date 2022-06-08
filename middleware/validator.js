@@ -51,7 +51,6 @@ const validateAdmin = async (req, res, next) => {
             });
         } else {
             res.redirect("/login");
-
         }
     } else {
         res.redirect("/login");
@@ -102,10 +101,15 @@ const validateSubscription = async (req, res, next) => {
     const user = JSON.parse(req.cookies.user);
     const subscriptions = user.subscriptions;
 
+    if (isAdmin(user)) {
+        next();
+    }
+
     if (resource == "video") {
         if (subscriptions.includes("Video") || subscriptions.includes("Premium")) {
             next();
         } else {
+            console.log("going home");
             res.redirect("/home");
         }
     }
@@ -114,9 +118,20 @@ const validateSubscription = async (req, res, next) => {
         if (subscriptions.includes("Podcast") || subscriptions.includes("Premium")) {
             next();
         } else {
+            console.log("going home");
             res.redirect("/home");
         }
     }
+
+    console.log("going home");
+    res.redirect("/home");
+}
+
+const isAdmin = (user) => {
+    if (user.isEmployee) {
+        return true;
+    }
+    return false;
 }
 
 module.exports = {
