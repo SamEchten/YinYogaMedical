@@ -75,7 +75,7 @@ function fullClear() {
     $("#" + daysOfWeek[day]).append("<h4 class='lead p-3'>Geen lessen</h4>")
   }
 }
-
+console.log(user)
 // gets all day of the week and returns it in a array ->
 function getAllDaysOfWeek(data) {
   let days = [];
