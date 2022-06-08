@@ -21,7 +21,7 @@ async function setvideoPlayer(id) {
     console.log(json);
     let vidElement = $("<source src="+ baseUrl + json.videoPath +"></source>");
     $("#videoPlayer").append(vidElement);
-    $("#videoPlayer").attr("poster", "/static/" + json.thumbnailPath);
+    //$("#videoPlayer").attr("poster", "/static/" + json.thumbnailPath);
     $(".videoTitle").text(json.title);
     $(".videoDescription").text(json.description)
 }

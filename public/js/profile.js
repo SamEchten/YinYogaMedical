@@ -39,15 +39,34 @@ $(".setting").on("click", async function () {
                 </div>`)
             }
         });
-        }
+    }
         else if(this.id == "abonnement")
         {
-            $(".settingsContent").load("profile/mySubscription", function(){
-                $(".showHours").html(`
-                <div class="col-md-12">
-                    <p><b>`+ json.saldo +`</b> Uren</p>
-                </div>`)
-            });
+            const subscriptions = []
+            let multipleSubscriptions = "";
+            for(i = 0; i < json.subscriptions.length; i++)
+            {
+                subscriptions.push(json.subscriptions[i].description+ ' ');
+                multipleSubscriptions += `<li>`+ json.subscriptions[i].description+ '</li>';
+            }
+            if(subscriptions.length == 0)
+            {
+                $(".settingsContent").load("profile/mySubscription", function(){
+                    $(".abonnementContent").html(`
+                        <div class="col-md-5">
+                            <p>U heeft geen abonnementen</p>
+                        </div>`)
+                });
+            }
+            else{
+                $(".settingsContent").load("profile/mySubscription", function(){
+                    $(".abonnementContent").html(`
+                        <div class="col-md-12">
+                            <p>U heeft de volgende abonnementen:</p>
+                            <ul>`+ multipleSubscriptions +`</ul>
+                        </div>`)
+                });
+            }
         }
     else if(this.id == "settings") 
     {
@@ -110,14 +129,14 @@ async function acceptName(type) {
             
         const userConst = await ApiCaller.getUserInfo(user.id);
         const jsonload = await userConst.json();
-        console.log(jsonload);
         $(".settingsContent").empty();
         $(".settingsContent").load("profile/myProfile", function (){
             $("#accountName").html(``+ jsonload.fullName +`<i class="bi bi-pencil" onclick="changeInfo('name')"></i>`);
             $("#accountEmail").html(``+ jsonload.email +`<i class="bi bi-pencil" onclick="changeInfo('email')"></i>`);
             $("#accountPhoneNumber").html(``+ jsonload.phoneNumber +`<i class="bi bi-pencil" onclick="changeInfo('phoneNumber')"></i>`);
             $("#titleNotes").html(`<b>Notities <i class="bi bi-pencil" onclick="changeInfo('notes')"></i></b>`);
-            $("#notes").html(json.notes);
+            $("#notes").html(jsonload.notes);
+                // updateNav();
         })
     }
     else if(type == "email"){
