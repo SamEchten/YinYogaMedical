@@ -1,5 +1,71 @@
 let category = "";
 let checkedToSchedule = false;
+let allProducts = [];
+
+$(async function () {
+  await getProducts();
+  loadProducts();
+});
+
+//Gets all products from the server
+const getProducts = async () => {
+  let res = await ApiCaller.getAllProducts();
+  allProducts = await res.json();
+}
+
+//View all products
+const loadProducts = async () => {
+  for (i in allProducts) {
+    const row = allProducts[i];
+    if (row.category == "Overige producten") {
+      row.category = "overig";
+    }
+    await loadCategory(row);
+  }
+}
+
+const loadCategory = async (row) => {
+  const dom = $("#" + row.category);
+  for (i in row.products) {
+    const product = row.products[i];
+    const view = await loadProduct(product);
+    dom.append(view);
+  }
+}
+
+const loadProduct = async (product) => {
+  const template = $(loadSingleProductItem(product));
+  const buyBtn = template.find(".BuyNow");
+  const titleBtn = template.find(".productTitle");
+  const midCol = template.find(".midCol");
+
+  buyBtn.on("click", function () {
+    buyProduct(product);
+  });
+
+  titleBtn.on("click", function () {
+    productDetails(product);
+  });
+
+  const hasSub = await hasSubscription(product);
+  console.log(hasSub);
+  if (hasSub) {
+    midCol.append(`<img height="15px"src="./static/check.png">`)
+    buyBtn.addClass("disabled");
+  }
+
+  return template;
+}
+
+const hasSubscription = async (product) => {
+  for (i in user.subscriptions) {
+    let subscription = user.subscriptions[i];
+    if (subscription.description == product.productName) {
+      return true;
+    }
+  }
+  return false;
+}
 
 // Show all details per session ->
 function productDetails(data) {
@@ -13,36 +79,9 @@ function productDetails(data) {
     });
 }
 
-$(async function () {
-  const res = await (await ApiCaller.getAllSessions()).json();
-  loadProducts();
-});
-
 async function loadSingleProduct(product, category) {
   let price = product.price.replace(".", ",");
   loadProductItem(product, price, category);
-}
-
-// Loading product data  ->
-async function loadProducts() {
-  const res = await (await ApiCaller.getAllProducts()).json();
-  for (r in res) {
-    const row = res[r]
-    const products = row.products;
-    for (i in products) {
-      const product = products[i];
-      if (row.category == "Strippenkaarten") {
-        loadSingleProduct(product, "stripcards");
-      } else if (row.category == "Abonnementen") {
-        loadSingleProduct(product, "subscriptions");
-      } else {
-        loadSingleProduct(product, "otherProducts");
-      }
-    }
-  }
-  addEventHandlersSession();
-  showOrhideElements();
-  clickEvents();
 }
 
 async function reloadProducts() {
@@ -336,28 +375,38 @@ async function addProduct() {
 }
 
 // buy product
-function buyProduct(product, id) {
-  console.log(product);
+function buyProduct(product) {
   let html1 = swalBuyProductCheck(product);
   let html2 = swalGiftProduct();
-  Swal.fire({
+  console.log(product);
+  const id = product._id;
+
+  const options = {
     html: html1,
+    icon: "warning",
     customClass: {
       html: 'sweetalert-subscribe',
       denyButton: 'giftButton',
-      confirmButton: 'buyButton',
       cancelButton: 'cancelButton'
     },
     showCancelButton: true,
-    showDenyButton: true,
-    denyButtonText: `<i class="bi bi-gift"></i> &nbsp; Doe product cadeau`,
-    confirmButtonText: 'Koop product',
+    confirmButtonText: 'Abonnement afsluiten',
     confirmButtonColor: '#D5CA9B',
     cancelButtonText: 'Cancel'
-  })
+  };
+
+  if (product.category != "Abonnementen") {
+    options.icon = null;
+    options.denyButton = 'giftButton';
+    options.denyButtonText = '<i class="bi bi-gift"></i> &nbsp; Doe product cadeau';
+    options.confirmButtonText = 'Product kopen';
+    options.showDenyButton = true;
+  }
+
+  Swal.fire(options)
     .then(async (result) => {
       if (result.isConfirmed) {
-        buyAProduct(user.userId, id);
+        buyAProduct(user.id, id);
       } else if (result.isDenied) {
         Swal.fire({
           html: html2,
@@ -384,7 +433,6 @@ async function buyAProduct(data, productId) {
     data = { userId: data };
     let res = await ApiCaller.buyUserProduct(data, productId);
     let json = await res.json();
-    console.log(json);
     if (res.status == 200) {
       // Redirects to mollie.
       location.href = json.purchaseInfo.checkOutUrl;

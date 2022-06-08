@@ -1,6 +1,7 @@
 let cookie = $.cookie("user");
 let user;
 let allUsers;
+
 if (cookie) {
   user = JSON.parse(cookie);
 }
@@ -15,7 +16,7 @@ $(async function () {
 
 // Update users saldo 
 async function updateNav() {
-  await updateUser(user.userId);
+  await updateUser(user.id);
   if (user) {
     setUserItemsNav();
   }

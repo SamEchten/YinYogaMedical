@@ -97,8 +97,31 @@ const validateJson = async (req, res, next) => {
     }
 }
 
+const validateSubscription = async (req, res, next) => {
+    const resource = req.baseUrl.replace("/api/", "");
+    const user = JSON.parse(req.cookies.user);
+    const subscriptions = user.subscriptions;
+
+    if (resource == "video") {
+        if (subscriptions.includes("Video") || subscriptions.includes("Premium")) {
+            next();
+        } else {
+            res.redirect("/home");
+        }
+    }
+
+    if (resource == "podcast") {
+        if (subscriptions.includes("Podcast") || subscriptions.includes("Premium")) {
+            next();
+        } else {
+            res.redirect("/home");
+        }
+    }
+}
+
 module.exports = {
     validateJwt,
     validateAdmin,
-    validateJson
+    validateJson,
+    validateSubscription
 };
