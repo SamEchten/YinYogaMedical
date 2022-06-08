@@ -186,6 +186,45 @@ module.exports.purchase = async (req, res) => {
     }
 }
 
+module.exports.cancel = async (req, res) => {
+    const subId = req.params.id;
+    const userId = req.body.userId;
+
+    User.findOne({ _id: userId }, (err, user) => {
+        if (user) {
+            const subscription = await cancelSubscription(user, subId);
+            const customerId = user.customerId;
+            const transactions = await Transactions.findOne({ customerId });
+
+            //Remove subscription from user model
+            let userSubscriptions = user.subscriptions;
+            for (i in userSubscriptions) {
+                let subscription = user.subscriptions[i];
+                if (subscription.subscriptionId == subId) {
+                    user.subscriptions.splice(i, 1);
+                }
+            }
+
+            await User.updateOne({ _id: userId }, { $set: { subscriptions: userSubscriptions } });
+
+            //Set status of subscription to canceled in transactions model
+            for (i in transactions.subscriptions) {
+                let subscription = transactions.subscriptions[i];
+                if (subscription.subscriptionId == subId) {
+                    subscription.statuts = "canceled";
+                }
+            }
+
+            transactions.markModified("subscriptions");
+            await transactions.save();
+
+            res.status(200).json({ message: "Abonnement succesvol geannuleerd" });
+        } else {
+            res.status(404).json({ message: "Er is geen gebruiker gevonden met dit id" });
+        }
+    });
+}
+
 const purchaseProduct = async (product, user) => {
     if (product.recurring) {
         return await startSubscription(product, user);
@@ -233,6 +272,12 @@ const createSubscription = async (user, customerId, amount, description) => {
     return subscription;
 }
 
+const cancelSubscription = async (user, subscriptionId) => {
+    const customerId = user.customerId;
+    const subscription = await mollieClient.cancelSubscription(subscriptionId, customerId);
+    return subscription;
+}
+
 const savePaymentData = async (customerId, payment) => {
     const paymentId = payment.id;
     const description = payment.description;
@@ -276,6 +321,7 @@ const saveSubscriptionData = async (customerId, subscription) => {
     if (!exists) {
         transactions.subscriptions.push({
             subscriptionId: id,
+            status: "active",
             startDate: subscription.startDate,
             description,
             amount,
