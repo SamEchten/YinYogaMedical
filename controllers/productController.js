@@ -367,15 +367,6 @@ const addClassPass = async (user, product) => {
     }
 }
 
-const getExpireDate = (validFor) => {
-    const date = new Date();
-    const year = date.getFullYear() + validFor;
-    const month = date.getMonth();
-    const day = date.getDate();
-    const expireDate = new Date(year, month, day, 2);
-    return expireDate;
-}
-
 module.exports.webHook = async (req, res) => {
     const paymentId = req.body.id;
     const payment = await mollieClient.getPaymentInfo(paymentId);
