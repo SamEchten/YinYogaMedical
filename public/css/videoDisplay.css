@@ -4,6 +4,13 @@
 .headerRow {
     height: 10%;
 }
+#videoPlayer {
+    background-color: black;
+}
+.descriptionVid {
+    background: whitesmoke;
+    padding: 10px;
+}
 body {
     background-image: url("./background.png");
     background-repeat: no-repeat;
