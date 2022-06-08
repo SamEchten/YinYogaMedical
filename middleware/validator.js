@@ -101,6 +101,7 @@ const validateSubscription = async (req, res, next) => {
     const resource = origin.split("/")[1];
     const user = JSON.parse(req.cookies.user);
     const subscriptions = user.subscriptions;
+    console.log(resource)
 
     if (isAdmin(user)) {
         next();
@@ -112,7 +113,7 @@ const validateSubscription = async (req, res, next) => {
         } else {
             console.log("going home");
             res.redirect("/home");
-            res.end();
+            return;
         }
     }
 
@@ -122,13 +123,9 @@ const validateSubscription = async (req, res, next) => {
         } else {
             console.log("going home");
             res.redirect("/home");
-            res.end();
+            return;
         }
     }
-
-    console.log("going home");
-    res.redirect("/home");
-    res.end();
 }
 
 const isAdmin = (user) => {
