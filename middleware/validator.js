@@ -97,7 +97,8 @@ const validateJson = async (req, res, next) => {
 }
 
 const validateSubscription = async (req, res, next) => {
-    const resource = req.baseUrl.replace("/api/", "");
+    const origin = req.originalUrl;
+    const resource = origin.split("/")[1];
     const user = JSON.parse(req.cookies.user);
     const subscriptions = user.subscriptions;
 
@@ -105,26 +106,29 @@ const validateSubscription = async (req, res, next) => {
         next();
     }
 
-    if (resource == "video") {
+    if (resource == "videos") {
         if (subscriptions.includes("Video") || subscriptions.includes("Premium")) {
             next();
         } else {
             console.log("going home");
             res.redirect("/home");
+            res.end();
         }
     }
 
-    if (resource == "podcast") {
+    if (resource == "podcasts") {
         if (subscriptions.includes("Podcast") || subscriptions.includes("Premium")) {
             next();
         } else {
             console.log("going home");
             res.redirect("/home");
+            res.end();
         }
     }
 
     console.log("going home");
     res.redirect("/home");
+    res.end();
 }
 
 const isAdmin = (user) => {
