@@ -19,7 +19,7 @@ const videoSchema = mongoose.Schema({
     },
     videoPath: {
         type: "string",
-        required: [true, "Thumbnail is verplicht"]
+        required: [true, "videoPath is verplicht"]
     }
 });
 
