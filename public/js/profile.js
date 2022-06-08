@@ -1,7 +1,7 @@
 //click on nav and change the content
 $(".setting").on("click", async function () {
     $(".settingsContent").empty();
-    const userConst = await ApiCaller.getUserInfo(user.userId);
+    const userConst = await ApiCaller.getUserInfo(user.id);
     const json = await userConst.json();
     console.log(json);
     if (this.id == "profiel")
@@ -16,19 +16,39 @@ $(".setting").on("click", async function () {
     }
     else if (this.id == "product")
     {
-        $(".settingsContent").load("profile/myPoducts");
-    }
-    else if(this.id == "abonnement")
-    {
-        $(".settingsContent").load("profile/mySubscription")
-    }
-    else if (this.id == "payment")
-    {
-        $(".settingsContent").load("profile/myPayments", async function(){
-            //json something to array
-            $("#paymentContent").html()
+        $(".settingsContent").load("profile/myPoducts", function(){
+            if(json.saldo == 0)
+            {
+                $(".showHours").html(`
+                <div class="col-md-12">
+                <p>Momenteel heeft u <b>geen</b> uren.</p>
+                </div>`)
+            }
+            else if(json.saldo < 2 && json.saldo > 0)
+            {
+                $(".showHours").html(`
+                <div class="col-md-12">
+                <p>Momenteel heeft u <b>`+ json.saldo +`</b> uur</p>
+                </div>`)
+            }
+            else
+            {
+                $(".showHours").html(`
+                <div class="col-md-12">
+                <p>Momenteel heeft u <b>`+ json.saldo +`</b> uren</p>
+                </div>`)
+            }
         });
-    }
+        }
+        else if(this.id == "abonnement")
+        {
+            $(".settingsContent").load("profile/mySubscription", function(){
+                $(".showHours").html(`
+                <div class="col-md-12">
+                    <p><b>`+ json.saldo +`</b> Uren</p>
+                </div>`)
+            });
+        }
     else if(this.id == "settings") 
     {
         $(".settingsContent").load("profile/settings");
@@ -38,7 +58,7 @@ $(".setting").on("click", async function () {
 
 
 async function changeInfo(sort) {
-    const userConst = await ApiCaller.getUserInfo(user.userId);
+    const userConst = await ApiCaller.getUserInfo(user.id);
     const json = await userConst.json();
     console.log(sort);
     if(sort == "name"){
@@ -79,8 +99,8 @@ async function acceptName(type) {
         console.log(updatedName);
         let json = {"fullName": updatedName}
         
-        let res = await ApiCaller.updateUser(json, user.userId)
-        console.log(user.userId);
+        let res = await ApiCaller.updateUser(json, user.id)
+        console.log(user.id);
         if(res.status == 200){
             console.log("succes");
             toastPopUp("Uw naam is geüpdate", "success");
@@ -88,7 +108,7 @@ async function acceptName(type) {
             console.log("pech");
         }
             
-        const userConst = await ApiCaller.getUserInfo(user.userId);
+        const userConst = await ApiCaller.getUserInfo(user.id);
         const jsonload = await userConst.json();
         console.log(jsonload);
         $(".settingsContent").empty();
@@ -106,15 +126,14 @@ async function acceptName(type) {
         
         let json = {"email": updatedEmail}
         
-        let res = await ApiCaller.updateUser(json, user.userId)
-        console.log(user.userId);
+        let res = await ApiCaller.updateUser(json, user.id)
         if(res.status == 200){
             console.log("succes");
             toastPopUp("Uw email is geüpdate", "success");
         }else{
             console.log("pech");
         }    
-        const userConst = await ApiCaller.getUserInfo(user.userId);
+        const userConst = await ApiCaller.getUserInfo(user.id);
         const jsonload = await userConst.json();
         console.log(jsonload);
         $(".settingsContent").empty();
@@ -132,15 +151,14 @@ async function acceptName(type) {
         
         let json = {"phoneNumber": updatedPhone}
         
-        let res = await ApiCaller.updateUser(json, user.userId)
-        console.log(user.userId);
+        let res = await ApiCaller.updateUser(json, user.id)
         if(res.status == 200){
             console.log("succes");
             toastPopUp("Uw telefoonnummer is geüpdate", "success");
         }else{
             console.log("pech");
         }    
-        const userConst = await ApiCaller.getUserInfo(user.userId);
+        const userConst = await ApiCaller.getUserInfo(user.id);
         const jsonload = await userConst.json();
         console.log(jsonload);
         $(".settingsContent").empty();
@@ -158,15 +176,14 @@ async function acceptName(type) {
         
         let json = {"notes": updatedNotes}
         
-        let res = await ApiCaller.updateUser(json, user.userId)
-        console.log(user.userId);
+        let res = await ApiCaller.updateUser(json, user.id);
         if(res.status == 200){
             console.log("succes");
             toastPopUp("Uw notities zijn geüpdate", "success");
         }else{
             console.log("pech");
         }    
-        const userConst = await ApiCaller.getUserInfo(user.userId);
+        const userConst = await ApiCaller.getUserInfo(user.id);
         const jsonload = await userConst.json();
         console.log(jsonload);
         $(".settingsContent").empty();
@@ -175,13 +192,13 @@ async function acceptName(type) {
             $("#accountEmail").html(``+ jsonload.email +`<i class="bi bi-pencil" onclick="changeInfo('email')"></i>`);
             $("#accountPhoneNumber").html(``+ jsonload.phoneNumber +`<i class="bi bi-pencil" onclick="changeInfo('phoneNumber')"></i>`);
             $("#titleNotes").html(`<b>Notities <i class="bi bi-pencil" onclick="changeInfo('notes')"></i></b>`);
-            $("#notes").html(json.notes);
+            $("#notes").html(jsonload.notes);
         })
     }
 }
 
 async function denyName() {
-    const userConst = await ApiCaller.getUserInfo(user.userId);
+    const userConst = await ApiCaller.getUserInfo(user.id);
     const json = await userConst.json();
     console.log(json);
     $(".settingsContent").empty();
