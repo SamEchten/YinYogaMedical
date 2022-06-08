@@ -190,7 +190,7 @@ module.exports.cancel = async (req, res) => {
     const subId = req.params.id;
     const userId = req.body.userId;
 
-    User.findOne({ _id: userId }, (err, user) => {
+    User.findOne({ _id: userId }, async (err, user) => {
         if (user) {
             const subscription = await cancelSubscription(user, subId);
             const customerId = user.customerId;
