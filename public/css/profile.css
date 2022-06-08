@@ -34,7 +34,6 @@ body {
 }
 
 .contentRow {
-    height: 90%;
     margin-left: 5px !important;
     margin-right: 5px !important;
     overflow: auto;
@@ -84,8 +83,9 @@ option:focus-within {
     font-size: 12px;
 }
 
+
 .notes {
-    height: 21vh;
+    height: 20vh;
     overflow-y: auto;
 }
 
