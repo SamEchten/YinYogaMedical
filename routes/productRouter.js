@@ -20,6 +20,8 @@ router.use(validateJwt);
 router.get("/:id", controller.get);
 //Buy product
 router.post("/purchase/:id", controller.purchase);
+//Cancel subscription
+router.post("/cancel/:id", controller.cancel);
 //Gift product
 router.post("/gift/:id", controller.gift);
 

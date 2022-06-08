@@ -311,7 +311,7 @@ function swalItemAddProduct(category) {
 function hasSubscription(product) {
   if (user) {
     for (i in user.subscriptions) {
-      let subscription = user.subscriptions[i];
+      let subscription = user.subscriptions[i].description;
       if (subscription == product.productName) {
         return true;
       }

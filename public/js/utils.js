@@ -53,7 +53,7 @@ function setUserItemsNav() {
     username.html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
     saldo.append(`<i class="bi bi-clock"></i>  ` + user.saldo + " uur");
     for (i in user.subscriptions) {
-      let subscription = user.subscriptions[i];
+      let subscription = user.subscriptions[i].description;
       if (subscription) {
         if (subscription == "Video") {
           subscriptionNav.append(`<div class='row'><div class='col-md-3'><i class="bi bi-camera-video"></i></div  <div class='col-md-9'>` + subscription + `</div></div>`);
