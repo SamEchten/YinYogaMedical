@@ -211,7 +211,7 @@ module.exports.cancel = async (req, res) => {
             for (i in transactions.subscriptions) {
                 let subscription = transactions.subscriptions[i];
                 if (subscription.subscriptionId == subId) {
-                    subscription.statuts = "canceled";
+                    subscription.status = "canceled";
                 }
             }
 
@@ -476,24 +476,27 @@ module.exports.subscriptionWebhook = async (req, res) => {
     const payment = await mollieClient.getPaymentInfo(id);
     const customerId = payment.customerId;
     const transactions = await Transactions.findOne({ customerId: customerId });
-    let subscriptions = transactions.subscriptions;
 
-    for (i in subscriptions) {
-        let subscription = subscriptions[i];
-        if (subscription.subscriptionId == payment.subscriptionId) {
-            subscription.payments.push({
-                paymentId: payment.id,
-                description: payment.description,
-                amount: payment.amount,
-                paidAt: payment.createdAt,
-                status: payment.status,
-                method: payment.method
-            });
+    if (transactions) {
+        let subscriptions = transactions.subscriptions;
+        for (i in subscriptions) {
+            let subscription = subscriptions[i];
+            if (subscription.subscriptionId == payment.subscriptionId) {
+                subscription.payments.push({
+                    paymentId: payment.id,
+                    description: payment.description,
+                    amount: payment.amount,
+                    paidAt: payment.createdAt,
+                    status: payment.status,
+                    method: payment.method
+                });
+            }
         }
+
+        transactions.markModified("subscriptions");
+        await transactions.save();
     }
 
-    transactions.markModified("subscriptions");
-    await transactions.save();
     res.sendStatus(200);
 }
 
