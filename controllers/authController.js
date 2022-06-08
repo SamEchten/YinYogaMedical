@@ -92,7 +92,7 @@ const sendCookies = (res, id, fullName, email, isEmployee, saldo, subscriptions)
         httpOnly: true
     });
 
-    res.cookie("user", JSON.stringify({ userId, fullName, email, isEmployee, saldo, subscriptions }), {
+    res.cookie("user", JSON.stringify({ id: userId, fullName, email, isEmployee, saldo, subscriptions }), {
         expiresIn: maxAge * 1000
     });
 }

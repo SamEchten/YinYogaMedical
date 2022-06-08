@@ -363,7 +363,7 @@ module.exports.gift = async (req, res) => {
     const id = req.params.id;
     const userId = req.body.userId;
     const userEmail = req.body.email;
-    const reqId = JSON.parse(req.cookies.user).userId;
+    const reqId = JSON.parse(req.cookies.user).id;
     const productId = req.params.id;
 
     if (!await isAdmin(reqId)) {
