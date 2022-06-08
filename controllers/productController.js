@@ -225,8 +225,10 @@ const createSubscription = async (user, customerId, amount, description) => {
     //Create subscription with mollie api
     const webhookUrl = config.webhookUrl + "/api/product/subscriptions/webhook";
     const subscription = await mollieClient.createSubscription(customerId, amount, description, webhookUrl);
+
     let subscriptions = user.subscriptions;
-    subscriptions.push(description);
+    subscriptions.push({ description: description, subscriptionId: subscription.id });
+
     await User.updateOne({ _id: user.id }, { $set: { subscriptions: subscriptions } });
     return subscription;
 }
@@ -377,44 +379,45 @@ module.exports.webHook = async (req, res) => {
     const customerId = payment.customerId;
 
     if (await mollieClient.isPaid(paymentId)) {
-        if (!product.recurring) {
-            //Normal payment
-            if (user) {
-                await addClassPass(user, product);
-                await savePaymentData(customerId, payment);
+        if (product) {
+            if (!product.recurring) {
+                //Normal payment
+                if (user) {
+                    await addClassPass(user, product);
+                    await savePaymentData(customerId, payment);
 
-                //TODO: Send confirmation mail
+                    //TODO: Send confirmation mail
+                    res.sendStatus(200);
+                }
+            } else {
+                if (payment.sequenceType == "first") {
+                    //Subscription payment
+                    const customerId = payment.customerId;
+                    const amount = payment.amount.value;
+                    const description = payment.description;
+
+                    const subscription = await createSubscription(user, customerId, amount, description);
+                    await saveSubscriptionData(customerId, subscription);
+
+                    const transactions = await Transactions.findOne({ customerId: customerId });
+                    for (i in transactions.subscriptions) {
+                        let subscription = transactions.subscriptions[i];
+                        if (subscription.description == payment.description) {
+                            subscription.payments.push({
+                                paymentId: payment.id,
+                                description: payment.description,
+                                amount: payment.amount,
+                                paidAt: payment.paidAt,
+                                status: payment.status,
+                                method: payment.method
+                            });
+                        }
+                    }
+                    transactions.markModified("subscriptions")
+                    await transactions.save();
+                }
                 res.sendStatus(200);
             }
-        } else {
-            if (payment.sequenceType == "first") {
-                //Subscription payment
-                const customerId = payment.customerId;
-                const amount = payment.amount.value;
-                const description = payment.description;
-
-                const subscription = await createSubscription(user, customerId, amount, description);
-                await saveSubscriptionData(customerId, subscription);
-
-                const transactions = await Transactions.findOne({ customerId: customerId });
-                for (i in transactions.subscriptions) {
-                    let subscription = transactions.subscriptions[i];
-                    if (subscription.description == payment.description) {
-                        subscription.payments.push({
-                            paymentId: payment.id,
-                            description: payment.description,
-                            amount: payment.amount,
-                            paidAt: payment.paidAt,
-                            status: payment.status,
-                            method: payment.method
-                        });
-                    }
-                }
-                transactions.markModified("subscriptions")
-                await transactions.save();
-            }
-
-            res.sendStatus(200);
         }
     } else {
         console.log("Nog niet betaald");
