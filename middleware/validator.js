@@ -98,32 +98,33 @@ const validateJson = async (req, res, next) => {
 
 const validateSubscription = async (req, res, next) => {
     const origin = req.originalUrl;
-    const resource = origin.split("/")[1];
+    const resource = origin.split("/")[2];
     const user = JSON.parse(req.cookies.user);
     const subscriptions = user.subscriptions;
-    console.log(resource)
 
     if (isAdmin(user)) {
         next();
-    }
+    } else {
+        let hasSubscription = false;
+        for (i in subscriptions) {
+            let subscription = subscriptions[i].description;
+            if (resource == "video") {
+                if (subscription == "Video" || subscription == "Premium") {
+                    hasSubscription = true;
+                }
+            }
 
-    if (resource == "videos") {
-        if (subscriptions.includes("Video") || subscriptions.includes("Premium")) {
-            next();
-        } else {
-            console.log("going home");
-            res.redirect("/home");
-            return;
+            if (resource == "podcast") {
+                if (subscription == "Podcast" || subscription == "Premium") {
+                    hasSubscription = true;
+                }
+            }
         }
-    }
 
-    if (resource == "podcasts") {
-        if (subscriptions.includes("Podcast") || subscriptions.includes("Premium")) {
+        if (hasSubscription) {
             next();
         } else {
-            console.log("going home");
             res.redirect("/home");
-            return;
         }
     }
 }
