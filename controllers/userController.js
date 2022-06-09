@@ -20,7 +20,8 @@ module.exports.get = async (req, res) => {
                     phoneNumber: user.phoneNumber,
                     notes: user.notes,
                     saldo: user.classPassHours,
-                    subscriptions: user.subscriptions
+                    subscriptions: user.subscriptions,
+                    isEmployee: user.isEmployee
                 });
             } else {
                 res.status(404).json({ message: "Geen user gevonden met dit id" });
@@ -42,7 +43,8 @@ module.exports.get = async (req, res) => {
                     phoneNumber: user.phoneNumber,
                     notes: user.notes,
                     saldo: user.classPassHours,
-                    subscriptions: user.subscriptions
+                    subscriptions: user.subscriptions,
+                    isEmployee: user.isEmployee
                 });
             }
             res.status(200).json(allUsers);
