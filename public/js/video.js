@@ -95,7 +95,7 @@ async function displayVideos (i) {
         } else {
           $(".vidBot").last().append(element);
           addEventHandlers(video.bought, video.id);
-          $("#"+ video.id).append(`<img src="static/${video.thumbnailPath}" width="100%" height="100%">`);
+          $("#"+ video.id).css("background-image", "url(/static/"+ video.thumbnailPath + ")");
         }
       }
     } 
