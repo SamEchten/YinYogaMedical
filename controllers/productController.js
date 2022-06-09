@@ -234,9 +234,7 @@ const purchaseProduct = async (product, user) => {
 }
 
 const startSubscription = async (product, user) => {
-    const description = product.productName;
-
-    if (!hasSubscription(user, description)) {
+    if (!hasSubscription(user)) {
         try {
             //Create first payment to start the scubscription
             const payment = await mollieClient.createFirstPayment(product, user);
@@ -246,16 +244,13 @@ const startSubscription = async (product, user) => {
             return { message: "U heeft dit abonnement al gekocht" };
         }
     } else {
-        return { message: "U heeft dit abonnement al gekocht" };
+        return { message: "Gebruiker heeft al een abonnement" };
     }
 }
 
-const hasSubscription = (user, description) => {
-    for (i in user.subscriptions) {
-        let subscription = user.subscriptions[i];
-        if (subscription == description) {
-            return true;
-        }
+const hasSubscription = (user) => {
+    if (user.subscriptions.length > 0) {
+        return true;
     }
     return false;
 }

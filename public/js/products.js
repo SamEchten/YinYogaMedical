@@ -34,6 +34,7 @@ const loadCategory = async (row) => {
 }
 
 const loadProduct = async (product) => {
+  await updateUser();
   const template = $(loadSingleProductItem(product));
   const buyBtn = template.find(".BuyNow");
   const titleBtn = template.find(".productTitle");
@@ -47,8 +48,7 @@ const loadProduct = async (product) => {
     productDetails(product);
   });
 
-  const hasSub = await hasSubscription(product);
-  console.log(hasSub);
+  const hasSub = hasProductSubscription(product);
   if (hasSub) {
     midCol.append(`<img height="15px"src="./static/check.png">`)
     buyBtn.addClass("disabled");
@@ -57,7 +57,7 @@ const loadProduct = async (product) => {
   return template;
 }
 
-const hasSubscription = async (product) => {
+const hasProductSubscription = (product) => {
   for (i in user.subscriptions) {
     let subscription = user.subscriptions[i];
     if (subscription.description == product.productName) {
