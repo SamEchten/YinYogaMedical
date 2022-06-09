@@ -1,9 +1,9 @@
-let cookie = $.cookie("user");
+let cookie = JSON.parse($.cookie("user"));
 let user;
 let allUsers;
 
 if (cookie) {
-  user = JSON.parse(cookie);
+  user = cookie;
 }
 
 $(async function () {
@@ -16,14 +16,14 @@ $(async function () {
 
 // Update users saldo 
 async function updateNav() {
-  await updateUser(user.id);
+  await updateUser();
   if (user) {
     setUserItemsNav();
   }
 }
 
-async function updateUser(userId) {
-  let res = await ApiCaller.getUserInfo(userId);
+async function updateUser() {
+  let res = await ApiCaller.getUserInfo(cookie.id);
   user = await res.json();
 }
 
