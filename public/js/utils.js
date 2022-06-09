@@ -176,7 +176,7 @@ function createDateString(date, time) {
 // Checks client role  ->
 function roleCheck() {
   try {
-    user = JSON.parse(cookie);
+    console.log(user)
     if (user.isEmployee) {
       return true
     } else {
