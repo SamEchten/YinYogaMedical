@@ -39,6 +39,16 @@ function showWelcomMessage() {
   sessionStorage.setItem("firstPageLoad", true);
 }
 
+function hasSubscription(sub) {
+  for (i in user.subscriptions) {
+    let subscription = user.subscriptions[i].description;
+    if (sub == subscription || subscription == "Premium") {
+      return true;
+    }
+  }
+  return false;
+}
+
 function setUserItemsNav() {
   let username = $(".userNameNav");
   let saldo = $(".userSaldo");
