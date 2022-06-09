@@ -8,6 +8,7 @@ $(async function () {
   setWeekData(weekNumb);
   loader(true);
   const res = await (await ApiCaller.getAllSessions()).json();
+  console.log(res);
   loader(false);
   schedule = res;
   loadAgenda(weekNumb);
@@ -75,7 +76,7 @@ function fullClear() {
     $("#" + daysOfWeek[day]).append("<h4 class='lead p-3'>Geen lessen</h4>")
   }
 }
-
+console.log(user)
 // gets all day of the week and returns it in a array ->
 function getAllDaysOfWeek(data) {
   let days = [];
@@ -589,7 +590,7 @@ function unsubcribeSession() {
       cancelButtonText: 'Terug'
     }).then(async (result) => {
       if (result.isConfirmed) {
-        let data = { "userId": user.userId }
+        let data = { "userId": user.id }
         try {
           let res = await ApiCaller.unsubscribeFormSession(data, sessionId);
           let json = await res.json();
@@ -639,7 +640,7 @@ function subscribeToSession() {
         if (result.isConfirmed) {
           let sessionId = $(this).parent().parent().attr("id");
           let jsonData = {
-            "userId": user.userId,
+            "userId": user.id,
             "comingWith": sessionUserObject()
           }
           try {

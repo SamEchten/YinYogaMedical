@@ -41,7 +41,7 @@ function addVideo () {
         });
       $("#media").on("change", function() {
         let size = Math.round(this.files[0].size / 1024 / 1024);
-        if(size > 100) {
+        if(size > 500) {
           $("#fileSize").text("Bestandsgrootte : " + size + " MB");
           $("#fileSize").addClass("failedColor").removeClass("text-muted");
         } else {

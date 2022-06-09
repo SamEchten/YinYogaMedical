@@ -4,6 +4,16 @@
 .headerRow {
     height: 10%;
 }
+#videoPlayer {
+    background-color: black;
+}
+.vidHeader {
+    border-bottom: 1px solid #e9e9e9;
+}
+.descriptionVid {
+    background: whitesmoke;
+    padding: 10px;
+}
 body {
     background-image: url("./background.png");
     background-repeat: no-repeat;
@@ -22,11 +32,7 @@ body {
     cursor: pointer;
 }
 .contentRow {
-    height: 90%;
+    height: 100%;
     background-color: white;
-    margin-left: 5px !important;
-    margin-right: 5px !important;
     overflow: auto;
-    border-radius: 10px 10px 0px 0px;
-    border: 1px solid #eeeeee;
 }

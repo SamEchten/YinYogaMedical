@@ -10,7 +10,8 @@ const productSchema = mongoose.Schema({
         required: [true, "Prijs is verplicht"]
     },
     description: {
-        type: String
+        type: String,
+        requierd: [true, "Beschrijving is verplicht"]
     },
     category: {
         type: String,

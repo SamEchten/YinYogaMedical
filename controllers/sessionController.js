@@ -10,7 +10,7 @@ module.exports.get = async (req, res) => {
     const { id } = req.params;
     let userId;
     if (req.cookies.user) {
-        userId = JSON.parse(req.cookies.user).userId;
+        userId = JSON.parse(req.cookies.user).id;
     }
 
     if (id) {
@@ -301,7 +301,7 @@ module.exports.signup = async (req, res) => {
 
     const comingWith = req.body.comingWith;
     const comingWithAmount = comingWith ? comingWith.length : null;
-    const reqId = JSON.parse(req.cookies.user).userId;
+    const reqId = JSON.parse(req.cookies.user).id;
     const admin = await isAdmin(reqId);
 
     if (userId == reqId || admin) {
@@ -396,7 +396,7 @@ const returnSaldo = async (user, participants) => {
 module.exports.signout = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
-    const cookieUserId = JSON.parse(req.cookies.user).userId;
+    const cookieUserId = JSON.parse(req.cookies.user).id;
     const cookieEmployee = JSON.parse(req.cookies.user).isEmployee;
 
     if (userId) {

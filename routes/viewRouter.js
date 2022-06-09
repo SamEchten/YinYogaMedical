@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const path = require("path");
-const { validateJwt } = require("../middleware/validator");
-const { validateAdmin } = require("../middleware/validator");
+const { validateJwt, validateAdmin, validateSubscription } = require("../middleware/validator");
 const authController = require("../controllers/authController");
 const sessionController = require("../controllers/sessionController");
 const userController = require("../controllers/userController");
