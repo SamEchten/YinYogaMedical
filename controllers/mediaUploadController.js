@@ -34,32 +34,33 @@ module.exports.upload = async (req, res) => {
                         // check if file is podcast or video ->
                         if(media.mimetype == "audio/mpeg") {
                             // save in podcasts
-                                const thumbnailFileName = encodeURIComponent(createUniqueFileName(thumbnail.originalFilename).replace(/\s/g, "-"));
-                                const podcastFileName = encodeURIComponent(createUniqueFileName(media.originalFilename).replace(/\s/g, "-"));
-                                // write thumbnail file to the thumbnail folder ->
-                                try {
-                                    fs.renameSync(thumbnail.filepath, path.join(thumbnailUploadPath, thumbnailFileName));
-                                    fs.renameSync(media.filepath, path.join(podcastUploadPath, podcastFileName));
-                                } catch(err) {
-                                    console.log(err)
-                                    res.status(400).json({message : "Bestanden niet correct geupload vraag de beheerder voor meer informatie"});
-                                }
-                                // write podcast and thumbnail to the database ->
-                                try {
-                                    const podcast = await Podcast.create({
-                                        title : title,
-                                        price : convertPrice(price),
-                                        desciption : description,
-                                        thumbnailPath : thumbnailFileName,
-                                        podcastPath : podcastFileName
-                                    });
+                            const thumbnailFileName = encodeURIComponent(createUniqueFileName(thumbnail.originalFilename).replace(/\s/g, "-"));
+                            const podcastFileName = encodeURIComponent(createUniqueFileName(media.originalFilename).replace(/\s/g, "-"));
+                            // write thumbnail file to the thumbnail folder ->
+                            try {
+                                fs.renameSync(thumbnail.filepath, path.join(thumbnailUploadPath, thumbnailFileName));
+                                fs.renameSync(media.filepath, path.join(podcastUploadPath, podcastFileName));
+                            } catch(err) {
+                                console.log(err)
+                                res.status(400).json({message : "Bestanden niet correct geupload vraag de beheerder voor meer informatie"});
+                            }
 
-                                    res.status(200).json({message : "Podcast geupload!"});
+                            // write video and thumbnail to the database ->
+                            try {
+                                const pod = await Podcast.create({
+                                    title : title,
+                                    price : convertPrice(price),
+                                    description : description,
+                                    thumbnailPath : thumbnailFileName,
+                                    podcastPath : podcastFileName
+                                });
 
-                                } catch (err) {
-                                    console.log(err)
-                                    res.status(400).send(err);
-                                }   
+                                res.status(200).json({message : "video geupload!"});
+
+                            } catch (err) {
+                                console.log(err)
+                                res.status(400).send(err);
+                            }
                         } else {
                             if(checkMimeType(thumbnail, media)){
                                 const thumbnailFileName = encodeURIComponent(createUniqueFileName(thumbnail.originalFilename).replace(/\s/g, "-"));
@@ -88,7 +89,7 @@ module.exports.upload = async (req, res) => {
                                 } catch (err) {
                                     console.log(err)
                                     res.status(400).send(err);
-                                }   
+                                }
 
                             } else {
                                 res.status(400).json({message : "De thumbnail moet de volgende extentie bevatten: jpg, jpeg, png. Video moet de extentie mp4 hebben."});
