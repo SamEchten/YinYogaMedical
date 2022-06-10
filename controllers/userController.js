@@ -20,7 +20,8 @@ module.exports.get = async (req, res) => {
                     phoneNumber: user.phoneNumber,
                     notes: user.notes,
                     saldo: user.classPassHours,
-                    subscriptions: user.subscriptions
+                    subscriptions: user.subscriptions,
+                    isEmployee: user.isEmployee
                 });
             } else {
                 res.status(404).json({ message: "Geen user gevonden met dit id" });
@@ -42,7 +43,8 @@ module.exports.get = async (req, res) => {
                     phoneNumber: user.phoneNumber,
                     notes: user.notes,
                     saldo: user.classPassHours,
-                    subscriptions: user.subscriptions
+                    subscriptions: user.subscriptions,
+                    isEmployee: user.isEmployee
                 });
             }
             res.status(200).json(allUsers);
@@ -162,7 +164,19 @@ module.exports.purchaseHistory = async (req, res) => {
     const id = req.params.id;
 
     User.findOne({ _id: id }, async (err, user) => {
-        const purchases = user.purchases;
-
+        if (user) {
+            Transactions.findOne({ customerId: user.customerId }, (err, transactions) => {
+                if (transactions) {
+                    res.status(200).json({
+                        subscriptions: transactions.subscriptions,
+                        products: transactions.transactions
+                    })
+                } else {
+                    res.status(404).json({ message: "Geen transacties gevonden met dit klanten id" });
+                }
+            });
+        } else {
+            res.status(404).json({ message: "Geen gebruiker gevonden met dit id" });
+        }
     });
 }

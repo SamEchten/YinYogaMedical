@@ -34,30 +34,74 @@ const loadCategory = async (row) => {
 }
 
 const loadProduct = async (product) => {
+  await updateUser();
   const template = $(loadSingleProductItem(product));
   const buyBtn = template.find(".BuyNow");
   const titleBtn = template.find(".productTitle");
   const midCol = template.find(".midCol");
 
   buyBtn.on("click", function () {
-    buyProduct(product);
+    if (checkLogin()) {
+      buyProduct(product);
+    } else {
+      location.href = "/login";
+    }
   });
 
   titleBtn.on("click", function () {
     productDetails(product);
   });
 
-  const hasSub = await hasSubscription(product);
-  console.log(hasSub);
+  const hasSub = hasProductSubscription(product);
   if (hasSub) {
     midCol.append(`<img height="15px"src="./static/check.png">`)
     buyBtn.addClass("disabled");
   }
 
+  if (roleCheck()) {
+    addAdminIcons(template, product._id);
+  }
+
   return template;
 }
 
-const hasSubscription = async (product) => {
+const addAdminIcons = (template, productId) => {
+  const icons = template.find(".icons");
+  for (let i = 0; i < icons.length; i++) {
+    const icon = $(icons[i]);
+    icon.removeClass("hiding");
+
+    if (icon.hasClass("editProduct")) {
+      icon.on("click", function () {
+        editProduct(productId);
+      });
+    } else if (icon.hasClass("removeProduct")) {
+      icon.on("click", function () {
+        removeProduct(productId);
+      });
+    } else if (icon.hasClass("addPeople")) {
+      icon.on("click", function () {
+        addPeople(productId);
+      });
+    }
+  }
+
+  const addProductBtn = $(".addProduct");
+  addProductBtn.removeClass("hiding");
+  addProductBtn.on("click", function () {
+    let error = false;
+    let html2 = swalItemAddProductCategory();
+    Swal.fire({
+      html: html2,
+      customClass: 'sweetalert-makeProductCategories',
+      showCancelButton: true,
+      showConfirmButton: false,
+      cancelButtonText: 'Cancel'
+    });
+  });
+}
+
+const hasProductSubscription = (product) => {
   for (i in user.subscriptions) {
     let subscription = user.subscriptions[i];
     if (subscription.description == product.productName) {
@@ -114,21 +158,25 @@ function addEventHandlersSession() {
 function clickEvents() {
 
   if (roleCheck()) {
+    console.log("is admin")
     // Add tooltips on icons
     createToolTip($(".editProduct"), "Wijzigen van product", "top");
     createToolTip($(".removeProduct"), "Verwijderen van product", "top");
     createToolTip($(".addPeople"), "Geef product cadeau", "top");
     $('[data-toggle="tooltip"]').tooltip();
+
     // Edit a session ->
     $(".editProduct").on("click", function () {
       const productId = $(this).parent().parent().parent().parent().attr("id");
       editProduct(productId);
     });
+
     // Remove a session ->
     $(".removeProduct").on("click", function () {
       const productId = $(this).parent().parent().parent().parent().attr("id");
       removeProduct(productId);
     });
+
     $(".addPeople").on("click", function () {
       const productId = $(this).parent().parent().parent().parent().attr("id");
       addPeople(productId);
@@ -302,7 +350,8 @@ $(".addProduct").on("click", async function () {
     showCancelButton: true,
     showConfirmButton: false,
     cancelButtonText: 'Cancel'
-  })
+  });
+
   $(".categoryButton").on("click", function () {
     setCategory(this.id);
     let html1 = swalItemAddProduct(category);
