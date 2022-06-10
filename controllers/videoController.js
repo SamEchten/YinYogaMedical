@@ -13,8 +13,9 @@ module.exports.streamFile = async (req, res) => {
     }
     // get video stats (about 61MB)
     try {
-        const videoPath = path.join(__dirname, "../media/videos/" + id);
-        const videoSize = fs.statSync(path.join(__dirname, "../media/videos/" + id)).size;
+        let video = await Video.findOne({ _id: id });
+        const videoPath = path.join(__dirname, "../media/videos/" + video.videoPath);
+        const videoSize = fs.statSync(path.join(__dirname, "../media/videos/" + video.videoPath)).size;
         //console.log(videoPath)
         // Parse Range
         // Example: "bytes=32324-"

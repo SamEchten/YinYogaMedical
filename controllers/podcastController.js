@@ -1,4 +1,44 @@
 const Podcast = require("../models/Podcast");
+const fs = require("fs");
+const path = require("path");
+
+module.exports.streamFile = async (req, res) => {
+    const id = req.params.id;
+    // Ensure there is a range given for the video
+    const range = req.headers.range;
+    if (!range) {
+        res.status(400).send("Requires Range header");
+    }
+    // get video stats (about 61MB)
+    try {
+        let podcast = await Podcast.findOne({ _id: id });
+        const podcastPath = path.join(__dirname, "../media/podcasts/" + podcast.podcastPath);
+        const podcastSize = fs.statSync(path.join(__dirname, "../media/podcasts/" + podcast.podcastPath)).size;
+        //console.log(videoPath)
+        // Parse Range
+        // Example: "bytes=32324-"
+        const CHUNK_SIZE = 10 ** 6; // 1MB
+        const start = Number(range.replace(/\D/g, ""));
+        const end = Math.min(start + CHUNK_SIZE, podcastSize - 1);
+        // Create headers
+        const contentLength = end - start + 1;
+        const headers = {
+            "Content-Range": `bytes ${start}-${end}/${podcastSize}`,
+            "Accept-Ranges": "bytes",
+            "Content-Length": contentLength,
+            "Content-Type": "audio/mpeg",
+        };
+        res.writeHead(206, headers);
+        // create video read stream for this particular chunk
+        const podcastStream = fs.createReadStream(podcastPath, { start, end });
+
+        // Stream the video chunk to the client
+        podcastStream.pipe(res);
+
+    } catch (err) {
+        console.log(err);
+    }
+};
 
 module.exports.get = async (req, res) => {
     const { id } = req.params;
