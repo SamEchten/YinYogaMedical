@@ -10,7 +10,7 @@ router.post("/webhook", controller.webHook);
 //Webhook for mollie to send subscription info to
 router.post("/subscriptions/webhook", controller.subscriptionWebhook);
 //Succes page after payments is succesfull
-router.get("/succes/:id", controller.succes);
+router.get("/succes", controller.succes);
 //Get all products
 router.get("/", controller.get);
 

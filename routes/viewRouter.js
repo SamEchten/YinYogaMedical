@@ -35,6 +35,10 @@ router.get("/profile/mySubscription", profileController.viewMySubscriptions);
 router.get("/profile/settings", profileController.viewSettings);
 router.get("/dashboard", dashboardController.viewDashboard);
 
+// Succes payment view 
+router.get("/payment", validateJwt, (req, res) => {
+    res.render(path.join(__dirname , "../views/paymentSucces"));
+});
 
 // Home ->
 router.get("/home", validateJwt, (req, res) => {

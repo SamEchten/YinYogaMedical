@@ -61,6 +61,9 @@ button {
 .profileItemNav {
         left: -105px !important;
 }
+.navbar {
+        box-shadow: 0px 0px 8px -5px black;
+}
 
 .inputStyle {
         /* border: none !important;

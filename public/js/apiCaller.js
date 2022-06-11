@@ -173,6 +173,21 @@ class ApiCaller {
             //error
         }
     }
+    static getSingleProduct = async (id) => {
+        let url = "/api/product/" + id;
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
     // Add a product -> *ADMIN*
     static addProduct = async (data) => {
         let url = "/api/product/";

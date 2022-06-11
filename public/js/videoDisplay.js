@@ -29,9 +29,13 @@ async function setvideoPlayer(id) {
 async function loadSuggestedVideos () {
     let allVideos = await getAllVideos();
     if(allVideos.length >= 3) {
-        for(let i = 0; i < 3; i++){
+        for(let i = 0; i < 17; i++){
             let randomVideo = allVideos[i];
-            displaySuggestedVideos(randomVideo);
+            if(randomVideo == undefined){
+
+            }else {
+                displaySuggestedVideos(randomVideo);
+            }
         }
     } else {
         for(items in allVideos) {
@@ -67,13 +71,18 @@ function getSuggestedVidElement(id, title)  {
     return `<div id="${id}"class="row cursor align-items-center smallVid">
                 <div class="col-md-12 h-100 smallVidItem">
                 <div class="row h-100 d4">
-                    <div class="col-md-9 h-100 smallThumbnailItem">
+                    <div class="col-md-5 smallThumbnailItem">
                         <div class="row h-100 text-center align-items-center">
                             <i class="playIcon bi bi-play-circle"></i>
                         </div>
                     </div>
-                    <div class="col-md-3 h-100 lead">
+                    <div class="col-md-7 lead">
                         ${title}
+                        <p class="text-start copyright">
+                        <small>
+                            By Natascha Puper ©
+                        </small>
+                        </p>
                     </div>
                 </div>
                 </div>
