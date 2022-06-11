@@ -25,17 +25,6 @@ const loadProducts = async () => {
 
   const addProductBtn = $(".addProduct");
   addProductBtn.removeClass("hiding");
-  addProductBtn.on("click", function () {
-    let error = false;
-    let html2 = swalItemAddProductCategory();
-    Swal.fire({
-      html: html2,
-      customClass: 'sweetalert-makeProductCategories',
-      showCancelButton: true,
-      showConfirmButton: false,
-      cancelButtonText: 'Cancel'
-    });
-  });
 }
 
 const loadCategory = async (row) => {
