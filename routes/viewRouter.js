@@ -21,6 +21,7 @@ router.get("/agenda", sessionController.view);
 //Products ->
 //TODO: add jwt validation
 router.get("/producten", productController.view);
+router.get("/producten/succes", productController.succes);
 
 //Videos ->
 router.get("/videos/", videoController.view);
@@ -37,7 +38,7 @@ router.get("/dashboard", dashboardController.viewDashboard);
 
 // Succes payment view 
 router.get("/payment", validateJwt, (req, res) => {
-    res.render(path.join(__dirname , "../views/paymentSucces"));
+    res.render(path.join(__dirname, "../views/paymentSucces"));
 });
 
 // Home ->
