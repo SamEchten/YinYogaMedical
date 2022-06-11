@@ -5,18 +5,16 @@ const { runInNewContext } = require("vm");
 const Video = require("../models/Video");
 
 module.exports.streamFile = async (req, res) => {
-    const id = req.params.id;
-    // Ensure there is a range given for the video
+    const fileName = req.params.fileName;
+
     const range = req.headers.range;
     if (!range) {
         res.status(400).send("Requires Range header");
     }
     // get video stats (about 61MB)
     try {
-        let video = await Video.findOne({ _id: id });
-        const videoPath = path.join(__dirname, "../media/videos/" + video.videoPath);
-        const videoSize = fs.statSync(path.join(__dirname, "../media/videos/" + video.videoPath)).size;
-        //console.log(videoPath)
+        const videoPath = path.join(__dirname, "../media/videos/" + fileName);
+        const videoSize = fs.statSync(path.join(__dirname, "../media/videos/" + fileName)).size;
         // Parse Range
         // Example: "bytes=32324-"
         const CHUNK_SIZE = 10 ** 6; // 1MB
@@ -41,6 +39,7 @@ module.exports.streamFile = async (req, res) => {
         console.log(err);
     }
 };
+
 
 // Render video page
 module.exports.view = (req, res) => {

@@ -400,8 +400,8 @@ module.exports.gift = async (req, res) => {
 }
 
 module.exports.succes = async (req, res) => {
-    // res.render(path.join(__dirname, "../views/paymentSucces"));
-    res.send("succes");
+    res.render(path.join(__dirname, "../views/paymentSucces"));
+
 }
 
 const addClassPass = async (user, product) => {

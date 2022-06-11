@@ -10,9 +10,9 @@ router.get("/", controller.get)
 
 router.use(validateJwt);
 //Stream het bestand van een video
-router.get("/stream/:id", validateSubscription, controller.streamFile);
+router.get("/stream/:fileName/:userId", controller.streamFile);
 //Get info about one or all videos
-router.get("/:id", validateSubscription, controller.get)
+router.get("/:id", controller.get)
 
 router.use(validateAdmin);
 // Delete a video or MP3

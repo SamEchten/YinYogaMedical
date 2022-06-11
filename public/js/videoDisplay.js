@@ -18,8 +18,8 @@ async function getVideoInfo(id){
 async function setvideoPlayer(id) {
     let baseUrl = "https://localhost:80/api/video/stream/"
     let json = await getVideoInfo(id);
-    console.log(json);
-    let vidElement = $("<source src="+ baseUrl + json.videoPath +"></source>");
+    let videoSrc = baseUrl + json.videoPath + "/" + user.id;
+    let vidElement = $(`<source src='${videoSrc}'>`);
     $("#videoPlayer").append(vidElement);
     //$("#videoPlayer").attr("poster", "/static/" + json.thumbnailPath);
     $(".videoTitle").text(json.title);
