@@ -59,10 +59,12 @@ const authRouter = require("./routes/authRouter");
 const sessionRouter = require("./routes/sessionRouter");
 const productRouter = require("./routes/productRouter");
 const videoRouter = require("./routes/videoRouter");
+const podcastRouter = require("./routes/podcastRouter");
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/session", sessionRouter);
 app.use("/api/product", productRouter);
-app.use("/api/video", videoRouter)
+app.use("/api/video", videoRouter);
+app.use("/api/podcast", podcastRouter);
 app.use(viewRouter);
