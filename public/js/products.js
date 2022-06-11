@@ -22,6 +22,20 @@ const loadProducts = async () => {
     }
     await loadCategory(row);
   }
+
+  const addProductBtn = $(".addProduct");
+  addProductBtn.removeClass("hiding");
+  addProductBtn.on("click", function () {
+    let error = false;
+    let html2 = swalItemAddProductCategory();
+    Swal.fire({
+      html: html2,
+      customClass: 'sweetalert-makeProductCategories',
+      showCancelButton: true,
+      showConfirmButton: false,
+      cancelButtonText: 'Cancel'
+    });
+  });
 }
 
 const loadCategory = async (row) => {
@@ -85,20 +99,6 @@ const addAdminIcons = (template, productId) => {
       });
     }
   }
-
-  const addProductBtn = $(".addProduct");
-  addProductBtn.removeClass("hiding");
-  addProductBtn.on("click", function () {
-    let error = false;
-    let html2 = swalItemAddProductCategory();
-    Swal.fire({
-      html: html2,
-      customClass: 'sweetalert-makeProductCategories',
-      showCancelButton: true,
-      showConfirmButton: false,
-      cancelButtonText: 'Cancel'
-    });
-  });
 }
 
 const hasProductSubscription = (product) => {
