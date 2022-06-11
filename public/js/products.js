@@ -23,8 +23,10 @@ const loadProducts = async () => {
     await loadCategory(row);
   }
 
-  const addProductBtn = $(".addProduct");
-  addProductBtn.removeClass("hiding");
+  if (roleCheck()) {
+    const addProductBtn = $(".addProduct");
+    addProductBtn.removeClass("hiding");
+  }
 }
 
 const loadCategory = async (row) => {
