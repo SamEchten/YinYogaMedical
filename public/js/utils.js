@@ -176,7 +176,7 @@ function createDateString(date, time) {
 // Checks client role  ->
 function roleCheck() {
   try {
-    console.log(user)
+
     if (user.isEmployee) {
       return true
     } else {
