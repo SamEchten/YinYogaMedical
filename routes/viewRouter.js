@@ -8,6 +8,7 @@ const userController = require("../controllers/userController");
 const profileController = require("../controllers/profileController");
 const productController = require("../controllers/productController");
 const videoController = require("../controllers/videoController");
+const dashboardController = require("../controllers/dashboardController");
 
 //Auth ->
 router.get("/login", authController.login_get);
@@ -32,6 +33,7 @@ router.get("/profile/myPoducts", profileController.viewMyProducts);
 router.get("/profile/myPayments", profileController.viewMyPayments);
 router.get("/profile/mySubscription", profileController.viewMySubscriptions);
 router.get("/profile/settings", profileController.viewSettings);
+router.get("/dashboard", dashboardController.viewDashboard);
 
 
 // Home ->

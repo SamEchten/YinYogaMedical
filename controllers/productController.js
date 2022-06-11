@@ -241,6 +241,7 @@ const startSubscription = async (product, user) => {
             const checkOutUrl = payment.getCheckoutUrl();
             return { checkOutUrl: checkOutUrl };
         } catch (err) {
+            console.log(err);
             return { message: "U heeft dit abonnement al gekocht" };
         }
     } else {
@@ -344,7 +345,7 @@ const isAdmin = async (userId) => {
 const createPayment = async (product, user) => {
     const price = product.price;
     const description = product.productName;
-    const redirectUrl = config.webhookUrl + "/producten?succes=true&productId=" + product.id + "";
+    const redirectUrl = config.webhookUrl + "/producten/succes/" + product.id + "";
     const webHookUrl = config.webhookUrl + "/api/product/webhook";
     const productId = product.id;
     const customerId = user.customerId;

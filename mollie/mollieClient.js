@@ -36,7 +36,7 @@ module.exports.cancelSubscription = async (subId, customerId) => {
 }
 
 module.exports.createFirstPayment = async (product, user) => {
-    const redirectUrl = config.webhookUrl + "/producten?succes=true&productId=" + product.id + "";
+    const redirectUrl = config.webhookUrl + "/producten/succes/" + product.id + "";
     const webHookUrl = config.webhookUrl + "/api/product/webhook/";
     const payment = await this.createPayment(
         product.price, product.productName, redirectUrl, webHookUrl, product.id, user.id, user.customerId, "first"

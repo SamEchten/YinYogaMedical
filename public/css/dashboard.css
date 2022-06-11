@@ -1,0 +1,46 @@
+.main-wrapper {
+    height: 100vh;
+}
+
+#menuContainer {
+    background-color: lightgrey;
+}
+
+#menuTopRow {
+    border-bottom: 1px solid #D5CA9B;
+}
+
+#menuContentRow {}
+
+#titleContainer {}
+
+#contentContainer {}
+
+body {
+    background-color: #eee
+}
+
+.nav-link {
+    border-radius: 0px !important;
+    transition: all 0.5s;
+    width: 100px;
+    display: flex;
+    flex-direction: column
+}
+
+.nav-link small {
+    font-size: 12px
+}
+
+.nav-link:hover {
+    background-color: #52525240 !important
+}
+
+.nav-link .fa {
+    transition: all 1s;
+    font-size: 20px
+}
+
+.nav-link:hover .fa {
+    transform: rotate(360deg)
+}
