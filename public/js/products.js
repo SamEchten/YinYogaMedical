@@ -446,7 +446,6 @@ function buyProduct(product) {
   Swal.fire(options)
     .then(async (result) => {
       if (result.isConfirmed) {
-        buyAProduct(user.id, id);
       } else if (result.isDenied) {
         Swal.fire({
           html: html2,
@@ -464,6 +463,14 @@ function buyProduct(product) {
             giftProductAsUser(tempdata, id);
           }
         });
+      }
+    });
+    $(".swal2-confirm").css("display", "none");
+    $("#TOS").on("change", function(){
+      if($("#TOS").is(":checked")) {
+        $(".swal2-confirm").css("display", "block");
+      }else {
+        $(".swal2-confirm").css("display", "none");
       }
     });
 }

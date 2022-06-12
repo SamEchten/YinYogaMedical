@@ -253,7 +253,10 @@ function swalItemSubscribeToSession(lesson) {
     <p><b> Hoeveel personen wilt u inschrijven?</b></p>
     <div class="row width">
       <div class="col-md-12 text-start">
-        <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
+        <input id="nrOfPeople" value="1" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="1">
+        <div class="alert alert-primary" role="alert">
+          <label for="lname"><i class="bi bi-info-circle pe-2"></i><small>De duur van de les zal worden afgeschreven van uw saldo, ook die van de mensen die u mee neemt.</small></label>
+        </div>
       </div>
     </div>
     <p><b id="extraPeopleTitle"></b></p>
