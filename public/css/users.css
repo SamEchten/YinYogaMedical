@@ -28,6 +28,7 @@
 #usersContainer {
     border-right: 1px solid #dadada;
     overflow: auto;
+    height: 100%;
 }
 
 .usersContainer::-webkit-scrollbar {

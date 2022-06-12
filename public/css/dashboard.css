@@ -2,6 +2,7 @@
     display: flex;
     width: 100%;
     align-items: stretch;
+    height: 100vh;
 }
 
 .items {
