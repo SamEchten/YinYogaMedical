@@ -43,6 +43,7 @@ app.use("/static", express.static(path.join(__dirname, "public/css")));
 app.use("/static", express.static(path.join(__dirname, "public/js")));
 app.use("/static", express.static(path.join(__dirname, "public/images/")));
 app.use("/static", express.static(path.join(__dirname, "public/images/thumbnails")));
+app.use("/static", express.static(path.join(__dirname, "views/dashboard")));
 
 // Serving bootstrap files ->
 app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
