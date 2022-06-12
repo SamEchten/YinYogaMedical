@@ -28,9 +28,10 @@ async function setvideoPlayer(id) {
 
 async function loadSuggestedVideos () {
     let allVideos = await getAllVideos();
-    if(allVideos.length >= 3) {
+    let randomVid = shuffleArray(allVideos);
+    if(randomVid.length >= 3) {
         for(let i = 0; i < 17; i++){
-            let randomVideo = allVideos[i];
+            let randomVideo = randomVid[i];
             if(randomVideo == undefined){
 
             }else {
@@ -38,7 +39,7 @@ async function loadSuggestedVideos () {
             }
         }
     } else {
-        for(items in allVideos) {
+        for(items in randomVid) {
            console.log("less than 3 vids");
         }
     }
