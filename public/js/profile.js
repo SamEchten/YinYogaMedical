@@ -38,6 +38,8 @@ $(".setting").on("click", async function () {
                 <p>Momenteel heeft u <b>`+ json.saldo +`</b> uren</p>
                 </div>`)
             }
+            $(".showPaymentHistory").html(`
+            `)
         });
     }
         else if(this.id == "abonnement")
@@ -58,7 +60,8 @@ $(".setting").on("click", async function () {
                         </div>`)
                 });
             }
-            else{
+            else
+            {
                 $(".settingsContent").load("profile/mySubscription", function(){
                     $(".abonnementContent").html(`
                         <div class="col-md-12">
