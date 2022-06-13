@@ -278,6 +278,23 @@ class ApiCaller {
         }
     }
 
+    
+    static paymentHistory = async (id) => {
+        let url = "api/user/purchasehistory/" + id;
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
     // Gets all users with information -> *ADMIN*
     static getAllUsers = async () => {
         let url = "/api/user/";
