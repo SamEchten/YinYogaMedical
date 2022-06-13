@@ -140,6 +140,11 @@ h4 {
         color: #767676 !important;
         border-color: #D5CA9B !important;
 }
+.swal2-popup {
+        background-color: rgb(255 255 255);
+        border-top: 20px solid #d5ca9b !important;
+        box-shadow: 0px 1px 12px -2px #0e0e0e !important;
+}
 
 .yinStyle:hover {
         background-color: #D5CA9B !important;

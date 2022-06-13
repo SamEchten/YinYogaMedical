@@ -23,11 +23,12 @@ html {
 }
 .smallVid {
     height: 30%;
-    padding: 10px;
+    padding: 5px;
     transition: 0.2s;
+    
 }
 .smallVid:hover {
-    background-color: rgb(224, 224, 224);
+    /* background-color: rgb(224, 224, 224); */
 }
 .playIcon {
     font-size: 67px;
@@ -39,10 +40,15 @@ html {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    
 }
 .smallVidItem {
-    /* background: #f5f5f5;
-    border-left: 2px solid #d5ca9b; */
+    background-color: rgb(238, 238, 238);
+    border-left: 2px solid #D5CA9B;
+    border-bottom: 1px solid #dadada;
+    border-right: 1px solid #dadada;
+    border-top: 1px solid #dadada;
+    border-radius: 4px;
 }
 .descriptionVid {
 

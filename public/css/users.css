@@ -1,0 +1,41 @@
+.userRow {
+    background-color: #41414112;
+    border-left: 2px solid #6c757d;
+    border-bottom: 1px solid #dadada;
+    border-right: 1px solid #dadada;
+    border-top: 1px solid #dadada;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    padding: 15px;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+    transition: 0.2s;
+}
+
+.userRow:hover {
+    background-color: #41414157 !important;
+}
+
+.header {
+    height: 10%;
+}
+
+.content {
+    height: 90%;
+}
+
+#usersContainer {
+    border-right: 1px solid #dadada;
+    overflow: auto;
+    height: 100%;
+}
+
+.usersContainer::-webkit-scrollbar {
+    display: none !important;
+}
+
+#usersHeader {
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}

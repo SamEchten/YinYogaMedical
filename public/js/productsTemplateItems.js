@@ -384,7 +384,11 @@ function swalBuyProductCheck(product) {
     template = `
       <h2>Abonnement afsluiten</h2>
       <hr>
-      <p>Wanneer u dit abonnement afsluit gaat u er mee akkoord dat er elke maand €${price} euro zal worden afgeschreven.</p>`
+      <p>Wanneer u dit abonnement afsluit gaat u er mee akkoord dat er elke maand €${price} euro zal worden afgeschreven.</p>
+      <div class="alert alert-warning" role="alert">
+        <label for="lname"><i class="bi bi-exclamation-diamond pe-2"></i><small>Hierbij accepteer ik de algemene voorwaarden voor het afsluiten van een abonnement</small></label>
+        <input id="TOS" type="checkbox" id="lname" name="lname">
+      </div>`
   } else {
     template = `
       <h2>Product kopen</h2>

@@ -26,6 +26,7 @@ router.get("/producten/succes", productController.succes);
 //Videos ->
 router.get("/videos/", videoController.view);
 router.get("/videos/:id", videoController.videoDisplay);
+
 //profile ->
 //TODO: add jwt validation
 router.get("/profile/", profileController.viewProfile);
@@ -34,6 +35,8 @@ router.get("/profile/myPoducts", profileController.viewMyProducts);
 router.get("/profile/myPayments", profileController.viewMyPayments);
 router.get("/profile/mySubscription", profileController.viewMySubscriptions);
 router.get("/profile/settings", profileController.viewSettings);
+
+//Dashboard
 router.get("/dashboard", dashboardController.viewDashboard);
 
 // Succes payment view 
