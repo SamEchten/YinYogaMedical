@@ -5,30 +5,28 @@ const productText = $(".amountOfProducts");
 
 const setUserText = async () => {
     let res = await ApiCaller.getAllUsers();
-    let users = await res.json();
-    userText.html(users.length);
+    let amountOfUsers = (await res.json()).length;
+    userText.html(amountOfUsers);
 }
 
-const setSubscriptions = async () => {
+const setSubscriptionText = async () => {
     let res = await ApiCaller.getAllProducts();
     let products = await res.json();
+}
+
+const setSessionText = async () => {
 
 }
 
-const setSessions = async () => {
-
-}
-
-const setProducts = async () => {
+const setProductText = async () => {
 
 }
 
 (async () => {
     setUserText();
-    setSubscriptions();
-    setSessions();
-    setProducts();
-    $("#content").load("/static/users.ejs");
+    setSubscriptionText();
+    setSessionText();
+    setProductText();
 })();
 
 //--------------------------------------------------//
@@ -40,18 +38,22 @@ $(".toggleSideBar").on("click", function () {
     $('#sidebar').toggleClass('active');
 });
 
+$("#dashboardBtn").on("click", function () {
+    location.reload();
+});
+
 $("#usersBtn").on("click", function () {
-    container.load();
+    container.load("/static/users.ejs");
 });
 
 $("#productsBtn").on("click", function () {
-    container.load();
+    container.load("/static/products.ejs");
 });
 
 $("#sessionsBtn").on("click", function () {
-    container.load();
+    container.load("/static/sessions.ejs");
 });
 
 $("#toScheduleBtn").on("click", function () {
-    container.load();
+    container.load("/static/toSchedule.ejs");
 });

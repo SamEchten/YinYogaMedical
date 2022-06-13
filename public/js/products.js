@@ -18,7 +18,7 @@ const loadProducts = async () => {
   for (i in allProducts) {
     const row = allProducts[i];
     if (row.category == "Overige producten") {
-      row.category = "overig";
+      row.category = "Overig";
     }
     await loadCategory(row);
   }
@@ -65,6 +65,7 @@ const loadProduct = async (product) => {
 
   if (roleCheck()) {
     addAdminIcons(template, product._id);
+    buyBtn.addClass("disabled");
   }
 
   return template;
@@ -120,9 +121,10 @@ async function loadSingleProduct(product, category) {
 }
 
 async function reloadProducts() {
-  $("#stripcards").empty();
-  $("#subscriptions").empty();
-  $("#otherProducts").empty();
+  $("#Strippenkaarten").empty();
+  $("#Abonnementen").empty();
+  $("#Overig").empty();
+  await getProducts();
   loadProducts();
 }
 
@@ -195,9 +197,9 @@ async function editProduct(productId) {
       html: html,
       customClass: 'sweetalert-makeProduct',
       showCancelButton: true,
-      confirmButtonText: 'Update les',
+      confirmButtonText: 'Update',
       confirmButtonColor: '#D5CA9B',
-      cancelButtonText: 'Terug',
+      cancelButtonText: 'Annuleren',
     }).then(async (result) => {
       if (result.isConfirmed) {
         let jsonData = {
@@ -416,9 +418,9 @@ async function addProduct() {
 
 // buy product
 function buyProduct(product) {
+  console.log(product);
   let html1 = swalBuyProductCheck(product);
   let html2 = swalGiftProduct();
-  console.log(product);
   const id = product._id;
 
   const options = {
@@ -427,25 +429,30 @@ function buyProduct(product) {
     customClass: {
       html: 'sweetalert-subscribe',
       denyButton: 'giftButton',
-      cancelButton: 'cancelButton'
+      cancelButton: 'cancelButton',
+      confirmButton: 'buySub'
     },
     showCancelButton: true,
     confirmButtonText: 'Abonnement afsluiten',
     confirmButtonColor: '#D5CA9B',
-    cancelButtonText: 'Cancel'
+    cancelButtonText: 'Annuleren'
   };
 
-  if (product.category != "Abonnementen") {
+  if (!product.recurring) {
     options.icon = null;
     options.denyButton = 'giftButton';
     options.denyButtonText = '<i class="bi bi-gift"></i> &nbsp; Doe product cadeau';
     options.confirmButtonText = 'Product kopen';
     options.showDenyButton = true;
+    options.customClass["confirmButton"] = "buyBtn";
   }
+
+  console.log(options);
 
   Swal.fire(options)
     .then(async (result) => {
       if (result.isConfirmed) {
+        buyAProduct(user.id, id);
       } else if (result.isDenied) {
         Swal.fire({
           html: html2,
@@ -465,14 +472,19 @@ function buyProduct(product) {
         });
       }
     });
-    $(".swal2-confirm").css("display", "none");
-    $("#TOS").on("change", function(){
-      if($("#TOS").is(":checked")) {
-        $(".swal2-confirm").css("display", "block");
-      }else {
-        $(".swal2-confirm").css("display", "none");
-      }
-    });
+
+  $(".buySub").css("display", "none");
+  $("#TOS").on("change", function () {
+    if ($("#TOS").is(":checked")) {
+      $(".buySub").css("display", "block");
+    } else {
+      $(".buySub").css("display", "none");
+    }
+  });
+
+  $(".addButton").on("click", function () {
+    buyAProduct(user.id, id);
+  })
 }
 
 async function buyAProduct(data, productId) {
@@ -489,7 +501,3 @@ async function buyAProduct(data, productId) {
   } catch (err) {
   }
 }
-
-
-
-
