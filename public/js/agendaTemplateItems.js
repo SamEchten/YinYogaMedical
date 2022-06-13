@@ -254,6 +254,7 @@ function swalItemSubscribeToSession(lesson) {
     <div class="row width">
       <div class="col-md-12 text-start">
         <input id="nrOfPeople" value="1" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="1">
+        <p id="saldoText">Uw saldo is <b id="saldo"></b> uur. Deze les kost <b id="sessionCost"></b> uur.</p>
         <div class="alert alert-primary" role="alert">
           <label for="lname"><i class="bi bi-info-circle pe-2"></i><small>De duur van de les zal worden afgeschreven van uw saldo, ook die van de mensen die u mee neemt.</small></label>
         </div>
