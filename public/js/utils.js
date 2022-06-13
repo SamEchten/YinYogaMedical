@@ -1,8 +1,9 @@
-let cookie = JSON.parse($.cookie("user"));
+let cookie;
 let user;
 let allUsers;
 
-if (cookie) {
+if($.cookie("user")) {
+  cookie = JSON.parse($.cookie("user"));
   user = cookie;
 }
 
