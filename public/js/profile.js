@@ -3,6 +3,8 @@ $(".setting").on("click", async function () {
     $(".settingsContent").empty();
     const userConst = await ApiCaller.getUserInfo(user.id);
     const json = await userConst.json();
+    const payments = await ApiCaller.paymentHistory(user.id);
+    const jsonPayment = await payments.json();
     console.log(json);
     if (this.id == "profiel")
     {
@@ -16,6 +18,7 @@ $(".setting").on("click", async function () {
     }
     else if (this.id == "product")
     {
+        console.log(jsonPayment)
         $(".settingsContent").load("profile/myPoducts", function(){
             if(json.saldo == 0)
             {
@@ -38,8 +41,7 @@ $(".setting").on("click", async function () {
                 <p>Momenteel heeft u <b>`+ json.saldo +`</b> uren</p>
                 </div>`)
             }
-            $(".showPaymentHistory").html(`
-            `)
+            $(".showPaymentHistory").html(``)
         });
     }
         else if(this.id == "abonnement")
