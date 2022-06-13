@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 module.exports.streamFile = async (req, res) => {
-    const id = req.params.id;
+    const fileName = req.params.fileName;
     // Ensure there is a range given for the video
     const range = req.headers.range;
     if (!range) {
@@ -11,9 +11,8 @@ module.exports.streamFile = async (req, res) => {
     }
     // get video stats (about 61MB)
     try {
-        let podcast = await Podcast.findOne({ _id: id });
-        const podcastPath = path.join(__dirname, "../media/podcasts/" + podcast.podcastPath);
-        const podcastSize = fs.statSync(path.join(__dirname, "../media/podcasts/" + podcast.podcastPath)).size;
+        const podcastPath = path.join(__dirname, "../media/podcasts/" + fileName);
+        const podcastSize = fs.statSync(path.join(__dirname, "../media/podcasts/" + fileName)).size;
         //console.log(videoPath)
         // Parse Range
         // Example: "bytes=32324-"
