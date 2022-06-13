@@ -1,3 +1,14 @@
+$(".settingsContent").ready(async function (){
+    const userConst = await ApiCaller.getUserInfo(user.id);
+    const json = await userConst.json();
+    $(".settingsContent").load("profile/myProfile", function (){
+        $("#accountName").html(``+ json.fullName +`<i class="bi bi-pencil" onclick="changeInfo('name')"></i>`);
+        $("#accountEmail").html(``+ json.email +`<i class="bi bi-pencil" onclick="changeInfo('email')"></i>`);
+        $("#accountPhoneNumber").html(``+ json.phoneNumber +`<i class="bi bi-pencil" onclick=""></i>`);
+        $("#notes").html(json.notes);
+    });
+});
+
 //click on nav and change the content
 $(".setting").on("click", async function () {
     $(".settingsContent").empty();
@@ -6,9 +17,9 @@ $(".setting").on("click", async function () {
     const payments = await ApiCaller.paymentHistory(user.id);
     const jsonPayment = await payments.json();
     console.log(json);
+    let allBoughtItems = "";
     if (this.id == "profiel")
     {
-        
         $(".settingsContent").load("profile/myProfile", function (){
             $("#accountName").html(``+ json.fullName +`<i class="bi bi-pencil" onclick="changeInfo('name')"></i>`);
             $("#accountEmail").html(``+ json.email +`<i class="bi bi-pencil" onclick="changeInfo('email')"></i>`);
@@ -18,7 +29,6 @@ $(".setting").on("click", async function () {
     }
     else if (this.id == "product")
     {
-        console.log(jsonPayment)
         $(".settingsContent").load("profile/myPoducts", function(){
             if(json.saldo == 0)
             {
@@ -41,7 +51,35 @@ $(".setting").on("click", async function () {
                 <p>Momenteel heeft u <b>`+ json.saldo +`</b> uren</p>
                 </div>`)
             }
-            $(".showPaymentHistory").html(``)
+            console.log(jsonPayment.products[1]);
+            for(i = 0; i < jsonPayment.products.length; i++)
+            {
+                const product = jsonPayment.products[i];
+                const date = new Date(product.paidAt);
+                const month = date.getMonth()+1;
+                allBoughtItems += ` <div class='row'>
+                                        <div class='col-md-5'>
+                                            <p class='m-0'>
+                                                Product '`+ jsonPayment.products[i].description +`' gekocht voor &euro;`+ jsonPayment.products[i].amount.value +`
+                                            </p>
+                                        </div>
+                                        <div class='col-md-7'>
+                                            <p class='m-0'> 
+                                                
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col=md-12 pb-3'>
+                                            <p class='fontSizeText'>Gekocht op: 
+                                            <i>
+                                                `+ date.getDate() +`-`+ month +`-`+ date.getFullYear() +`
+                                            </i>
+                                            </p>
+                                        </div>
+                                    </div>`
+            }
+            $(".showPaymentHistory").html(allBoughtItems);
         });
     }
         else if(this.id == "abonnement")
@@ -154,8 +192,8 @@ async function acceptName(type) {
         if(res.status == 200){
             console.log("succes");
             toastPopUp("Uw email is geüpdate", "success");
-        }else{
-            console.log("pech");
+        }else if(res.status == 503){
+            toastPopUp("Dit email emailadress is al in gebruik", "error");
         }    
         const userConst = await ApiCaller.getUserInfo(user.id);
         const jsonload = await userConst.json();
@@ -232,7 +270,6 @@ async function denyName() {
         $("#accountPhoneNumber").html(``+ json.phoneNumber +`<i class="bi bi-pencil" onclick="changeInfo('phoneNumber')"></i>`);
         $("#titleNotes").html(`<b>Notities <i class="bi bi-pencil" onclick="changeInfo('notes')"></i></b>`);
         $("#notes").html(json.notes);
-    
     })
 }
 
