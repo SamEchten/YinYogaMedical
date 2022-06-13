@@ -35,6 +35,7 @@ const setProductAndSubText = async () => {
 //--------------------------------------------------//
 const container = $("#content");
 
+
 $(".toggleSideBar").on("click", function () {
     $('#sidebar').toggleClass('active');
 });
@@ -48,13 +49,16 @@ $("#usersBtn").on("click", function () {
 });
 
 $("#productsBtn").on("click", function () {
+    container.empty();
     container.load("/static/products.ejs");
 });
 
 $("#sessionsBtn").on("click", function () {
+    container.empty();
     container.load("/static/sessions.ejs");
 });
 
 $("#toScheduleBtn").on("click", function () {
+    container.empty();
     container.load("/static/toSchedule.ejs");
 });
