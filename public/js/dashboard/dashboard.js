@@ -9,24 +9,25 @@ const setUserText = async () => {
     userText.html(amountOfUsers);
 }
 
-const setSubscriptionText = async () => {
-    let res = await ApiCaller.getAllProducts();
-    let products = await res.json();
-}
-
 const setSessionText = async () => {
-
+    let res = await ApiCaller.getSessionStats();
+    let sessionStats = await res.json();
+    console.log(sessionStats);
+    sessionText.html(sessionStats.amountOfSessions);
 }
 
-const setProductText = async () => {
+const setProductAndSubText = async () => {
+    let res = await ApiCaller.getProductStats();
+    let data = await res.json();
 
+    productText.html(data.amountOfBoughtProducts);
+    subscriptionText.html(data.amountOfBoughtSubscriptions);
 }
 
 (async () => {
     setUserText();
-    setSubscriptionText();
     setSessionText();
-    setProductText();
+    setProductAndSubText();
 })();
 
 //--------------------------------------------------//

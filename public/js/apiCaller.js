@@ -295,6 +295,38 @@ class ApiCaller {
         }
     }
 
+    static getSessionStats = async () => {
+        let url = "/api/dashboard/sessionStats";
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    static getProductStats = async () => {
+        let url = "/api/dashboard/productStats";
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
     // Gets the info of the user
     static getUserInfo = async (id) => {
         let url = "/api/user/" + id;
