@@ -21,7 +21,8 @@ module.exports.get = async (req, res) => {
                     notes: user.notes,
                     saldo: user.classPassHours,
                     subscriptions: user.subscriptions,
-                    isEmployee: user.isEmployee
+                    isEmployee: user.isEmployee,
+                    customerId: user.customerId
                 });
             } else {
                 res.status(404).json({ message: "Geen user gevonden met dit id" });
@@ -44,7 +45,8 @@ module.exports.get = async (req, res) => {
                     notes: user.notes,
                     saldo: user.classPassHours,
                     subscriptions: user.subscriptions,
-                    isEmployee: user.isEmployee
+                    isEmployee: user.isEmployee,
+                    customerId: user.customerId
                 });
             }
             res.status(200).json(allUsers);

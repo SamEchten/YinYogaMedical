@@ -6,5 +6,4 @@ const controller = require("../controllers/dashboardController");
 router.get("/productStats", controller.productStats);
 router.get("/sessionStats", controller.sessionStats);
 
-
 module.exports = router;

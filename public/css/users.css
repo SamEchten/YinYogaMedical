@@ -17,6 +17,36 @@
     background-color: #41414157 !important;
 }
 
+.searchRow {
+    border-bottom: 1px solid #dadada;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
+.userInfo {
+    padding-top: 10px;
+}
+
+.addUserHeader {
+    border-bottom: 1px solid #dadada;
+}
+
+.searchCol {
+    padding: 0px !important;
+    padding-bottom: 20px !important;
+}
+
+.addUserCol {
+    margin-top: 10px !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
+.rightContainer {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 .header {
     height: 10%;
 }
@@ -25,7 +55,7 @@
     height: 90%;
 }
 
-#usersContainer {
+#leftContainer {
     border-right: 1px solid #dadada;
     overflow: auto;
     height: 100%;

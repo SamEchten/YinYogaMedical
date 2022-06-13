@@ -6,6 +6,22 @@ module.exports.viewDashboard = async (req, res) => {
     res.render(path.join(__dirname, "../views/dashboard/dashboard"));
 }
 
+module.exports.viewUsers = async (req, res) => {
+    res.render(path.join(__dirname, "../views/dashboard/users"));
+}
+
+module.exports.viewProducts = async (req, res) => {
+    res.render(path.join(__dirname, "../views/dashboard/products"));
+}
+
+module.exports.viewSessions = async (req, res) => {
+    res.render(path.join(__dirname, "../views/dashboard/sessions"));
+}
+
+module.exports.viewToSchedule = async (req, res) => {
+    res.render(path.join(__dirname, "../views/dashboard/toSchedule"));
+}
+
 module.exports.productStats = async (req, res) => {
     const transactions = await Transactions.find({});
     let amountOfBoughtProducts = 0;

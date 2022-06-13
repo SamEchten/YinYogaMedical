@@ -1,26 +1,169 @@
-<div class="row header">
-    <div class="col-md">
-        <h1 class="display-4 ps-5">Klanten</h1>
-    </div>
-</div>
-<div class="row content">
-    <div class="col-md-6" id="usersContainer">
-        <div id="usersHeader">
-            <h5>Alle geregistreerde klanten op uw platform</h1>
-                <p>Hieronder vindt u alle geregistreerde klanten op uw platform, klik op een klant om zijn of haar
-                    gegevens
-                    te kunnen bekijken.</p>
-                <hr>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="icon" type="image/png" href="../static/favicon.png" />
+    <link rel="stylesheet" href="../static/dashboard.css">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="../static/users.css">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../bicons/bootstrap-icons.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+        integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+
+        <nav id="sidebar">
+            <div class="toggleSideBar"><i class="bi bi-chevron-right"></i></div>
+            <div class="sidebar-header">
+                <h3 class="display-6 today">Welkom Natascha</h3>
+            </div>
+
+            <ul class="list-unstyled lead components">
+                <p class="lead">Maandag 11-6-2022</p>
+                <li class="">
+                    <a href="#homeSubmenu" id="dashboardBtn" data-bs-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle"><i class="bi bi-speedometer2 pe-2"></i> Dashboard</a>
+                </li>
+                <!-- <li>
+                    
+                    <!-- <a href="#pageSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+                        class="bi bi-people pe-2"></i> Klanten <i class="bi bi-chevron-down float-right"></i>
+                    </a> -->
+
+                <!-- <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a class="lbs subItems" href="#">inzichten <i
+                                    class="bi bi-chevron-right float-right"></i></a>
+                        </li>
+                        <li>
+                            <a class="lbs subItems" href="#">Producten <i
+                                    class="bi bi-chevron-right float-right"></i></a>
+                        </li>
+                        <li>
+                            <a class="lbs subItems" href="#">Betalingen <i
+                                    class="bi bi-chevron-right float-right"></i></a>
+                        </li>
+                    </ul> 
+                </li> -->
+                <li>
+                    <a href="#" id="usersBtn"><i class="bi bi-people pe-2"></i> Klanten</a>
+                </li>
+                <li>
+                    <a href="#" id="productsBtn"><i class="bi bi-box-seam pe-2 "></i> Producten</a>
+                </li>
+                <li>
+                    <a href="#" id="sessionsBtn"><i class="bi bi-calendar4-week pe-2"></i> Lessen</a>
+                </li>
+                <li>
+                    <a href="#" id="toScheduleBtn"><i class="bi bi-journal-plus pe-2"></i> To schedule</a>
+                </li>
+            </ul>
+        </nav>
+        <div id="content" class="container-fluid">
+            <!--Content-->
+            <div class="row header">
+                <div class="col-md">
+                    <h1 class="display-4 ps-5">Klanten</h1>
+                </div>
+            </div>
+            <div class="row content">
+                <div class="col-md-6 leftContainer">
+                    <div id="usersHeader">
+                        <h5>Alle geregistreerde klanten op uw platform</h1>
+                            <p>Hieronder vindt u alle geregistreerde klanten op uw platform, klik op een klant om zijn
+                                of haar
+                                gegevens
+                                te bekijken.</p>
+                            <hr>
+                    </div>
+                    <div id="usersContainer">
+                        <!--Add all users with js-->
+                    </div>
+                </div>
+                <div class="col-md-6 rightContainer">
+                    <div class="row searchRow">
+                        <div class="col-md searchCol">
+                            <div class="row">
+                                <h5>Zoek een klant op:</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md text-end">
+                                    <input type="text" id="searchBar" class="form-control" placeholder="Zoeken...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row addUserRow">
+                        <div class="col-md addUserCol">
+                            <div class="row addUserHeader">
+                                <h5>Gebruikers informatie</h5>
+                                <p>Klik op een gebruiker om zijn of haar informatica hieronder te laten zien.
+                                    Klik op 'Meer informatie' om de producten en abonnementen van de klant weer te
+                                    geven.
+                                </p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md userInfo">
+                                    <div class="row">
+                                        <div class="col-md p-2">
+                                            <h5>Naam:</h5>
+                                            <p id="nameTextField">-</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md p-2">
+                                            <h5>Email:</h5>
+                                            <p id="emailTextField">-</p>
+                                        </div>
+                                        <div class="col-md p-2">
+                                            <h5>Telefoonnummer:</h5>
+                                            <p id="phoneTextField">-</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md p-2">
+                                            <h5>Aantal uren:</h5>
+                                            <p id="balanceTextField">-</p>
+                                        </div>
+                                        <div class="col-md p-2">
+                                            <h5>Mollie klanten id:</h5>
+                                            <p id="mollieTextField">-</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md p-2">
+                                            <button type="button" id="moreInfoBtn" class="btn yinStyle disabled">Meer
+                                                informatie</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-
-        <!--Add all users with js-->
     </div>
-    <div class="col-md-6">
-        <div class="row">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="../../static/apiCaller.js"></script>
+    <script src="../../static/dashboard/users.js"></script>
+    <script src="../../static/dashboard/dashboard.js"></script>
+</body>
 
-        </div>
-    </div>
-</div>
-
-<script id="script" src="../static/dashboard/users.js"></script>
+</html>

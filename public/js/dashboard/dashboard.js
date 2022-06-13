@@ -1,25 +1,22 @@
 const userText = $(".amountOfUsers");
-const sessionText = $(".amountOfSessions");
-const subscriptionText = $(".amountOfSubscriptions");
-const productText = $(".amountOfProducts");
-
 const setUserText = async () => {
     let res = await ApiCaller.getAllUsers();
     let amountOfUsers = (await res.json()).length;
     userText.html(amountOfUsers);
 }
 
+const sessionText = $(".amountOfSessions");
 const setSessionText = async () => {
     let res = await ApiCaller.getSessionStats();
     let sessionStats = await res.json();
-    console.log(sessionStats);
     sessionText.html(sessionStats.amountOfSessions);
 }
 
+const subscriptionText = $(".amountOfSubscriptions");
+const productText = $(".amountOfProducts");
 const setProductAndSubText = async () => {
     let res = await ApiCaller.getProductStats();
     let data = await res.json();
-
     productText.html(data.amountOfBoughtProducts);
     subscriptionText.html(data.amountOfBoughtSubscriptions);
 }
@@ -41,24 +38,21 @@ $(".toggleSideBar").on("click", function () {
 });
 
 $("#dashboardBtn").on("click", function () {
-    location.reload();
+    location.href = "/dashboard";
 });
 
 $("#usersBtn").on("click", function () {
-    container.load("/static/users.ejs");
+    location.href = "/dashboard/klanten";
 });
 
 $("#productsBtn").on("click", function () {
-    container.empty();
-    container.load("/static/products.ejs");
+    location.href = "/dashboard/producten";
 });
 
 $("#sessionsBtn").on("click", function () {
-    container.empty();
-    container.load("/static/sessions.ejs");
+    location.href = "/dashboard/sessies";
 });
 
 $("#toScheduleBtn").on("click", function () {
-    container.empty();
-    container.load("/static/toSchedule.ejs");
+    location.href = "/dashboard/toSchedule";
 });
