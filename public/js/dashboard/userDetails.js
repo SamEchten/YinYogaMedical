@@ -3,7 +3,8 @@ let userCredentials;
 $(async () =>  {
     await getAllUserInfo();
     setUserInformation();
-    await getUserPaymentHistory();
+    await addPaymentHistory();
+    await addSubscriptionItem();
     console.log(userCredentials);
 });
 
@@ -28,8 +29,57 @@ const getUserPaymentHistory = async () => {
     try {
         let res = await ApiCaller.paymentHistory(userCredentials.id);
         let json = await res.json();
-        console.log(json)
+        return json;
     } catch (err) {
         console.log(err)
     }
 };
+
+const addPaymentHistory = async () => {
+    let paymentHistory = await getUserPaymentHistory();
+    let totalSpent = 0;
+    let products = await paymentHistory.products;
+    let table = $("#tablePaymentHistory");
+    console.log(products);
+    table.empty();
+    if(products.length > 0) {
+        for(i in products) {
+            const product = products[i];
+            let productPaymentId = product.paymentId;
+            let productStatus = product.status == "paid" ? "Betaald" : "Nog niet betaald";
+            let productName = product.description;
+            let productPrice = product.amount.value
+            totalSpent += parseFloat(productPrice);
+            let element = `
+            <tr class="cursor">
+                <td>${productName}</td>
+                <td>€${productPrice}</td>
+                <td>${productStatus }<i class="bi bi-check2-square icons ps-3"></i></td>
+            </tr>`
+            
+            table.append(element);
+            eventHandlers(element);
+        }
+        $("#spent").text("€ " + totalSpent)
+    }else {
+        table.append(`<p class="lead"><small>Gebruiker heeft nog geen producten gekocht</small></p>`);
+    }
+    
+}
+
+const addSubscriptionItem = async () => {
+    let subscription = await getUserPaymentHistory.subscription;
+    if(subscription == undefined) {
+        console.log("geen abbp")
+    } else {
+        console.log("abbo")
+        let element = ``
+    }
+    console.log(subscription)
+} 
+
+const eventHandlers = (element) => {
+    $(element).on("click", function() {
+        window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + product.paymentId);
+    });
+}
