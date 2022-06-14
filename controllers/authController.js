@@ -45,11 +45,9 @@ module.exports.signup_post = async (req, res) => {
         //Send jwt cookie to client
         sendCookies(res, user._id, user.fullName, user.email, user.isEmployee, user.classPassHours, user.subscriptions);
 
+        //TODO
         //Send mail to user
-        // signUpMail({
-        //     fullName: user.fullName,
-        //     email: user.email
-        // });
+        //signUpMail(user);
 
         //Send user info back to client
         res.status(201).json({
