@@ -1,10 +1,12 @@
 let userCredentials;
+let totalSpent = 0;
 
 $(async () =>  {
     await getAllUserInfo();
     setUserInformation();
     await addPaymentHistory();
     await addSubscriptionItem();
+    setTotalSpent();
     console.log(userCredentials);
 });
 
@@ -35,7 +37,6 @@ const getUserPaymentHistory = async () => {
 
 const addPaymentHistory = async () => {
     let paymentHistory = await getUserPaymentHistory();
-    let totalSpent = 0;
     let products = await paymentHistory.products;
     let table = $("#tablePaymentHistory");
     console.log(products);
@@ -58,24 +59,64 @@ const addPaymentHistory = async () => {
             table.append(element);
             eventHandlers(product);
         }
-        $("#spent").text("€ " + totalSpent)
+        
     }else {
-        table.append(`<p class="lead"><small>Gebruiker heeft nog geen producten gekocht</small></p>`);
+        table.append(`<p class="lead"><small>Gebruiker heeft nog geen producten gekocht.</small></p>`);
     }
     
 }
 
 const addSubscriptionItem = async () => {
-    let subscription = await getUserPaymentHistory.subscription;
+    let transactions = await getUserPaymentHistory();;
+    let subscription = transactions.subscriptions[0];
+    let subIcon;
+    console.log(subscription)
     if(subscription == undefined) {
-        console.log("geen abbp")
+        console.log("geen abbo")
+        
+        let element = `<p class="lead"><small>Gebruiker heeft op het moment geen abonnement.</small><p>`
+        $(".subscriptions").after(element);
     } else {
-        console.log("abbo")
-        let element = ``
+        let amount = parseFloat(subscription.amount.value)
+        if(subscription.description == "Video") {
+            subIcon = "camera-video"
+        } else if(subscription.description == "Podcast"){
+            subIcon = "mic"
+        } else {
+            subIcon = "gem"
+        }
+        let element = `
+        <div id="${subscription.subscriptionId}" class="row align-items-center subscriptionItem">
+            <div class="col-md-8  p-3">
+                <h3 class="m-0">${subscription.description}</h3>
+            </div>
+            <div class="col-md-4 p-3 text-end">
+                <i class="bi bi-${subIcon}"></i>
+            </div>
+
+        </div>
+        <div class="row subInfo">
+            <div class="col-md-6">
+                <h5>Gekocht op:</h5>
+                <p>${subscription.startDate}</p> 
+            </div>
+            <div class="col-md-6">
+                <h5>Aantal facturen betaald:</h5>
+                <p>${subscription.payments.length}</p>
+             </div>
+        </div> `
+
+        $(".subscriptions").after(element);
+        totalSpent += amount * subscription.payments.length;
+        $("#" + subscription.subscriptionId).on("click", function() {
+            window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + subscription.subscriptionId);
+        });
     }
     console.log(subscription)
 } 
-
+const setTotalSpent = () => {
+    $("#spent").text("€ " + totalSpent)
+}
 const eventHandlers = (product) => {
     $("#" + product.paymentId).on("click", function() {
         window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + product.paymentId);

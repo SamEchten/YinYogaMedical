@@ -25,7 +25,7 @@
 <body>
     <div class="wrapper">
         <nav id="sidebar">
-            <div class="toggleSideBar"><i class="bi bi-chevron-right"></i></div>
+            <div class="toggleSideBar"><i class="bi bi-chevron-left"></i></div>
             <div class="sidebar-header">
                 <h3 class="display-6 today">Welkom <%=userId%>
                 </h3>
@@ -82,9 +82,9 @@
                 <div class="col-md-6 left">
                     <div class="row">
                         <div class="col-md">
-                            <h5>Betaalgeschiedenis</h1>
+                            <h5 class="headers">Betaalgeschiedenis</h1>
                             <p>
-                                Klik op een betaling om vervolgens die te openen in mollie en alle gegevens van uw klant in te zien.
+                                <small>Klik op een betaling om vervolgens die te openen in mollie en alle gegevens van uw klant in te zien.</small>
                             </p>
                             <hr>
                         </div>
@@ -108,16 +108,16 @@
                 <div class="col-md-6 right">
                     <div class="row">
                         <div class="col-md">
-                            <h5>Klant informatie</h1>
+                            <h4 class="headers">Klant informatie</h4>
                             <p>
-                                Alle gegevens van uw klant
+                                <small>Alle gegevens van uw klant</small>
                             </p>
                             <hr>
                             <div class="row">
                                 <div class="col-md userInfo">
                                     <div class="row">
                                         <div class="col-md-6 p-2">
-                                            <h5>Naam:</h5>
+                                            <h5 class="lead">Naam:</h5>
                                             <p id="nameTextField">-</p>
                                         </div>
                                         <div class="col-md-6 p-2">
@@ -145,21 +145,13 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md">
-                            <h5>Abonnementen</h5>
+                        <div class="col-md subscriptions">
+                            <h5 class="headers">Abonnementen</h5>
                             <p>
-                                Deze klant heeft de volgende abonnementen.
+                               <small> Deze klant heeft het volgende abonnement. Om meer informatie te krijgen over de transacties van dit abonnement kunt u klikken op het abonnement.</small>
                             </p>
                             <hr>
-                            <div class="row align-items-center paymentHistoryItem">
-                                <div class="col-md-8  p-3">
-                                    <h5 class="m-0">Strippenkaart - 10 uur</h5>
-                                    <p class="m-0"><small>20-6-2022</small></p>
-                                </div>
-                                <div class="col-md-4 p-3 text-end">
-                                    <i class="bi bi-check2-circle icons"></i>
-                                </div>
-                            </div>
+                            
                         </div>
                         
 
