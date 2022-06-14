@@ -39,7 +39,7 @@ const setUserTextField = (user) => {
     const moreInfoBtn = $("#moreInfoBtn");
     moreInfoBtn.removeClass("disabled");
     moreInfoBtn.on("click", function () {
-        location.href = "/dashboard/klanten/" + user.id + "";
+        location.href = "/dashboard/klanten/" + user.id;
     });
 }
 

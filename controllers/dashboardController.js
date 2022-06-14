@@ -9,6 +9,9 @@ module.exports.viewDashboard = async (req, res) => {
 module.exports.viewUsers = async (req, res) => {
     res.render(path.join(__dirname, "../views/dashboard/users"));
 }
+module.exports.viewUsersDetails = async (req, res) => {
+    res.render(path.join(__dirname, "../views/dashboard/userDetails"));
+}
 
 module.exports.viewUserDetails = async (req, res) => {
     res.locals.userId = "test";

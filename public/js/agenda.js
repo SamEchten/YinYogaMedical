@@ -1,6 +1,7 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
 let weekNumb = getCurrentWeekNumber() -1;
+let numberOfHoursSession;
 
 // Render lesrooster from apiCaller and format it on date ->
 //  > Document.getready! first render. 
@@ -622,10 +623,11 @@ function unsubcribeSession() {
 
 // subcribe to lesson ->
 function subscribeToSession() {
-
   $(".subscribe").on("click", function () {
     let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
+    let saldo = user.saldo;
     let html = swalItemSubscribeToSession(lesson);
+    let sessionId = $(this).parent().parent().attr("id");
     if (typeof user == 'undefined') {
       location.href = "/login";
     } else {
@@ -638,7 +640,7 @@ function subscribeToSession() {
         cancelButtonText: 'Cancel',
       }).then(async (result) => {
         if (result.isConfirmed) {
-          let sessionId = $(this).parent().parent().attr("id");
+
           let jsonData = {
             "userId": user.id,
             "comingWith": sessionUserObject()
@@ -669,6 +671,24 @@ function subscribeToSession() {
           }
         }
       });
+
+      $(document).ready(async function(){
+        let duration = await ApiCaller.getSingleSession(sessionId)
+        let jsonDur = await duration.json();
+        if (duration.status == 200) {
+          numberOfHoursSession = jsonDur.duration / 60;
+          $('#saldo').text(user.saldo);
+          $('#sessionCost').text(numberOfHoursSession);
+          if (user.saldo < numberOfHoursSession) {
+            $('#saldoText').css("color", "red");
+            $(".swal2-confirm").attr('disabled', 'disabled');
+            $("#nrOfPeople").attr('disabled', 'disabled');
+          }
+          else {
+            $('#saldoText').css("color", "green");
+          }
+        }
+      });
     }
   });
 }
@@ -695,7 +715,8 @@ function sessionUserObject() {
 
 // Loads inputfields. ->
 function nrOfPeopleChanged() {
-  let val = document.getElementById('nrOfPeople').value;
+  let val = $("#nrOfPeople").val()
+  //let val = document.getElementById('nrOfPeople').value;
   let title = document.getElementById('extraPeopleTitle');
   let temporary = '';
   if (val > 1) {
@@ -716,6 +737,18 @@ function nrOfPeopleChanged() {
   else {
     title.innerHTML = '';
     document.getElementById('allInputs').innerHTML = '';
+  }
+  let hours = numberOfHoursSession * val
+  $('#sessionCost').text(hours);
+
+
+  if (user.saldo < hours) {
+    $('#saldoText').css("color", "red");
+    $(".swal2-confirm").attr('disabled', 'disabled');
+  }
+  else {
+    $('#saldoText').css("color", "green");
+    $(".swal2-confirm").removeAttr("disabled");
   }
 }
 
