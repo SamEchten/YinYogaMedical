@@ -45,6 +45,7 @@ router.get("/profile/settings", profileController.viewSettings);
 //Dashboard
 router.get("/dashboard", dashboardController.viewDashboard);
 router.get("/dashboard/klanten", dashboardController.viewUsers);
+router.get("/dashboard/klanten/:id", dashboardController.viewUserDetails);
 router.get("/dashboard/producten", dashboardController.viewProducts);
 router.get("/dashboard/sessies", dashboardController.viewSessions);
 router.get("/dashboard/toSchedule", dashboardController.viewToSchedule);

@@ -79,6 +79,10 @@ option:focus-within {
     overflow-y: auto;
 }
 
+.fontSizeText{
+    font-size: 12px;
+}
+
 #paymentContent p{
     font-size: 12px;
 }

@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="icon" type="image/png" href="../static/favicon.png" />
-    <link rel="stylesheet" href="../static/dashboard.css">
-    <link rel="stylesheet" href="../static/styles.css">
-    <link rel="stylesheet" href="../static/users.css">
+    <link rel="stylesheet" href="../../static/dashboard.css">
+    <link rel="stylesheet" href="../../static/styles.css">
+    <link rel="stylesheet" href="../../static/userDetails.css">
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../bicons/bootstrap-icons.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -23,11 +23,11 @@
 
 <body>
     <div class="wrapper">
-
         <nav id="sidebar">
             <div class="toggleSideBar"><i class="bi bi-chevron-right"></i></div>
             <div class="sidebar-header">
-                <h3 class="display-6 today">Welkom Natascha</h3>
+                <h3 class="display-6 today">Welkom <%=userId%>
+                </h3>
             </div>
 
             <ul class="list-unstyled lead components">
@@ -72,17 +72,103 @@
             </ul>
         </nav>
         <div id="content" class="container-fluid">
-            <!--Content-->
-
+            <div class="row header">
+                <div class="col-md-6">
+                    <h1 class="display-4 ps-5">Klant gegevens</h1>
+                </div>
+            </div>
+            <div class="row content">
+                <div class="col-md-6 left">
+                    <div class="row">
+                        <div class="col-md">
+                            <h5>Betaalgeschiedenis</h1>
+                                <p>
+                                    Hieronder bevinden zich alle betaling van <b class="userName"></b>.
+                                </p>
+                                <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md paymentHistory">
+                            <!-- ITEM TO ADD -->
+                            <div class="row align-items-center paymentHistoryItem">
+                                <div class="col-md-8  p-3">
+                                    <h5 class="m-0">Strippenkaart - 10 uur</h5>
+                                    <p class="m-0"><small>20-6-2022</small></p>
+                                </div>
+                                <div class="col-md-4 p-3 text-end">
+                                    <i class="bi bi-check2-circle icons"></i>
+                                </div>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 right">
+                    <div class="row">
+                        <div class="col-md">
+                            <h5>Klant informatie</h1>
+                                <p>
+                                    Alle gegevens van uw klant
+                                </p>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md userInfo">
+                                        <div class="row">
+                                            <div class="col-md p-2">
+                                                <h5>Naam:</h5>
+                                                <p id="nameTextField">-</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md p-2">
+                                                <h5>Email:</h5>
+                                                <p id="emailTextField">-</p>
+                                            </div>
+                                            <div class="col-md p-2">
+                                                <h5>Telefoonnummer:</h5>
+                                                <p id="phoneTextField">-</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md p-2">
+                                                <h5>Aantal uren:</h5>
+                                                <p id="balanceTextField">-</p>
+                                            </div>
+                                            <div class="col-md p-2">
+                                                <h5>Mollie klanten id:</h5>
+                                                <p id="mollieTextField">-</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md">
+                            <h5>Abonnementen</h5>
+                            <p>
+                                Deze klant heeft de volgende abonnementen.
+                            </p>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script type="text/javascript"
         src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/bootstrap.min.js">
+    </script>
+    <script src="../../../static/apiCaller.js"></script>
+    <script src="../../../static/utils.js"></script>
+    <script src="../../../static/dashboard/userDetails.js"></script>
+    <script src="../../../static/dashboard/dashboard.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
     <script src="../../static/apiCaller.js"></script>
-    <script src="../../static/utils.js"></script>
     <script src="../../static/dashboard/userDetails.js"></script>
     <script src="../../static/dashboard/dashboard.js"></script>
 </body>

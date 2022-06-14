@@ -314,12 +314,16 @@ module.exports.signup = async (req, res) => {
                             const sessionDate = new Date(session.date.toISOString().slice(0, -1));
                             if (sessionDate > new Date()) {
                                 if (checkUserBalance(user, session, comingWithAmount)) {
-                                    try {
-                                        await session.addParticipants(sessionId, { userId, comingWith });
-                                        await updateUserHours(user, session, comingWithAmount);
-                                        res.status(200).json({ message: "U bent succesvol aangemeld" });
-                                    } catch (err) {
-                                        res.status(400).json({ message: err.message });
+                                    if (validComingWith(comingWith)) {
+                                        try {
+                                            await session.addParticipants(sessionId, { userId, comingWith });
+                                            await updateUserHours(user, session, comingWithAmount);
+                                            res.status(200).json({ message: "U bent succesvol aangemeld" });
+                                        } catch (err) {
+                                            res.status(400).json({ message: err.message });
+                                        }
+                                    } else {
+                                        res.status(400).json({ message: "Vul alle velden in" })
                                     }
                                 } else {
                                     if (admin) {
@@ -347,6 +351,16 @@ module.exports.signup = async (req, res) => {
     } else {
         res.status(400).json({ message: "U bent niet gemachtigd om deze persoon aan te melden" })
     }
+}
+
+const validComingWith = (comingWith) => {
+    for (i in comingWith) {
+        const row = comingWith[i];
+        if (row.name == "" || row.email == "") {
+            return false;
+        }
+    }
+    return true;
 }
 
 const updateUserHours = async (user, session, comingWithAmount) => {
