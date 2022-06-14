@@ -22,9 +22,7 @@ const setUserInformation = () => {
     $("#balanceTextField").html(userCredentials.saldo + " uur");
     $("#mollieTextField").html(userCredentials.customerId);
 };
-async function test() {
 
-}
 const getUserPaymentHistory = async () => {
     try {
         let res = await ApiCaller.paymentHistory(userCredentials.id);
@@ -51,14 +49,14 @@ const addPaymentHistory = async () => {
             let productPrice = product.amount.value
             totalSpent += parseFloat(productPrice);
             let element = `
-            <tr class="cursor">
+            <tr id="${productPaymentId}" class="cursor">
                 <td>${productName}</td>
                 <td>€${productPrice}</td>
                 <td>${productStatus }<i class="bi bi-check2-square icons ps-3"></i></td>
             </tr>`
 
             table.append(element);
-            eventHandlers(element);
+            eventHandlers(product);
         }
         $("#spent").text("€ " + totalSpent)
     }else {
@@ -79,7 +77,7 @@ const addSubscriptionItem = async () => {
 } 
 
 const eventHandlers = (product) => {
-    $(product).on("click", function() {
+    $("#" + product.paymentId).on("click", function() {
         window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + product.paymentId);
     });
 }
