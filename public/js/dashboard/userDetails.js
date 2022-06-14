@@ -56,7 +56,7 @@ const addPaymentHistory = async () => {
                 <td>€${productPrice}</td>
                 <td>${productStatus }<i class="bi bi-check2-square icons ps-3"></i></td>
             </tr>`
-            
+
             table.append(element);
             eventHandlers(element);
         }
@@ -78,8 +78,8 @@ const addSubscriptionItem = async () => {
     console.log(subscription)
 } 
 
-const eventHandlers = (element) => {
-    $(element).on("click", function() {
+const eventHandlers = (product) => {
+    $(product).on("click", function() {
         window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + product.paymentId);
     });
 }

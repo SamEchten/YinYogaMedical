@@ -27,7 +27,8 @@
         <nav id="sidebar">
             <div class="toggleSideBar"><i class="bi bi-chevron-right"></i></div>
             <div class="sidebar-header">
-                <h3 class="display-6 today">Welkom Natascha</h3>
+                <h3 class="display-6 today">Welkom <%=userId%>
+                </h3>
             </div>
 
             <ul class="list-unstyled lead components">
@@ -129,23 +130,18 @@
                                             <h5>Email:</h5>
                                             <p id="emailTextField">-</p>
                                         </div>
-                                        <div class="col-md p-2">
-                                            <h5>Telefoonnummer:</h5>
-                                            <p id="phoneTextField">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md p-2">
-                                            <h5>Aantal uren:</h5>
-                                            <p id="balanceTextField">-</p>
-                                        </div>
-                                        <div class="col-md p-2">
-                                            <h5>Mollie klanten id:</h5>
-                                            <p id="mollieTextField">-</p>
+                                        <div class="row">
+                                            <div class="col-md p-2">
+                                                <h5>Aantal uren:</h5>
+                                                <p id="balanceTextField">-</p>
+                                            </div>
+                                            <div class="col-md p-2">
+                                                <h5>Mollie klanten id:</h5>
+                                                <p id="mollieTextField">-</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -176,6 +172,12 @@
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script type="text/javascript"
         src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="./js/bootstrap.min.js">
+    </script>
+    <script src="../../../static/apiCaller.js"></script>
+    <script src="../../../static/utils.js"></script>
+    <script src="../../../static/dashboard/userDetails.js"></script>
+    <script src="../../../static/dashboard/dashboard.js"></script>
     <script src="../../js/bootstrap.min.js"></script>
     <script src="../../static/apiCaller.js"></script>
     <script src="../../static/dashboard/userDetails.js"></script>

@@ -8,6 +8,7 @@ const userController = require("../controllers/userController");
 const profileController = require("../controllers/profileController");
 const productController = require("../controllers/productController");
 const videoController = require("../controllers/videoController");
+const podcastController = require("../controllers/podcastController");
 const dashboardController = require("../controllers/dashboardController");
 
 //Auth ->
@@ -27,6 +28,11 @@ router.get("/producten/succes", productController.succes);
 router.get("/videos/", videoController.view);
 router.get("/videos/:id", videoController.videoDisplay);
 
+//Podcats ->
+router.get("/podcasts/", podcastController.view);
+/*router.get("/podcasts/:id", podcastController.podcastDisplay);*/
+
+
 //profile ->
 //TODO: add jwt validation
 router.get("/profile/", profileController.viewProfile);
@@ -39,7 +45,7 @@ router.get("/profile/settings", profileController.viewSettings);
 //Dashboard
 router.get("/dashboard", dashboardController.viewDashboard);
 router.get("/dashboard/klanten", dashboardController.viewUsers);
-router.get("/dashboard/klanten/:id", dashboardController.viewUsersDetails);
+router.get("/dashboard/klanten/:id", dashboardController.viewUserDetails);
 router.get("/dashboard/producten", dashboardController.viewProducts);
 router.get("/dashboard/sessies", dashboardController.viewSessions);
 router.get("/dashboard/toSchedule", dashboardController.viewToSchedule);

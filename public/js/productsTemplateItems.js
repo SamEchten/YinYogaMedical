@@ -337,7 +337,6 @@ function loadSingleProductItem(product) {
           </div>
           <div class="col-md-4 col-2 text-md-end text-start"></div>
           <div class="col-md-4 col-8 text-md-end text-start">
-            <i class="bi bi-person-check hiding addPeople icons"></i>
           </div>
         </div>
       </div>
@@ -364,7 +363,7 @@ function loadSingleProductItem(product) {
             <i class="bi bi-trash3 hiding removeProduct icons"></i>
           </div>
           <div class="col-md-4 col-8 text-md-end text-start">
-          <i class="bi bi-person-check hiding addPeople icons"></i>
+          <i class="bi bi-gift  hiding addPeople icons"></i>
           </div>
         </div>
       </div>

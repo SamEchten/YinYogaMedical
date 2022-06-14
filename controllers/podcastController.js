@@ -138,3 +138,8 @@ module.exports.update = async (req, res) => {
         res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
 }
+
+// Render podcat page
+module.exports.view = (req, res) => {
+    res.render(path.join(__dirname, "../views/podcast"), { isAdmin: false });
+}
