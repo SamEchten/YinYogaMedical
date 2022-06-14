@@ -10,6 +10,12 @@ module.exports.viewUsers = async (req, res) => {
     res.render(path.join(__dirname, "../views/dashboard/users"));
 }
 
+module.exports.viewUserDetails = async (req, res) => {
+    res.locals.userId = "test";
+    console.log(res.locals);
+    res.render(path.join(__dirname, "../views/dashboard/userDetails"));
+}
+
 module.exports.viewProducts = async (req, res) => {
     res.render(path.join(__dirname, "../views/dashboard/products"));
 }
