@@ -1,21 +1,22 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber() -1;
+let weekNumb = getCurrentWeekNumber() - 1;
 let numberOfHoursSession;
 
 // Render lesrooster from apiCaller and format it on date ->
 //  > Document.getready! first render. 
 $(async function () {
-  setWeekData(weekNumb);
   loader(true);
-  const res = await (await ApiCaller.getAllSessions()).json();
-  console.log(res);
+  await getSessions();
+  setWeekData(weekNumb);
   loader(false);
-  schedule = res;
   loadAgenda(weekNumb);
   scrollDownToCurrDay();
-
 });
+
+const getSessions = async () => {
+  schedule = await (await ApiCaller.getAllSessions()).json();
+}
 
 // Loading agenda data per week ->
 async function loadAgenda(weekNumber) {
@@ -77,7 +78,6 @@ function fullClear() {
     $("#" + daysOfWeek[day]).append("<h4 class='lead p-3'>Geen lessen</h4>")
   }
 }
-console.log(user)
 // gets all day of the week and returns it in a array ->
 function getAllDaysOfWeek(data) {
   let days = [];
@@ -602,7 +602,7 @@ function unsubcribeSession() {
               icon: 'success',
               text: "Tot de volgende keer!",
               showConfirmButton: false,
-              timer: 2000
+              timer: 3000
             });
           } else {
             Swal.fire({
@@ -610,7 +610,7 @@ function unsubcribeSession() {
               icon: 'warning',
               text: json.message,
               showConfirmButton: false,
-              timer: 2000
+              timer: 4000
             });
           }
         } catch (err) {
@@ -672,7 +672,7 @@ function subscribeToSession() {
         }
       });
 
-      $(document).ready(async function(){
+      $(document).ready(async function () {
         let duration = await ApiCaller.getSingleSession(sessionId)
         let jsonDur = await duration.json();
         if (duration.status == 200) {

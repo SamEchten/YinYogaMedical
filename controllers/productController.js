@@ -144,9 +144,14 @@ module.exports.update = async (req, res) => {
 module.exports.delete = async (req, res) => {
     const id = req.params.id;
     try {
-        Product.findOne({ _id: id }, (err, product) => {
+        Product.findOne({ _id: id }, async (err, product) => {
             if (product) {
-                product.delete();
+                const beenBought = await hasBeenBought(product);
+                if (!beenBought) {
+                    product.delete();
+                } else {
+                    await setProductNonActive(product);
+                }
                 res.status(200).json({ message: "Product is succesvol verwijderd" })
             } else {
                 res.status(404).json({ message: "Er is geen product gevonden met dit id" });
@@ -155,6 +160,25 @@ module.exports.delete = async (req, res) => {
     } catch (err) {
         res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
+}
+
+const hasBeenBought = async (product) => {
+    const transactions = await Transactions.find({});
+    for (i in transactions) {
+        const transaction = transactions[i];
+        for (j in transaction.transactions) {
+            const payment = transaction.transactions[i];
+            if (payment.productId == product.id) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+const setProductNonActive = async (product) => {
+    product.active = false;
+    await product.save();
 }
 
 module.exports.purchase = async (req, res) => {
@@ -274,7 +298,7 @@ const cancelSubscription = async (user, subscriptionId) => {
     return subscription;
 }
 
-const savePaymentData = async (customerId, payment) => {
+const savePaymentData = async (customerId, payment, product) => {
     const paymentId = payment.id;
     const description = payment.description;
     const createdAt = payment.createdAt;
@@ -286,6 +310,7 @@ const savePaymentData = async (customerId, payment) => {
     transactions.transactions.push({
         paymentId: paymentId,
         description: description,
+        productId: product.id,
         amount: amount,
         paidAt: createdAt,
         status: status,
@@ -438,7 +463,7 @@ module.exports.webHook = async (req, res) => {
                 //Normal payment
                 if (user) {
                     await addClassPass(user, product);
-                    await savePaymentData(customerId, payment);
+                    await savePaymentData(customerId, payment, product);
 
                     //TODO: Send confirmation mail
                     res.sendStatus(200);
@@ -460,6 +485,7 @@ module.exports.webHook = async (req, res) => {
                             subscription.payments.push({
                                 paymentId: payment.id,
                                 description: payment.description,
+                                productId: productId,
                                 amount: payment.amount,
                                 paidAt: payment.paidAt,
                                 status: payment.status,
