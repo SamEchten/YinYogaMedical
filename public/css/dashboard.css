@@ -66,7 +66,14 @@ a:focus {
     text-decoration: none;
     transition: all 0.3s;
 }
-
+.headers {
+    font-size: 1.25rem;
+    border-bottom: 0px solid;
+    background: #333333;
+    color: white;
+    /* border-radius: 10px; */
+    padding: 9px;
+}
 .toggleSideBar {
     background-color: rgb(65 65 65);
     width: 45px;
@@ -74,9 +81,10 @@ a:focus {
     position: absolute;
     border-radius: 0px 2px 2px 0px;
     font-size: 31px;
-    margin-left: 249px;
+    margin-left: 205px;
     cursor: pointer;
     padding-left: 7px;
+    transition: 0.5s;
 }
 
 #sidebar {

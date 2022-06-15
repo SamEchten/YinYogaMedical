@@ -8,6 +8,7 @@ const userController = require("../controllers/userController");
 const profileController = require("../controllers/profileController");
 const productController = require("../controllers/productController");
 const videoController = require("../controllers/videoController");
+const podcastController = require("../controllers/podcastController");
 const dashboardController = require("../controllers/dashboardController");
 
 //Auth ->
@@ -26,6 +27,11 @@ router.get("/producten/succes", productController.succes);
 //Videos ->
 router.get("/videos/", videoController.view);
 router.get("/videos/:id", videoController.videoDisplay);
+
+//Podcats ->
+router.get("/podcasts/", podcastController.view);
+/*router.get("/podcasts/:id", podcastController.podcastDisplay);*/
+
 
 //profile ->
 //TODO: add jwt validation

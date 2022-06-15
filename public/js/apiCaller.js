@@ -1,7 +1,8 @@
-
 class ApiCaller {
     //static functions
     // Creates a new user and logs them in ->
+    static baseUrl = "https://localhost:80";
+        
     static registerUser = async (data) => {
         let url = "/api/auth/signup/";
         let options = {
@@ -281,7 +282,7 @@ class ApiCaller {
 
 
     static paymentHistory = async (id) => {
-        let url = "api/user/purchasehistory/" + id;
+        let url = this.baseUrl + "/api/user/purchasehistory/" + id;
         let options = {
             method: 'GET',
             headers: {

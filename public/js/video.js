@@ -204,13 +204,17 @@ function showAdminItems() {
 }
 
 function addEventHandlers(bought, id) {
-    if(user.subscriptions[0].description == "Video") { // click event user that bought video || user.subscription == "videoAccess"
-      $("#" + id).addClass("bought");
-      $("#" + id).children().remove();
-      $("#" + id).parent().parent().find(".videoInfo").children("h4").append(`<i class="bi bi-unlock unlockIcon"></i>`);
-      $("#" + id).on("click", function() {
-        userActionBought(id);
-      });
+  console.log(user.subscriptions)
+    if(user.subscriptions.length > 0) { 
+      // click event user that bought video || user.subscription == "videoAccess"
+      if(user.subscriptions[0].description == "Video") {
+        $("#" + id).addClass("bought");
+        $("#" + id).children().remove();
+        $("#" + id).parent().parent().find(".videoInfo").children("h4").append(`<i class="bi bi-unlock unlockIcon"></i>`);
+        $("#" + id).on("click", function() {
+          userActionBought(id);
+        });
+      }
     } else if(roleCheck()) { // click event admin
       $("#" + id).addClass("bought");
       $("#" + id).children().remove();

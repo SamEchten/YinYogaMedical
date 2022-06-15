@@ -35,6 +35,14 @@ const container = $("#content");
 
 $(".toggleSideBar").on("click", function () {
     $('#sidebar').toggleClass('active');
+    if($("#sidebar").hasClass("active")) {
+        $(".toggleSideBar").css("margin-left", "249px");
+        $(".toggleSideBar").html(`<i class="bi bi-chevron-right"></i>`);
+    } else {
+        $(".toggleSideBar").css("margin-left", "205px");
+        $(".toggleSideBar").html(`<i class="bi bi-chevron-left"></i>`);
+    }
+    
 });
 
 $("#dashboardBtn").on("click", function () {
