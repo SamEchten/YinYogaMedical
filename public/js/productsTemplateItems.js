@@ -111,7 +111,7 @@ function createUserItem(fullName, email, phoneNumber, id) {
     <div class="col-md-2">
       <div class="row h-100 align-items-center">
         <div class="col-md-12 cursor giftFreeSession">
-          <i id=${id} class="bi bi-gift gift" data-toggle="tooltip" data-placement="top" title="Geef product cadeau"></i>
+          <i id=${id} class="bi bi-gift giftBtn" data-toggle="tooltip" data-placement="top" title="Geef product cadeau"></i>
         </div>
       </div>
       

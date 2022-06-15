@@ -286,15 +286,15 @@ function addPeople(productId) {
 
 function loopAndAddElements(userArray, productId) {
   for (item in userArray) {
-    $(".userItem").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
-    $('[data-toggle="tooltip"]').tooltip();
-    $("#" + userArray[item].id).on("click", function () {
-      let data = {
-        "userId": $(this).attr("id")
-      };
-      giftProduct(data, productId);
-      $('[data-toggle="tooltip"]').tooltip('hide');
+    const userItem = createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id);
+    const giftBtn = $(".giftBtn");
+    giftBtn.on("click", function () {
+      const id = $(this).attr("id");
+      giftProduct({ userId: id }, productId);
     });
+
+    $(".userItem").append(userItem);
+    $('[data-toggle="tooltip"]').tooltip();
   }
 }
 

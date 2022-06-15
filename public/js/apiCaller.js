@@ -244,6 +244,7 @@ class ApiCaller {
     // Gift a product to a user -> *ADMIN*
     // Gift a product to another user -> *USER*
     static giftProduct = async (data, productId) => {
+        console.log(data, productId);
         let url = "/api/product/gift/" + productId;
         let options = {
             method: 'POST',
@@ -278,7 +279,7 @@ class ApiCaller {
         }
     }
 
-    
+
     static paymentHistory = async (id) => {
         let url = "api/user/purchasehistory/" + id;
         let options = {
