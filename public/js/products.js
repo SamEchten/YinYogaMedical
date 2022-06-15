@@ -314,7 +314,7 @@ async function giftProduct(data, productId) {
     let res = await ApiCaller.giftProduct(data, productId);
     let json = await res.json();
     if (res.status == 200) {
-      location.href = json.purchaseInfo.checkOutUrl;
+      toastPopUp(json.message, "success");
     } else {
       toastPopUp(json.message, "error");
     }
