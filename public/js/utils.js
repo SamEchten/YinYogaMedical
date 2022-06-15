@@ -187,14 +187,14 @@ function roleCheck() {
   }
 }
 // Checks if the session is full or not ->
-function checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date) {
+function checkIfSessionIsValid(sessionData) {
   let today = new Date;
-  let sessionDay = new Date(date);
+  let sessionDay = new Date(sessionData.date);
   const result = new Date(sessionDay.toISOString().slice(0, -1))
 
-  if ((amountOfParticipants >= maxAmountOfParticipants && !participates) || today > result) {
+  if ((sessionData.amountOfParticipants >= sessionData.maxAmountOfParticipants && !sessionData.participates) || today > result) {
     if (!roleCheck()) {
-      $("#" + id).addClass("showOrHide");
+      $("#" + sessionData.id).addClass("showOrHide");
     }
   }
 

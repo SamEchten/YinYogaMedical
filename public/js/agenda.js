@@ -32,10 +32,15 @@ async function loadAgenda(weekNumber) {
         clearAgenda(day)
         for (session in dayData) {
           let sessionData = dayData[session];
-
-          let { id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date } = sessionData;
-          loadSessionItem(id, title, teacher, sessionData.participates, maxAmountOfParticipants, amountOfParticipants, date, day);
-          addSubscribedItems(id, sessionData.participates);
+          console.log(sessionData)
+          loadSessionItem(sessionData, day);
+          if(sessionData.canceled)
+          {
+            $("#" + sessionId).children().append(`CANCELD`);
+          } else {
+            addSubscribedItems(sessionData.id, sessionData.participates);
+          }
+          
         }
       } else {
         clearAgenda(day);
@@ -176,17 +181,17 @@ async function showAllParticipants(data) {
   $(".sessionUsers").addClass("hideScrollbar");
 }
 // Loads all session items and puts them into the right day ->
-function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipants, amountOfParticipants, date, day) {
-  let itemLayout = templateLoadSession(id, date, title, teacher, amountOfParticipants, maxAmountOfParticipants);
+function loadSessionItem(sessionData, day) {
+  let itemLayout = templateLoadSession(sessionData);
 
   $(itemLayout).appendTo("#" + day);
-
   if (roleCheck()) {
-    $("#" + id).children().children().children(".participantsColor").css("color", checkSessionSize(amountOfParticipants, maxAmountOfParticipants));
+    $("#" + sessionData.id).children().children().children(".participantsColor").css("color", checkSessionSize(sessionData.amountOfParticipants,sessionData.maxAmountOfParticipants));
   }
 
-  checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date);
+  checkIfSessionIsValid(sessionData);
 }
+
 
 function addEventHandlersSession() {
   $(".sessionDetails").on("click", async function () {
