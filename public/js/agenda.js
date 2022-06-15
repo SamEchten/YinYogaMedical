@@ -33,17 +33,16 @@ async function loadAgenda(weekNumber) {
         clearAgenda(day)
         for (session in dayData) {
           let sessionData = dayData[session];
-          console.log(sessionData)
           loadSessionItem(sessionData, day);
-          if(sessionData.canceled)
+          console.log(sessionData)
+          if(!sessionData.canceled)
           {
-            
-          } else {
-            addSubscribedItems(sessionData.id, sessionData.participates);
+            addSubscribedItems(sessionData);
             clickEvents(sessionData);
           }
           
         }
+        showOrhideElements(); // Hiding elements for non admin users ->
       } else {
         clearAgenda(day);
         $("#" + day).append("<h4 class='lead p-3'>Geen lessen</h4>");
@@ -53,9 +52,9 @@ async function loadAgenda(weekNumber) {
     fullClear();
   }
   // Loading in all event handlers and other functions that run after the agenda has been FULLY loaded! ->
-  showOrhideElements(); // Hiding elements for non admin users ->
-  unsubcribeSession(); // loading in event handler for UNSUB button ->
-  subscribeToSession();// loading in event handler for SUB button ->
+  // showOrhideElements(); // Hiding elements for non admin users ->
+  // unsubcribeSession(); // loading in event handler for UNSUB button ->
+  // subscribeToSession();// loading in event handler for SUB button ->
   
   addEventHandlersSession();
 }
@@ -102,19 +101,24 @@ function addMinutes(date, minutes) {
 }
 
 //  Check if user is participates in the session and let client see status ->
-function addSubscribedItems(id, participates) {
-  let subcribeBtn = `<button type="submit" class="btn btn-primary yinStyle subscribe"><i class="bi bi-arrow-bar-right"></i> Inschrijven</button>`;
-  let unsubscribeBtn = `<button type="submit" class="btn btn-danger unSubStyle unsubscribe"><i class="bi bi-arrow-bar-left"></i> Uitschrijven</button>`;
-  let subCol = $("#" + id).children(".subscribeCol"); // subscribe col per ID, button is being pushed into this column
+function addSubscribedItems(sessionData) {
+  let subcribeBtn = $(`<button type="submit" class="btn btn-primary yinStyle subscribe"><i class="bi bi-arrow-bar-right"></i> Inschrijven</button>`);
+  let unsubscribeBtn = $(`<button type="submit" class="btn btn-danger unSubStyle unsubscribe"><i class="bi bi-arrow-bar-left"></i> Uitschrijven</button>`);
+  let subCol = $("#" + sessionData.id).children(".subscribeCol"); // subscribe col per ID, button is being pushed into this column
 
-  if (participates == undefined) {
+  if (sessionData.participates == undefined) {
     subCol.empty();
     subCol.append(subcribeBtn);
+    $(subcribeBtn).on("click", function (){
+      subscribeToSession(sessionData);
+    });
   } else {
     subCol.empty();
     subCol.append(unsubscribeBtn)
-    //unsubcribeSession();
-    let element = $("#" + id).children(".settings").children(".row").children(".participate");
+    $(unsubscribeBtn).on("click", function (){
+      unsubcribeSession(sessionData);
+    });
+    let element = $("#" + sessionData.id).children(".settings").children(".row").children(".participate");
     element.append(`<img height="15px"src="./static/check.png">`);
   }
 }
@@ -218,21 +222,33 @@ function addEventHandlersSession() {
 //  > Remove session : Admin can delete/cancel a session
 function clickEvents(sessionData) {
   if (roleCheck()) {
-
     // Add tooltips on icons
     createToolTip($(".editSession"), "Wijzigen van een les", "top");
     createToolTip($(".removeSession"), "Verwijderen van een les", "top");
     createToolTip($(".addUser"), "Voeg gebruikers toe aan de les", "top");
     $('[data-toggle="tooltip"]').tooltip();
+
+    let editIcon = $(`<div class="col-md-2 text-end">
+      <i class="bi bi-pencil hiding editSession"></i>
+    </div>`);
+    let removeIcon = $(`<div class="col-md-2 text-center">
+    <i class="bi bi-trash3 hiding removeSession"></i>
+  </div>`);
+    let addIcon = $(`<div class="col-md-2 text-start">
+    <i class="bi bi-person-check hiding addUser"></i>
+  </div>`);
     // Edit a session ->
-    $(".editSession").on("click", function () {
+    $("#" + sessionData.id).find(".adminItems").append(editIcon);
+    $(editIcon).on("click", function () {
       editSession(sessionData);
     });
     // Remove a session ->
-    $(".removeSession").on("click", function () {
+    $("#" + sessionData.id).find(".adminItems").append(removeIcon);
+    $(removeIcon).on("click", function () {
       removeSession(sessionData);
     });
-    $(".addUser").on("click", function () {
+    $("#" + sessionData.id).find(".adminItems").append(addIcon);
+    $(addIcon).on("click", function () {
       addUser(sessionData);
     });
   }
@@ -352,9 +368,9 @@ function createUserItem(fullName, email, phoneNumber, id) {
 }
 
 // Edit session as admin ->
-async function editSession(sessionId) {
+async function editSession(sessionData) {
   try {
-    let res = await ApiCaller.getSingleSession(sessionId); // Get all the infomation from the session
+    let res = await ApiCaller.getSingleSession(sessionData.id); // Get all the infomation from the session
     let json = await res.json();
     let date = new Date(json.date);
     let html = swalItemEditSession();
@@ -379,7 +395,7 @@ async function editSession(sessionId) {
           "weekly": false
         }
         try {
-          let resUpdate = await ApiCaller.updateSession(jsonData, sessionId);
+          let resUpdate = await ApiCaller.updateSession(jsonData, sessionData.id);
           let resJson = await resUpdate.json();
           if (resUpdate.status == 200) {
             loadAndSetFullAgenda(weekNumb);
@@ -589,9 +605,8 @@ function drawItems(sessionArray) {
 }
 
 // Unsubscribe form a session ->
-function unsubcribeSession() {
-  $(".unsubscribe").on("click", function () {
-    let sessionId = $(this).parent().parent().attr("id");
+function unsubcribeSession(sessionData) {
+    let sessionId = sessionData.id;
     Swal.fire({
       title: 'Weet u zeker dat u zich wilt uitschrijven voor deze les?',
       icon: 'info',
@@ -629,59 +644,59 @@ function unsubcribeSession() {
         }
       }
     });
-  });
-}
+  }
 
 // subcribe to lesson ->
-function subscribeToSession() {
-  $(".subscribe").on("click", function () {
-    let lesson = $(this).parent().parent().children(".sessionDetails").children("h4").text();
-    let saldo = user.saldo;
-    let html = swalItemSubscribeToSession(lesson);
-    let sessionId = $(this).parent().parent().attr("id");
-    if (typeof user == 'undefined') {
-      location.href = "/login";
-    } else {
-      Swal.fire({
-        html: html,
-        customClass: 'sweetalert-subscribe',
-        showCancelButton: true,
-        confirmButtonText: 'Schrijf mij in',
-        confirmButtonColor: '#D5CA9B',
-        cancelButtonText: 'Cancel',
-      }).then(async (result) => {
-        if (result.isConfirmed) {
+function subscribeToSession(sessionData) {
+  console.log(sessionData)
+  let lesson = sessionData.title;
+  let saldo = user.saldo;
+  let html = swalItemSubscribeToSession(lesson);
+  let sessionId = sessionData.id;
+  if (typeof user == 'undefined') {
+    location.href = "/login";
+  } else {
+    Swal.fire({
+      html: html,
+      customClass: 'sweetalert-subscribe',
+      showCancelButton: true,
+      confirmButtonText: 'Schrijf mij in',
+      confirmButtonColor: '#D5CA9B',
+      cancelButtonText: 'Cancel',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
 
-          let jsonData = {
-            "userId": user.id,
-            "comingWith": sessionUserObject()
-          }
-          try {
-            let res = await ApiCaller.addUserToSession(jsonData, sessionId);
-            let jsonRes = await res.json();
-            if (res.status == 200) {
-              loadAndSetFullAgenda(weekNumb);
-              Swal.fire({
-                title: `U heeft zich ingeschreven voor ${lesson} .`,
-                icon: 'success',
-                text: `Wat leuk dat u zich heeft ingeschreven voor ${lesson}! Tot snel! `,
-                showCloseButton: true,
-                confirmButtonColor: '#D5CA9B'
-              });
-            } else {
-              Swal.fire({
-                title: `Oops!`,
-                icon: 'warning',
-                text: jsonRes.message,
-                showCloseButton: true,
-                confirmButtonColor: '#D5CA9B'
-              });
-            }
-          } catch (err) {
-            console.log(err);
-          }
+        let jsonData = {
+          "userId": user.id,
+          "comingWith": sessionUserObject()
         }
-      });
+        try {
+          let res = await ApiCaller.addUserToSession(jsonData, sessionId);
+          let jsonRes = await res.json();
+          if (res.status == 200) {
+            loadAndSetFullAgenda(weekNumb);
+            Swal.fire({
+              title: `U heeft zich ingeschreven voor ${lesson} .`,
+              icon: 'success',
+              text: `Wat leuk dat u zich heeft ingeschreven voor ${lesson}! Tot snel! `,
+              showCloseButton: true,
+              confirmButtonColor: '#D5CA9B'
+            });
+          } else {
+            Swal.fire({
+              title: `Oops!`,
+              icon: 'warning',
+              text: jsonRes.message,
+              showCloseButton: true,
+              confirmButtonColor: '#D5CA9B'
+            });
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    });
+
 
       $(document).ready(async function () {
         let duration = await ApiCaller.getSingleSession(sessionId)
@@ -701,7 +716,6 @@ function subscribeToSession() {
         }
       });
     }
-  });
 }
 
 // Gets all input fields of extra participants when enrolling for a session ->

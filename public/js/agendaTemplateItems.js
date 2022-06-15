@@ -284,18 +284,9 @@ function templateLoadSession(sessionData) {
         <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${sessionData.teacher}</h4>
       </div>
       <div class="col-md-4 settings">
-        <div class="row">
+        <div class="row adminItems">
           <div class="col-md-3 participantsColor text-start">
             ${sessionData.amountOfParticipants} / ${sessionData.maxAmountOfParticipants}
-          </div>
-          <div class="col-md-2 text-end">
-            <i class="bi bi-pencil hiding editSession"></i>
-          </div>
-          <div class="col-md-2 text-center">
-            <i class="bi bi-trash3 hiding removeSession"></i>
-          </div>
-          <div class="col-md-2 text-start">
-            <i class="bi bi-person-check hiding addUser"></i>
           </div>
           <div class="col-md-3 participate text-start">
           
@@ -312,16 +303,14 @@ function templateLoadSession(sessionData) {
 function templateCanceldSession(sessionData) {
   let template =
     `
-    <div id="${sessionData.id}" class="row ps-4 p-2 agendaItem swing-in-top-fwd align-items-center">
+    <div id="${sessionData.id}" class="row ps-4 p-2 agendaItem canceled swing-in-top-fwd align-items-center">
       <div class="col-md-2">
         <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(sessionData.date).time}</h4>
       </div>
-      <div class="col-md-2 sessionDetails">
-        <h3>Geannuleerd<h3>
+      <div class="col-md-10 text-start sessionDetails">
+        <h4 class="m-0">Geannuleerd <h4>
       </div>
-
-      <div class="col-md-2 subscribeCol text-end ">
-        
+           
     </div>
     </div>`
 

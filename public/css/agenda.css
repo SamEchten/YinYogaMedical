@@ -92,6 +92,9 @@
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
 }
+.canceled {
+    opacity: 0.5 !important;
+}
 
 .main-wrapper {
     height: calc(100vh - 58px);

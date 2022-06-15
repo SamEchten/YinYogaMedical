@@ -24,8 +24,11 @@ async function updateNav() {
 }
 
 async function updateUser() {
-  let res = await ApiCaller.getUserInfo(cookie.id);
-  user = await res.json();
+  if(cookie){
+    let res = await ApiCaller.getUserInfo(cookie.id);
+    user = await res.json();
+  }
+  
 }
 
 function showWelcomMessage() {
