@@ -46,7 +46,7 @@ const addPaymentHistory = async () => {
             const product = products[i];
             let productPaymentId = product.paymentId;
             let productStatus = product.status == "paid" ? "Betaald" : "Nog niet betaald";
-            let productName = product.description;
+            let productName = product.description;                                                              
             let productPrice = product.amount.value
             totalSpent += parseFloat(productPrice);
             let element = `
