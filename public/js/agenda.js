@@ -183,8 +183,12 @@ async function showAllParticipants(data) {
 }
 // Loads all session items and puts them into the right day ->
 function loadSessionItem(sessionData, day) {
-  let itemLayout = templateLoadSession(sessionData);
-
+  let itemLayout;
+  if(sessionData.canceled){
+    itemLayout = templateCanceldSession(sessionData);
+  } else {
+    itemLayout = templateLoadSession(sessionData);
+  }
   $(itemLayout).appendTo("#" + day);
   if (roleCheck()) {
     $("#" + sessionData.id).children().children().children(".participantsColor").css("color", checkSessionSize(sessionData.amountOfParticipants,sessionData.maxAmountOfParticipants));
