@@ -276,22 +276,53 @@ const updateSessionEvent = async (session) => {
 }
 
 module.exports.delete = async (req, res) => {
-    const { id } = req.params;
-
     try {
+        const { id } = req.params;
         const session = await Session.findOne({ _id: id });
         if (session) {
-            const eventId = session.eventId;
-            session.remove();
-            deleteEvent(eventId);
-            //Send email to participants
-            //Set back hours of participants
-            res.status(200).json({ message: "Sessie is verwijderd" });
+            if (session.participants.length > 0) {
+
+                await refundHours(session);
+                await cancelSession(session);
+
+                //send mail to participants
+                res.status(200).json({ message: "Sessie is geannuleerd" });
+            } else {
+                await refundHours(session);
+                await removeSession(session);
+                //Send email to participants
+                res.status(200).json({ message: "Sessie is verwijderd" });
+            }
         } else {
             res.status(404).json({ message: "Geen sessie gevonden met dit Id" })
         }
     } catch (err) {
         res.status(400).json({ message: "Er is iets fout gegaan", error: err });
+    }
+}
+
+const cancelSession = async (session) => {
+    session.canceled = true;
+    await session.save();
+}
+
+const removeSession = async (session) => {
+    const eventId = session.eventId;
+    session.remove();
+    deleteEvent(eventId);
+}
+
+const refundHours = async (session) => {
+    for (i in session.participants) {
+        const row = session.participants[i];
+        const userId = row.userId;
+
+        const user = await User.findOne({ _id: userId })
+        const oldBalance = user.classPassHours;
+        console.log(oldBalance);
+        const newBalance = oldBalance + row.cost;
+
+        await User.updateOne({ _id: userId }, { $set: { classPassHours: newBalance } });
     }
 }
 
