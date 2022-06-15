@@ -212,12 +212,13 @@ async function editProduct(productId) {
         }
         try {
           let resUpdate = await ApiCaller.updateProduct(jsonData, productId);
+          console.log(resUpdate);
           let resJson = await resUpdate.json();
           if (resUpdate.status == 200) {
             toastPopUp("Product " + $("#productName").val() + " is gewijzigd!", "success");
             reloadProducts();
           } else {
-            toastPopUp("Er is iets misgegaan", "error");
+            toastPopUp("Er is iets mis gegaan", "error");
           }
         } catch (err) {
           console.log(err);
@@ -287,14 +288,24 @@ function addPeople(productId) {
 function loopAndAddElements(userArray, productId) {
   for (item in userArray) {
     const userItem = createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id);
-    const giftBtn = $(".giftBtn");
+    const giftBtn = userItem.find(".giftBtn");
     giftBtn.on("click", function () {
       const id = $(this).attr("id");
-      giftProduct({ userId: id }, productId);
+      Swal.fire({
+        title: 'Weet u zeker dat u dit product cadeau wilt doen?',
+        showCancelButton: true,
+        cancelButtonText: "Nee, ga terug",
+        confirmButtonColor: '#D5CA9B',
+        confirmButtonText: 'Ja, doe cadeau',
+      }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          giftProduct({ userId: id }, productId);
+          $('[data-toggle="tooltip"]').tooltip();
+        }
+      });
     });
-
     $(".userItem").append(userItem);
-    $('[data-toggle="tooltip"]').tooltip();
   }
 }
 
@@ -317,9 +328,9 @@ async function giftProductAsUser(data, productId) {
     let json = await res.json();
     if (res.status == 200) {
       // Redirects to mollie.
-      location.href = json.redirectUrl;
+      location.href = json.redirectUrl.checkOutUrl;
     } else {
-      toastPopUp("Er is iets misgegaan", "error");
+      toastPopUp(json.message, "error");
     }
   } catch (err) {
   }
@@ -464,7 +475,7 @@ function buyProduct(product) {
         }).then((result) => {
           if (result.isConfirmed) {
             let tempdata = {
-              "userId": user.userId,
+              "userId": user.id,
               "email": $("#giftEmail").val()
             }
             giftProductAsUser(tempdata, id);
@@ -484,7 +495,7 @@ function buyProduct(product) {
 
   $(".addButton").on("click", function () {
     buyAProduct(user.id, id);
-  })
+  });
 }
 
 async function buyAProduct(data, productId) {
