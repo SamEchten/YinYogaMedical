@@ -232,7 +232,7 @@ function clickEvents(sessionData) {
       <i class="bi bi-pencil hiding editSession"></i>
     </div>`);
     let removeIcon = $(`<div class="col-md-2 text-center">
-    <i class="bi bi-trash3 hiding removeSession"></i>
+    <i class="bi bi-x-circle hiding removeSession"></i>
   </div>`);
     let addIcon = $(`<div class="col-md-2 text-start">
     <i class="bi bi-person-check hiding addUser"></i>
@@ -255,8 +255,9 @@ function clickEvents(sessionData) {
 
 }
 
-function addUser(sessionId) {
+function addUser(sessionData) {
   //loading in the swal templates from agendaSwalItems.js
+  let sessionId = sessionData.id;
   swalItemAddUser();
 
   // show all users at the begin of loading the pop up
@@ -438,13 +439,22 @@ async function editSession(sessionData) {
 
 // Remove a session as Admin
 async function removeSession(sessionData) {
+  let text;
+  let header;
+  if(sessionData.amountOfParticipants > 0){
+    text = "Het lijkt erop dat er mensen staan ingeschreven voor deze les, de les zal geannuleerd worden en de gebruikers zullen een mail ontvangen.";
+    header = "annuleren";
+  } else {
+    text = `Op het moment staan er geen gebruikers ingeschreven voor ${sessionData.title}, de les zal verwijderd worden uit het rooster als u op door gaan klikt.`;
+    header = "verwijderen"
+  }
   Swal.fire({
-    title: 'Weet u zeker dat u deze les wilt verwijderen?',
+    title: `Weet u zeker dat u deze les wilt ${header}?`,
     icon: 'info',
     showCancelButton: true,
-    text: "Bij het verwijderen van een les uit het rooster zullen alle ingeschreven personen een e-mail ontvangen.",
+    text: text,
     confirmButtonColor: '#D5CA9B',
-    confirmButtonText: 'Verwijder',
+    confirmButtonText: header,
     cancelButtonText: 'Terug'
   }).then(async (result) => {
     if (result.isConfirmed) {
