@@ -281,10 +281,8 @@ module.exports.delete = async (req, res) => {
         const session = await Session.findOne({ _id: id });
         if (session) {
             if (session.participants.length > 0) {
-
                 await refundHours(session);
                 await cancelSession(session);
-
                 //send mail to participants
                 res.status(200).json({ message: "Sessie is geannuleerd" });
             } else {
@@ -457,17 +455,22 @@ module.exports.signout = async (req, res) => {
                     try {
                         let session = await Session.findOne({ _id: sessionId });
                         if (session) {
-                            if (userParticipates(userId, session.participants)) {
-                                if (cookieUserId == userId || cookieEmployee == true) {
-                                    await returnSaldo(user, session.participants);
-                                    session.participants.some(e => deleteUser(e, session, userId));
-                                    res.status(200).json({ message: "Succesvol uitgeschreven" });
-                                }
-                                else {
-                                    res.status(400).json({ message: "U bent niet gemachtigd deze gebruiker uit te schrijven" });
+
+                            if (onTime(session.date)) {
+                                if (userParticipates(userId, session.participants)) {
+                                    if (cookieUserId == userId || cookieEmployee == true) {
+                                        await returnSaldo(user, session.participants);
+                                        session.participants.some(e => deleteUser(e, session, userId));
+                                        res.status(200).json({ message: "Succesvol uitgeschreven" });
+                                    }
+                                    else {
+                                        res.status(400).json({ message: "U bent niet gemachtigd deze gebruiker uit te schrijven" });
+                                    }
+                                } else {
+                                    res.status(400).json({ message: "Deze gebruiker is momenteel niet ingeschreven voor deze les" });
                                 }
                             } else {
-                                res.status(400).json({ message: "Deze gebruiker is momenteel niet ingeschreven voor deze les" });
+                                res.status(400).json({ message: "U kunt u helaas niet meer uitschrijven voor deze les, dit moet minimaal 4 uur van te voren." })
                             }
                         } else {
                             res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
@@ -488,6 +491,27 @@ module.exports.signout = async (req, res) => {
     } else {
         res.status(400).json({ message: "Er is geen userOd gegeven" });
     }
+}
+
+const onTime = (sessionDate) => {
+    const startDate = new Date(sessionDate);
+    const curDate = addHours(2);
+    const diffTime = Math.abs(startDate - curDate) / 1000 / 60 / 60;
+
+    if (curDate > startDate) {
+        return false;
+    } else {
+        if (diffTime < 4) {
+            return false;
+        }
+    }
+    return true;
+}
+
+const addHours = (numOfHours, date = new Date()) => {
+    date.setTime(date.getTime() + numOfHours * 60 * 60 * 1000);
+
+    return date;
 }
 
 module.exports.view = (req, res) => {
