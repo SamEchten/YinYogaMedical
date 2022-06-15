@@ -303,6 +303,13 @@ module.exports.delete = async (req, res) => {
 
 const cancelSession = async (session) => {
     session.canceled = true;
+    //Update calender item to canceled
+    updateEvent(session.eventId, {
+        title: session.title + " (geannuleerd)",
+        location: session.location,
+        description: session.description,
+        when: { startTime: time.startTime, endTime: time.endTimeUnix }
+    });
     await session.save();
 }
 
@@ -319,7 +326,6 @@ const refundHours = async (session) => {
 
         const user = await User.findOne({ _id: userId })
         const oldBalance = user.classPassHours;
-        console.log(oldBalance);
         const newBalance = oldBalance + row.cost;
 
         await User.updateOne({ _id: userId }, { $set: { classPassHours: newBalance } });
