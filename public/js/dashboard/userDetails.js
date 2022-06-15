@@ -125,6 +125,15 @@ const setTotalSpent = () => {
 }
 const eventHandlers = (product) => {
     $("#" + product.paymentId).on("click", function () {
-        window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + product.paymentId);
+        if(product.paymentId) {
+            window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + product.paymentId);
+        } else {
+            Swal.fire({
+                title: "Cadeau",
+                text: "Dit product is een gift van een andere gebruiker of uw zelf, dit product heeft geen betaal gegeven omdat het valt uw eigen applicatie.",
+                icon: "warning"
+            });
+        }
+        
     });
 }

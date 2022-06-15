@@ -33,10 +33,16 @@ async function loadAgenda(weekNumber) {
         clearAgenda(day)
         for (session in dayData) {
           let sessionData = dayData[session];
-
-          let { id, title, teacher, maxAmountOfParticipants, amountOfParticipants, date } = sessionData;
-          loadSessionItem(id, title, teacher, sessionData.participates, maxAmountOfParticipants, amountOfParticipants, date, day);
-          addSubscribedItems(id, sessionData.participates);
+          console.log(sessionData)
+          loadSessionItem(sessionData, day);
+          if(sessionData.canceled)
+          {
+            $("#" + sessionId).append(`<h1>CANCELD</h1>`);
+          } else {
+            addSubscribedItems(sessionData.id, sessionData.participates);
+            clickEvents(sessionData);
+          }
+          
         }
       } else {
         clearAgenda(day);
@@ -50,7 +56,7 @@ async function loadAgenda(weekNumber) {
   showOrhideElements(); // Hiding elements for non admin users ->
   unsubcribeSession(); // loading in event handler for UNSUB button ->
   subscribeToSession();// loading in event handler for SUB button ->
-  clickEvents();
+  
   addEventHandlersSession();
 }
 // Loads agenda items and sets the week dates on top of the agenda ->
@@ -176,17 +182,17 @@ async function showAllParticipants(data) {
   $(".sessionUsers").addClass("hideScrollbar");
 }
 // Loads all session items and puts them into the right day ->
-function loadSessionItem(id, title, teacher, participates, maxAmountOfParticipants, amountOfParticipants, date, day) {
-  let itemLayout = templateLoadSession(id, date, title, teacher, amountOfParticipants, maxAmountOfParticipants);
+function loadSessionItem(sessionData, day) {
+  let itemLayout = templateLoadSession(sessionData);
 
   $(itemLayout).appendTo("#" + day);
-
   if (roleCheck()) {
-    $("#" + id).children().children().children(".participantsColor").css("color", checkSessionSize(amountOfParticipants, maxAmountOfParticipants));
+    $("#" + sessionData.id).children().children().children(".participantsColor").css("color", checkSessionSize(sessionData.amountOfParticipants,sessionData.maxAmountOfParticipants));
   }
 
-  checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date);
+  checkIfSessionIsValid(sessionData);
 }
+
 
 function addEventHandlersSession() {
   $(".sessionDetails").on("click", async function () {
@@ -206,7 +212,7 @@ function addEventHandlersSession() {
 // Add eventlisteners for button that render in after dom has loaded ->
 //  > Edit session : Admin can edit a session
 //  > Remove session : Admin can delete/cancel a session
-function clickEvents() {
+function clickEvents(sessionData) {
   if (roleCheck()) {
 
     // Add tooltips on icons
@@ -216,17 +222,14 @@ function clickEvents() {
     $('[data-toggle="tooltip"]').tooltip();
     // Edit a session ->
     $(".editSession").on("click", function () {
-      const sessionId = $(this).parent().parent().parent().parent().attr("id");
-      editSession(sessionId);
+      editSession(sessionData);
     });
     // Remove a session ->
     $(".removeSession").on("click", function () {
-      const sessionId = $(this).parent().parent().parent().parent().attr("id");
-      removeSession(sessionId);
+      removeSession(sessionData);
     });
     $(".addUser").on("click", function () {
-      const sessionId = $(this).parent().parent().parent().parent().attr("id");
-      addUser(sessionId);
+      addUser(sessionData);
     });
   }
 
@@ -414,7 +417,7 @@ async function editSession(sessionId) {
 }
 
 // Remove a session as Admin
-async function removeSession(sessionId) {
+async function removeSession(sessionData) {
   Swal.fire({
     title: 'Weet u zeker dat u deze les wilt verwijderen?',
     icon: 'info',
@@ -426,12 +429,16 @@ async function removeSession(sessionId) {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        let res = await ApiCaller.removeSession(sessionId);
+        let res = await ApiCaller.removeSession(sessionData.id);
         if (res.status == 200) {
-          $("#" + sessionId).addClass("slide-out-top");
-          $("#" + sessionId).slideUp(500);
+          if(sessionData.canceled) {
 
-          //loadAndSetFullAgenda();
+          } else {
+            $("#" + sessionData.id).addClass("slide-out-top");
+            $("#" + sessionData.id).slideUp(500);
+          }
+
+          loadAndSetFullAgenda();
           toastPopUp("Les geannuleerd", "success");
         }
       } catch (err) {

@@ -270,23 +270,23 @@ function swalItemSubscribeToSession(lesson) {
 
 //Loading session items for to add to the agenda ->
 
-function templateLoadSession(id, date, title, teacher, amountOfParticipants, maxAmountOfParticipants) {
+function templateLoadSession(sessionData) {
   let template =
     `
-    <div id="${id}" class="row ps-4 p-2 agendaItem swing-in-top-fwd align-items-center">
+    <div id="${sessionData.id}" class="row ps-4 p-2 agendaItem swing-in-top-fwd align-items-center">
       <div class="col-md-2">
-        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(date).time}</h4>
+        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(sessionData.date).time}</h4>
       </div>
       <div class="col-md-2 sessionDetails">
-        <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
+        <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${sessionData.title}</h4>
       </div>
       <div class="col-md-2">
-        <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
+        <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${sessionData.teacher}</h4>
       </div>
       <div class="col-md-4 settings">
         <div class="row">
           <div class="col-md-3 participantsColor text-start">
-            ${amountOfParticipants} / ${maxAmountOfParticipants}
+            ${sessionData.amountOfParticipants} / ${sessionData.maxAmountOfParticipants}
           </div>
           <div class="col-md-2 text-end">
             <i class="bi bi-pencil hiding editSession"></i>

@@ -296,19 +296,23 @@ module.exports.delete = async (req, res) => {
             res.status(404).json({ message: "Geen sessie gevonden met dit Id" })
         }
     } catch (err) {
+        console.log(err)
         res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
 }
 
 const cancelSession = async (session) => {
     session.canceled = true;
+
     //Update calender item to canceled
+    const time = converTime(session.date, (session.duration / 60));
     updateEvent(session.eventId, {
         title: session.title + " (geannuleerd)",
         location: session.location,
         description: session.description,
         when: { startTime: time.startTime, endTime: time.endTimeUnix }
     });
+
     await session.save();
 }
 
@@ -456,7 +460,6 @@ module.exports.signout = async (req, res) => {
                     try {
                         let session = await Session.findOne({ _id: sessionId });
                         if (session) {
-
                             if (onTime(session.date)) {
                                 if (userParticipates(userId, session.participants)) {
                                     if (cookieUserId == userId || cookieEmployee == true) {
