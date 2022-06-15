@@ -20,7 +20,9 @@ async function setSuccesPaymentValues () {
     let price = $(".productPrice");
     let productDes = $(".boughtProductDes");
 
-    
+    name.text(` ${product.productName}`);
+    price.text(`€ ${product.price}`);
+    productDes.text(`${product.description}`);
 
 }
 
