@@ -317,18 +317,9 @@ function templateCanceldSession(sessionData) {
         <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(sessionData.date).time}</h4>
       </div>
       <div class="col-md-2 sessionDetails">
-        <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i><h1>Geannuleerd<h1></h4>
+        <h3>Geannuleerd<h3>
       </div>
-      <div class="col-md-2">
-        <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i><h1>Geannuleerd<h1></h4>
-      </div>
-      <div class="col-md-4 settings">
-        <div class="row">
-          <div class="col-md-3 participantsColor text-start">
-            ${sessionData.amountOfParticipants} / ${sessionData.maxAmountOfParticipants}
-          </div>
-        </div>       
-      </div>
+
       <div class="col-md-2 subscribeCol text-end ">
         
     </div>

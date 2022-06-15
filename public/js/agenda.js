@@ -37,7 +37,7 @@ async function loadAgenda(weekNumber) {
           loadSessionItem(sessionData, day);
           if(sessionData.canceled)
           {
-            $("#" + sessionData.id).css("border", "1px solid red");
+            
           } else {
             addSubscribedItems(sessionData.id, sessionData.participates);
             clickEvents(sessionData);
