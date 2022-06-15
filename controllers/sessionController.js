@@ -125,7 +125,8 @@ const getSessionInfo = async (session, userId) => {
         amountOfParticipants: await Session.getAmountOfParticipants(session._id),
         maxAmountOfParticipants: session.maxAmountOfParticipants,
         teacher: session.teacher,
-        description: session.description
+        description: session.description,
+        canceled: session.canceled
     }
 
     if (userId != null) {
