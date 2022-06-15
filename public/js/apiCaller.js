@@ -1,8 +1,8 @@
 class ApiCaller {
     //static functions
     // Creates a new user and logs them in ->
-    static baseUrl = "https://localhost:80";
-        
+    static baseUrl = "https://379c-194-171-182-60.eu.ngrok.io";
+
     static registerUser = async (data) => {
         let url = "/api/auth/signup/";
         let options = {

@@ -384,9 +384,20 @@ module.exports.gift = async (req, res) => {
     } else {
         User.findOne({ _id: userId }, async (err, user) => {
             if (user) {
-                Product.findOne({ _id: productId }, (err, product) => {
+                Product.findOne({ _id: productId }, async (err, product) => {
                     if (product) {
                         addClassPass(user, product, "gift");
+                        const transactions = await Transactions.findOne({ customerId: user.customerId });
+                        transactions.transactions.push({
+                            paymentId: null,
+                            description: product.description,
+                            amount: { "currency": "EUR", "value": product.price },
+                            paidAt: null,
+                            status: "Gift",
+                            method: null
+                        });
+                        transactions.markModified("transactions");
+                        transactions.save();
                         res.status(200).json({ message: "Product succesvol gegeven aan: " + user.fullName });
                     } else {
                         res.status(400).json({ message: "Geen product gevonden met dit id" })
