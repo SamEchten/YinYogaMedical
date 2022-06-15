@@ -82,6 +82,7 @@ class ApiCaller {
         };
         try {
             let response = await fetch(url, options);
+            console.log(response);
             return response;
         } catch (err) {
             //error
