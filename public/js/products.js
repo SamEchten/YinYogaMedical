@@ -96,10 +96,12 @@ const addAdminIcons = (template, productId) => {
 }
 
 const hasProductSubscription = (product) => {
-  for (i in user.subscriptions) {
-    let subscription = user.subscriptions[i];
-    if (subscription.description == product.productName) {
-      return true;
+  if (user) {
+    for (i in user.subscriptions) {
+      let subscription = user.subscriptions[i];
+      if (subscription.description == product.productName) {
+        return true;
+      }
     }
   }
   return false;

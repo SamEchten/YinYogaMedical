@@ -163,5 +163,4 @@ module.exports.videoDisplay = async (req, res) => {
         console.log(err);
         res.redirect("/videos");
     }
-
 } 
