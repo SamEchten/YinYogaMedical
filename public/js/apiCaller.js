@@ -315,6 +315,22 @@ class ApiCaller {
         }
     }
 
+    static cancelSubscription = async (subscriptionId) => {
+        let url = "/api/product/cancel/"+ subscriptionId;
+        let options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
     static getSessionStats = async () => {
         let url = "/api/dashboard/sessionStats";
         let options = {
