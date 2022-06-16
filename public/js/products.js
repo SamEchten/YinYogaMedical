@@ -23,7 +23,7 @@ const loadProducts = async () => {
     await loadCategory(row);
   }
 
-  if (roleCheck()) {
+  if (isAdmin()) {
     const addProductBtn = $(".addProduct");
     addProductBtn.removeClass("hiding");
   }
@@ -65,7 +65,7 @@ const loadProduct = async (product) => {
     buyBtn.addClass("disabled");
   }
 
-  if (roleCheck()) {
+  if (isAdmin()) {
     addAdminIcons(template, product._id);
     buyBtn.addClass("disabled");
   }
@@ -154,7 +154,7 @@ function addEventHandlersSession() {
 // Add eventlisteners for button that render in after dom has loaded ->
 function clickEvents() {
 
-  if (roleCheck()) {
+  if (isAdmin()) {
     console.log("is admin")
     // Add tooltips on icons
     createToolTip($(".editProduct"), "Wijzigen van product", "top");

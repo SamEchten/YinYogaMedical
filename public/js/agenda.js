@@ -150,7 +150,7 @@ function sessionDetails(data) {
     }
   });
   //load all participants into correct div
-  if (roleCheck()) {
+  if (isAdmin()) {
     if (data.participants.length <= 0) {
       $(".sessionUsers").append(`<p class="lead "> Geen inschrijvingen</p>`)
     }
@@ -199,7 +199,7 @@ function loadSessionItem(sessionData, day) {
     itemLayout = templateLoadSession(sessionData);
   }
   $(itemLayout).appendTo("#" + day);
-  if (roleCheck()) {
+  if (isAdmin()) {
     $("#" + sessionData.id).children().children().children(".participantsColor").css("color", checkSessionSize(sessionData.amountOfParticipants,sessionData.maxAmountOfParticipants));
   }
 
@@ -227,7 +227,7 @@ function addEventHandlersSession() {
 //  > Remove session : Admin can delete/cancel a session
 function clickEvents(sessionData) {
   
-  if (roleCheck()) {
+  if (isAdmin()) {
     let bIcon;
     let toolTipText;
     if(sessionData.amountOfParticipants > 0) {
