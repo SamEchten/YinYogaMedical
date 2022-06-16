@@ -113,7 +113,6 @@ body {
 
 .agendaItem {
     margin: 4px;
-    border-radius: 5px;
     transition: 0.2s;
     cursor: pointer;
     /* animation-name: slide;

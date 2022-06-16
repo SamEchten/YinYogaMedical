@@ -48,7 +48,7 @@ function swalItemEditSession() {
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-12">
-            <h2>Voeg nieuwe les toe</h2>
+            <h2>Wijzig les</h2>
             <hr>
           </div>
         </div>

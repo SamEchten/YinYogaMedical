@@ -221,22 +221,33 @@ function addEventHandlersSession() {
 //  > Edit session : Admin can edit a session
 //  > Remove session : Admin can delete/cancel a session
 function clickEvents(sessionData) {
+  
   if (roleCheck()) {
+    let bIcon;
+    let toolTipText;
+    if(sessionData.amountOfParticipants > 0) {
+      bIcon = "x-circle";
+      toolTipText = "Annuleer les"
+    } else {
+      bIcon = "trash";
+      toolTipText = "Verwijderen van een les"
+    }
     // Add tooltips on icons
     createToolTip($(".editSession"), "Wijzigen van een les", "top");
-    createToolTip($(".removeSession"), "Verwijderen van een les", "top");
+    createToolTip($(".removeSession"), toolTipText, "top");
     createToolTip($(".addUser"), "Voeg gebruikers toe aan de les", "top");
     $('[data-toggle="tooltip"]').tooltip();
 
     let editIcon = $(`<div class="col-md-2 text-end">
       <i class="bi bi-pencil hiding editSession"></i>
-    </div>`);
+      </div>`);
     let removeIcon = $(`<div class="col-md-2 text-center">
-    <i class="bi bi-x-circle hiding removeSession"></i>
-  </div>`);
+      <i class="bi bi-${bIcon} hiding removeSession"></i>
+      </div>`);
     let addIcon = $(`<div class="col-md-2 text-start">
-    <i class="bi bi-person-check hiding addUser"></i>
-  </div>`);
+      <i class="bi bi-person-check hiding addUser"></i>
+      </div>`);
+    
     // Edit a session ->
     $("#" + sessionData.id).find(".adminItems").append(editIcon);
     $(editIcon).on("click", function () {
