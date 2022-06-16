@@ -1,0 +1,142 @@
+body {
+    background-image: url("./background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.podcastRow {
+    background-color: white;
+}
+
+.picture
+{
+    aspect-ratio:3/2;
+}
+
+.scrollbar
+{
+    overflow:auto;
+}
+
+.main-wrapper {
+    height: calc(100vh - 58px);
+}
+.headerRow {
+    height: 10%;
+}
+body {
+    background-color: rgb(255, 255, 255) !important;
+}
+.headerText {
+    padding: 10px;
+    font-weight: 600 !important;
+}
+.videoItem {
+    height: 262px !important;
+    width: 333px !important;
+}
+.addVideo {
+    cursor: pointer;
+    display: none;
+}
+.contentRowo {
+    height: 90%;
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+    overflow: auto;
+}
+img {
+    border-radius: 15px 15px 0px 0px;
+    object-fit: cover;
+}
+.videoThumbnail  {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-radius: 3px 3px 0px 0px;
+    border-top: 1px solid rgb(209, 209, 209);
+    border-left: 1px solid rgb(209, 209, 209);
+    border-right: 1px solid rgb(209, 209, 209);
+    filter: grayscale(1);
+    height: 100%;
+    padding: 0px !important;
+}
+.videoThumbnail:hover {
+    cursor: pointer;
+    /* filter: none; */
+}
+.test {
+    transform: translateY(0);
+    transition: 0.3s;
+}
+.test:hover {
+    transform: translateY(-10px)
+}
+.removeVideo {
+    display: none;
+}
+
+.unlockIcon {
+    color: green;
+    font-size: 20px;
+    padding: 10px;
+}
+.lockIcon {
+    font-size: 70px;
+    font-weight: 500;
+    color: rgb(255, 255, 255);
+}
+.bought {
+    filter: none;
+}
+.editVideo {
+    display: none;
+}
+.h-60 {
+    height: 60% !important;
+}
+.h-40 {
+    height: 40% !important;
+}
+.videoInfo {
+    height: 100%;
+    overflow: auto;
+    border-radius: 0px 0px 3px 3px;
+    background-color: rgb(255, 255, 255);
+    border-bottom: 1px solid rgb(209, 209, 209);
+    border-left: 1px solid rgb(209, 209, 209);
+    border-right: 1px solid rgb(209, 209, 209);
+}
+.videoInfo::-webkit-scrollbar {
+    display: none;
+}
+.vidTop {
+    height: 47.5%;
+}
+.videoRowBottom {
+    height: 47.5%;
+}
+.videoRowHeader {
+    height: 5%;
+}
+@media only screen and (max-width: 766px) {
+    .videoRowBottom {
+        height: 100%;
+    }
+    .videoRowTop {
+        height: 100%;
+    }
+    /* .h-60 {
+        height: 97% !important;
+    }
+    .h-40 {
+        height: 3% !important
+    } */
+    /* .videoInfo {
+        background-color: #d5ca9b;
+    } */
+
+
+}
+

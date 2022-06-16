@@ -454,8 +454,70 @@ class ApiCaller {
             //error
         }
     }
+
     static updateVideo = async (id, data) => {
         let url = "/api/video/" + id;
+        let options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    // Get all Podcasts ->
+    static getAllPodcasts = async () => {
+        let url = "/api/podcast/";
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    static getSinglePodcast = async (id) => {
+        let url = "/api/podcast/" + id;
+        let options = {
+            method: 'GET',
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    // Delete podcest and thumbnail ->
+    static deletePodcast = async (id) => {
+        let url = "/api/podcast/" + id;
+        let options = {
+            method: 'DELETE',
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    static updatePodcast = async (id, data) => {
+        let url = "/api/podcast/" + id;
         let options = {
             method: 'PUT',
             headers: {

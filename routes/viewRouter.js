@@ -30,7 +30,7 @@ router.get("/videos/:id", videoController.videoDisplay);
 
 //Podcats ->
 router.get("/podcasts/", podcastController.view);
-/*router.get("/podcasts/:id", podcastController.podcastDisplay);*/
+router.get("/podcasts/:id", podcastController.podcastDisplay);
 
 
 //profile ->

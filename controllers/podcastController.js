@@ -143,3 +143,18 @@ module.exports.update = async (req, res) => {
 module.exports.view = (req, res) => {
     res.render(path.join(__dirname, "../views/podcast"), { isAdmin: false });
 }
+
+module.exports.podcastDisplay = async (req, res) => {
+    let id = req.params.id;
+    try {
+        let podcast = await Podcast.findOne({ _id: id })
+        if (podcast) {
+            res.render(path.join(__dirname, "../views/podcastDisplay"));
+        } else {
+            res.redirect("/videos");
+        }
+    } catch (err) {
+        console.log(err);
+        res.redirect("/videos");
+    }
+}
