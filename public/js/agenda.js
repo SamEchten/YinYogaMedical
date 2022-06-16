@@ -1,6 +1,6 @@
 let schedule;
 let daysOfWeek = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
-let weekNumb = getCurrentWeekNumber() - 1;
+let weekNumb;
 let numberOfHoursSession;
 
 // Render lesrooster from apiCaller and format it on date ->
@@ -12,19 +12,21 @@ $(async function () {
   loader(false);
   loadAgenda(weekNumb);
   scrollDownToCurrDay();
-});
+})
 
 const getSessions = async () => {
+  loader(true);
   schedule = await (await ApiCaller.getAllSessions()).json();
+  loader(false);
+  if(schedule) {
+    weekNumb = Object.keys(schedule)[0];
+  }
 }
 
 // Loading agenda data per week ->
 async function loadAgenda(weekNumber) {
-  loader(true);
-  const res = await (await ApiCaller.getAllSessions()).json();
-  loader(false);
-  schedule = res;
   showOrhideElements();
+  await getSessions();
   let week = schedule[weekNumber];
   if (week != undefined) {
     for (day in week) {
@@ -34,7 +36,6 @@ async function loadAgenda(weekNumber) {
         for (session in dayData) {
           let sessionData = dayData[session];
           loadSessionItem(sessionData, day);
-          console.log(sessionData)
           if(!sessionData.canceled)
           {
             addSubscribedItems(sessionData);
@@ -110,7 +111,11 @@ function addSubscribedItems(sessionData) {
     subCol.empty();
     subCol.append(subcribeBtn);
     $(subcribeBtn).on("click", function (){
-      subscribeToSession(sessionData);
+      if(user) {
+        subscribeToSession(sessionData);
+      } else {
+        location.href = "/login"
+      }
     });
   } else {
     subCol.empty();
@@ -512,8 +517,9 @@ $(".nextWeek").on("click", function () {
 
 // Go to current week ->
 $(".week").on("click", function () {
-  weekNumb = getCurrentWeekNumber();
-  loadAndSetFullAgenda();
+  weekNumb = Object.keys(schedule)[0];
+  loadAndSetFullAgenda(weekNumb);
+
 });
 
 $(".addLesson").on("click", async function () {

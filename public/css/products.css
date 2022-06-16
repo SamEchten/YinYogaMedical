@@ -1,21 +1,33 @@
+
+.main-wrapper {
+    height: calc(100vh - 58px);
+}
+
 body {
     background-image: url("./background.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
 }
-
-.main-wrapper {
-    height: calc(100vh - 58px);
+.headerRow {
+    height: 10%;
 }
-
-.contentcontainer::-webkit-scrollbar {
+.contentRow {
+    height: 90%;
+    background-color: white;
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+    overflow: auto;
+    border-radius: 10px 10px 0px 0px;
+    border: 1px solid #eeeeee;
+}
+.contentRow::-webkit-scrollbar {
     display: none;
 }
 
 .headerText {
-    font-size: 18pt !important;
-    padding: 15px 0px 20px 35px;
+    padding: 10px;
+    font-weight: 600 !important;
 }
 
 .categoryTitle {
