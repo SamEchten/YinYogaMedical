@@ -144,9 +144,14 @@ module.exports.update = async (req, res) => {
 module.exports.delete = async (req, res) => {
     const id = req.params.id;
     try {
-        Product.findOne({ _id: id }, (err, product) => {
+        Product.findOne({ _id: id }, async (err, product) => {
             if (product) {
-                product.delete();
+                const beenBought = await hasBeenBought(product);
+                if (!beenBought) {
+                    product.delete();
+                } else {
+                    await setProductNonActive(product);
+                }
                 res.status(200).json({ message: "Product is succesvol verwijderd" })
             } else {
                 res.status(404).json({ message: "Er is geen product gevonden met dit id" });
@@ -155,6 +160,25 @@ module.exports.delete = async (req, res) => {
     } catch (err) {
         res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
+}
+
+const hasBeenBought = async (product) => {
+    const transactions = await Transactions.find({});
+    for (i in transactions) {
+        const transaction = transactions[i];
+        for (j in transaction.transactions) {
+            const payment = transaction.transactions[j];
+            if (payment.productId == product.id) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+const setProductNonActive = async (product) => {
+    product.active = false;
+    await product.save();
 }
 
 module.exports.purchase = async (req, res) => {
@@ -229,7 +253,36 @@ const purchaseProduct = async (product, user) => {
     if (product.recurring) {
         return await startSubscription(product, user);
     } else {
-        return await createPayment(product, user);
+        try {
+            return await createPayment(product, user);
+        } catch (err) {
+            if (err.message == "The customer is no longer available") {
+                //Create new customer
+                const customerId = user.customerId;
+                const newCustomerId = await mollieClient.createCustomer(user.id);
+
+                //Change customer id to new one
+                let transactions = await Transactions.findOne({ customerId });
+                if (transactions) {
+                    transactions.customerId = newCustomerId;
+                } else {
+                    transactions = await Transactions.create({
+                        customerId: newCustomerId,
+                        transactions: [],
+                        subscriptions: []
+                    });
+                }
+
+                user.customerId = newCustomerId;
+
+                //Save models
+                await User.updateOne({ _id: user.id }, { $set: { customerId: newCustomerId } });
+                transactions.save();
+
+                //Recreate payment with new customerId
+                return await createPayment(product, user);
+            }
+        }
     }
 }
 
@@ -274,7 +327,7 @@ const cancelSubscription = async (user, subscriptionId) => {
     return subscription;
 }
 
-const savePaymentData = async (customerId, payment) => {
+const savePaymentData = async (customerId, payment, product) => {
     const paymentId = payment.id;
     const description = payment.description;
     const createdAt = payment.createdAt;
@@ -286,6 +339,7 @@ const savePaymentData = async (customerId, payment) => {
     transactions.transactions.push({
         paymentId: paymentId,
         description: description,
+        productId: product.id,
         amount: amount,
         paidAt: createdAt,
         status: status,
@@ -384,9 +438,20 @@ module.exports.gift = async (req, res) => {
     } else {
         User.findOne({ _id: userId }, async (err, user) => {
             if (user) {
-                Product.findOne({ _id: productId }, (err, product) => {
+                Product.findOne({ _id: productId }, async (err, product) => {
                     if (product) {
                         addClassPass(user, product, "gift");
+                        const transactions = await Transactions.findOne({ customerId: user.customerId });
+                        transactions.transactions.push({
+                            paymentId: null,
+                            description: product.description,
+                            amount: { "currency": "EUR", "value": product.price },
+                            paidAt: null,
+                            status: "Gift",
+                            method: null
+                        });
+                        transactions.markModified("transactions");
+                        transactions.save();
                         res.status(200).json({ message: "Product succesvol gegeven aan: " + user.fullName });
                     } else {
                         res.status(400).json({ message: "Geen product gevonden met dit id" })
@@ -427,7 +492,7 @@ module.exports.webHook = async (req, res) => {
                 //Normal payment
                 if (user) {
                     await addClassPass(user, product);
-                    await savePaymentData(customerId, payment);
+                    await savePaymentData(customerId, payment, product);
 
                     //TODO: Send confirmation mail
                     res.sendStatus(200);
@@ -449,6 +514,7 @@ module.exports.webHook = async (req, res) => {
                             subscription.payments.push({
                                 paymentId: payment.id,
                                 description: payment.description,
+                                productId: productId,
                                 amount: payment.amount,
                                 paidAt: payment.paidAt,
                                 status: payment.status,
@@ -462,10 +528,7 @@ module.exports.webHook = async (req, res) => {
                 res.sendStatus(200);
             }
         }
-    } else {
-        console.log("Nog niet betaald");
     }
-
 }
 
 module.exports.subscriptionWebhook = async (req, res) => {

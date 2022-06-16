@@ -1,4 +1,5 @@
 const { createMollieClient, PaymentStatus } = require("@mollie/api-client");
+const Transactions = require("../models/Transactions");
 const config = require("../config").config;
 const User = require("../models/User");
 

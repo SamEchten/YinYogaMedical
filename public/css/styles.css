@@ -135,15 +135,15 @@ h4 {
 /* Global button styling */
 .yinStyle {
         /* background-color: #D5CA9B !important;
-    border-color: #D5CA9B !important; */
+        border-color: #D5CA9B !important; */
         background-color: #d5ca9b00 !important;
         color: #767676 !important;
         border-color: #D5CA9B !important;
 }
 .swal2-popup {
         background-color: rgb(255 255 255);
-        border-top: 20px solid #d5ca9b !important;
-        box-shadow: 0px 1px 12px -2px #0e0e0e !important;
+        /* border-top: 20px solid #d5ca9b !important; */
+        box-shadow: 0px 1px 12px -5px #0e0e0e !important;
 }
 
 .yinStyle:hover {

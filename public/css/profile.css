@@ -89,8 +89,25 @@ option:focus-within {
 
 
 .notes {
-    height: 20vh;
+    height: 11vh;
     overflow-y: auto;
+    width: 100%;
+}
+
+.rewriteNotes{
+    height: 10vh;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.subscriptionLine{
+    background-color: rgb(238, 238, 238);
+    border-left: 2px solid #D5CA9B;
+    border-bottom: 1px solid #dadada;
+    border-right: 1px solid #dadada;
+    border-top: 1px solid #dadada;
+    border-radius: 4px;
+    padding: 10px;
 }
 
 .descriptionText {

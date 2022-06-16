@@ -1,8 +1,8 @@
 class ApiCaller {
     //static functions
     // Creates a new user and logs them in ->
-    static baseUrl = "https://localhost:80";
-        
+    static baseUrl = "https://f8d6-2a02-a467-14f7-1-f59a-2604-e11f-2d8b.eu.ngrok.io";
+
     static registerUser = async (data) => {
         let url = "/api/auth/signup/";
         let options = {
@@ -82,6 +82,7 @@ class ApiCaller {
         };
         try {
             let response = await fetch(url, options);
+            console.log(response);
             return response;
         } catch (err) {
             //error
@@ -302,6 +303,22 @@ class ApiCaller {
         let url = "/api/user/";
         let options = {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    static cancelSubscription = async (subscriptionId) => {
+        let url = "/api/product/cancel/" + subscriptionId;
+        let options = {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             }

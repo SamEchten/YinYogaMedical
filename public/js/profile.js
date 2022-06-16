@@ -37,21 +37,13 @@ $(".setting").on("click", async function () {
                 <p>Momenteel heeft u <b>geen</b> uren.</p>
                 </div>`)
             }
-            else if(json.saldo < 2 && json.saldo > 0)
+            else
             {
                 $(".showHours").html(`
                 <div class="col-md-12">
                 <p>Momenteel heeft u <b>`+ json.saldo +`</b> uur</p>
                 </div>`)
             }
-            else
-            {
-                $(".showHours").html(`
-                <div class="col-md-12">
-                <p>Momenteel heeft u <b>`+ json.saldo +`</b> uren</p>
-                </div>`)
-            }
-            console.log(jsonPayment.products[1]);
             for(i = 0; i < jsonPayment.products.length; i++)
             {
                 const product = jsonPayment.products[i];
@@ -86,12 +78,18 @@ $(".setting").on("click", async function () {
         {
             const subscriptions = []
             let multipleSubscriptions = "";
-            for(i = 0; i < json.subscriptions.length; i++)
-            {
-                subscriptions.push(json.subscriptions[i].description+ ' ');
-                multipleSubscriptions += `<li>`+ json.subscriptions[i].description+ '</li>';
+            for(i in json.subscriptions) {
+                const subscription = json.subscriptions[i];
+                const subscriptionRow = `<div class="col-md-8 pt-2">`+ subscription.description+ '</div><div class="col-md-4"><button class="btn yinStyle"><i><u>Abonnement stopzetten</u></i></button></div>';
+                multipleSubscriptions += subscriptionRow;
+                $(".btn").on("click", function() {
+                    console.log("click")
+                    console.log(subscription);
+                    //quitSubscription(subId);
+                })
             }
-            if(subscriptions.length == 0)
+
+            if(json.subscriptions.length == 0)
             {
                 $(".settingsContent").load("profile/mySubscription", function(){
                     $(".abonnementContent").html(`
@@ -105,11 +103,14 @@ $(".setting").on("click", async function () {
                 $(".settingsContent").load("profile/mySubscription", function(){
                     $(".abonnementContent").html(`
                         <div class="col-md-12">
-                            <p>U heeft de volgende abonnementen:</p>
-                            <ul>`+ multipleSubscriptions +`</ul>
+                        <b>U heeft de volgende abonnementen:</b>
+                            <div class="row subscriptionLine">
+                                `+ multipleSubscriptions +`
+                            </div>
                         </div>`)
                 });
             }
+            //cancelsubscription user id en subscription id
         }
     else if(this.id == "settings") 
     {
@@ -117,7 +118,36 @@ $(".setting").on("click", async function () {
     }
 })
 
+async function quitSubscription(subId){
+    console.log(subId)
+  swal.fire({
+    title: "Weet u zeker dat u dit abonnement wilt stoppen?",
+    icon: "info",
+    showConfirmButton: true,
+    confirmButtonText: "Stoppen",
+    confirmButtonColor: "#D5CA9B",
+    showCloseButton: true,
+    showCancelButton: true,
+    cancelButtonText: 'Terug'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+        console.log('prima kill')
+      try {
+        let res = await ApiCaller.cancelSubscription(subId)
+        let json = await res.json();
+        const payments = await ApiCaller.paymentHistory(user.id);
+        const jsonPayment = await payments.json();
+        if (res.status == 200) {
 
+          //loadAndSetFullAgenda();
+          toastPopUp("Les geannuleerd", "success");
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+});
+}
 
 async function changeInfo(sort) {
     const userConst = await ApiCaller.getUserInfo(user.id);
@@ -150,7 +180,7 @@ async function changeInfo(sort) {
             <i class="bi bi-x-circle" onclick="denyName()"></i></b>`
         );
         $("#notes").html(
-            `<textarea id = "changeNotes" type = "text">`+ json.notes +`</textarea>`
+            `<textarea id="changeNotes" class="rewriteNotes" type="text">`+ json.notes +`</textarea>`
         );
     }
 }
@@ -204,7 +234,7 @@ async function acceptName(type) {
             $("#accountEmail").html(``+ jsonload.email +`<i class="bi bi-pencil" onclick="changeInfo('email')"></i>`);
             $("#accountPhoneNumber").html(``+ jsonload.phoneNumber +`<i class="bi bi-pencil" onclick="changeInfo('phoneNumber')"></i>`);
             $("#titleNotes").html(`<b>Notities <i class="bi bi-pencil" onclick="changeInfo('notes')"></i></b>`);
-            $("#notes").html(json.notes);
+            $("#notes").html(jsonload.notes);
         })
     }
     else if(type == "phone"){
@@ -229,7 +259,7 @@ async function acceptName(type) {
             $("#accountEmail").html(``+ jsonload.email +`<i class="bi bi-pencil" onclick="changeInfo('email')"></i>`);
             $("#accountPhoneNumber").html(``+ jsonload.phoneNumber +`<i class="bi bi-pencil" onclick="changeInfo('phoneNumber')"></i>`);
             $("#titleNotes").html(`<b>Notities <i class="bi bi-pencil" onclick="changeInfo('notes')"></i></b>`);
-            $("#notes").html(json.notes);
+            $("#notes").html(jsonload.notes);
         })
     }
     else if(type == "notes"){

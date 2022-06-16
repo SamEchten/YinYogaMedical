@@ -1,7 +1,7 @@
 let userCredentials;
 let totalSpent = 0;
 
-$(async () =>  {
+$(async () => {
     await getAllUserInfo();
     setUserInformation();
     await addPaymentHistory();
@@ -28,6 +28,7 @@ const setUserInformation = () => {
 const getUserPaymentHistory = async () => {
     try {
         let res = await ApiCaller.paymentHistory(userCredentials.id);
+        console.log(res);
         let json = await res.json();
         return json;
     } catch (err) {
@@ -37,33 +38,38 @@ const getUserPaymentHistory = async () => {
 
 const addPaymentHistory = async () => {
     let paymentHistory = await getUserPaymentHistory();
+    console.log(paymentHistory);
     let products = await paymentHistory.products;
     let table = $("#tablePaymentHistory");
     console.log(products);
     table.empty();
-    if(products.length > 0) {
-        for(i in products) {
+    if (products.length > 0) {
+        for (i in products) {
             const product = products[i];
             let productPaymentId = product.paymentId;
-            let productStatus = product.status == "paid" ? "Betaald" : "Nog niet betaald";
+            let productStatus = product.status == "paid" ? "Betaald<i class='bi bi-check2-square icons ps-3'>" : "Cadeau <i class='bi bi-gift icons ps-3'>";
             let productName = product.description;
-            let productPrice = product.amount.value
+            let productPrice = "-"
+            if (product.amount) {
+                productPrice = product.amount.value
+            }
             totalSpent += parseFloat(productPrice);
             let element = `
             <tr id="${productPaymentId}" class="cursor">
                 <td>${productName}</td>
                 <td>€${productPrice}</td>
-                <td>${productStatus }<i class="bi bi-check2-square icons ps-3"></i></td>
+                <td>${productStatus}</td>
             </tr>`
+            console.log(element)
 
             table.append(element);
             eventHandlers(product);
         }
-        
-    }else {
+
+    } else {
         table.append(`<p class="lead"><small>Gebruiker heeft nog geen producten gekocht.</small></p>`);
     }
-    
+
 }
 
 const addSubscriptionItem = async () => {
@@ -71,16 +77,16 @@ const addSubscriptionItem = async () => {
     let subscription = transactions.subscriptions[0];
     let subIcon;
     console.log(subscription)
-    if(subscription == undefined) {
+    if (subscription == undefined) {
         console.log("geen abbo")
-        
+
         let element = `<p class="lead"><small>Gebruiker heeft op het moment geen abonnement.</small><p>`
         $(".subscriptions").after(element);
     } else {
         let amount = parseFloat(subscription.amount.value)
-        if(subscription.description == "Video") {
+        if (subscription.description == "Video") {
             subIcon = "camera-video"
-        } else if(subscription.description == "Podcast"){
+        } else if (subscription.description == "Podcast") {
             subIcon = "mic"
         } else {
             subIcon = "gem"
@@ -108,17 +114,26 @@ const addSubscriptionItem = async () => {
 
         $(".subscriptions").after(element);
         totalSpent += amount * subscription.payments.length;
-        $("#" + subscription.subscriptionId).on("click", function() {
+        $("#" + subscription.subscriptionId).on("click", function () {
             window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + subscription.subscriptionId);
         });
     }
     console.log(subscription)
-} 
+}
 const setTotalSpent = () => {
     $("#spent").text("€ " + totalSpent)
 }
 const eventHandlers = (product) => {
-    $("#" + product.paymentId).on("click", function() {
-        window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + product.paymentId);
+    $("#" + product.paymentId).on("click", function () {
+        if(product.paymentId) {
+            window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + product.paymentId);
+        } else {
+            Swal.fire({
+                title: "Cadeau",
+                text: "Dit product is een gift van een andere gebruiker of uw zelf, dit product heeft geen betaal gegeven omdat het valt uw eigen applicatie.",
+                icon: "warning"
+            });
+        }
+        
     });
 }

@@ -11,11 +11,11 @@ router.post("/webhook", controller.webHook);
 router.post("/subscriptions/webhook", controller.subscriptionWebhook);
 //Get all products
 router.get("/", controller.get);
+//Get Single product by id
+router.get("/:id", controller.get);
 
 //Accessible by logged in users
 router.use(validateJwt);
-//Get Single product by id
-router.get("/:id", controller.get);
 //Buy product
 router.post("/purchase/:id", controller.purchase);
 //Cancel subscription

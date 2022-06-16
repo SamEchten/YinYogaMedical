@@ -43,6 +43,10 @@ const sessionSchema = mongoose.Schema({
     },
     eventId: {
         type: String
+    },
+    canceled: {
+        type: Boolean,
+        default: false
     }
 });
 

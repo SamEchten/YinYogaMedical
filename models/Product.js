@@ -35,6 +35,10 @@ const productSchema = mongoose.Schema({
     recurring: {
         type: Boolean,
         default: false
+    },
+    active: {
+        type: Boolean,
+        default: true
     }
 });
 

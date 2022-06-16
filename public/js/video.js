@@ -204,7 +204,7 @@ function showAdminItems() {
 }
 
 function addEventHandlers(bought, id) {
-  console.log(user.subscriptions)
+  if(user){
     if(user.subscriptions.length > 0) { 
       // click event user that bought video || user.subscription == "videoAccess"
       if(user.subscriptions[0].description == "Video") {
@@ -220,16 +220,18 @@ function addEventHandlers(bought, id) {
       $("#" + id).children().remove();
       $("#" + id).on("click", function() {
         userActionBought(id);
-      });
-    } else if(user == undefined) {
-      $("#" + id).on("click", function() {
-        nonUserAction(id);
-      }) 
+      }); 
     } else {
       $("#" + id).on("click", function() {
         userActionBuy(id);
       });
     }
+  } else {
+      $("#" + id).on("click", function() {
+        nonUserAction(id);
+      });
+  }
+    
 }
 
 async function setAllVideosObject() {
