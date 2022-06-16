@@ -253,7 +253,36 @@ const purchaseProduct = async (product, user) => {
     if (product.recurring) {
         return await startSubscription(product, user);
     } else {
-        return await createPayment(product, user);
+        try {
+            return await createPayment(product, user);
+        } catch (err) {
+            if (err.message == "The customer is no longer available") {
+                //Create new customer
+                const customerId = user.customerId;
+                const newCustomerId = await mollieClient.createCustomer(user.id);
+
+                //Change customer id to new one
+                let transactions = await Transactions.findOne({ customerId });
+                if (transactions) {
+                    transactions.customerId = newCustomerId;
+                } else {
+                    transactions = await Transactions.create({
+                        customerId: newCustomerId,
+                        transactions: [],
+                        subscriptions: []
+                    });
+                }
+
+                user.customerId = newCustomerId;
+
+                //Save models
+                await User.updateOne({ _id: user.id }, { $set: { customerId: newCustomerId } });
+                transactions.save();
+
+                //Recreate payment with new customerId
+                return await createPayment(product, user);
+            }
+        }
     }
 }
 

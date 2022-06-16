@@ -19,5 +19,5 @@ module.exports.config = {
         },
         url: "https://het-eigen-wijze-lichaam.nl"
     },
-    webhookUrl: "https://379c-194-171-182-60.eu.ngrok.io"
+    webhookUrl: "https://f8d6-2a02-a467-14f7-1-f59a-2604-e11f-2d8b.eu.ngrok.io"
 }

@@ -172,7 +172,7 @@ module.exports.purchaseHistory = async (req, res) => {
                     res.status(200).json({
                         subscriptions: transactions.subscriptions,
                         products: transactions.transactions
-                    })
+                    });
                 } else {
                     res.status(404).json({ message: "Geen transacties gevonden met dit klanten id" });
                 }
