@@ -461,7 +461,7 @@ module.exports.signout = async (req, res) => {
                     try {
                         let session = await Session.findOne({ _id: sessionId });
                         if (session) {
-                            if (onTime(session.date)) {
+                            if (onTime(session.date) || cookieEmployee) {
                                 if (userParticipates(userId, session.participants)) {
                                     if (cookieUserId == userId || cookieEmployee == true) {
                                         await returnSaldo(user, session.participants);

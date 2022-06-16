@@ -33,8 +33,10 @@ const loadCategory = async (row) => {
   const dom = $("#" + row.category);
   for (i in row.products) {
     const product = row.products[i];
-    const view = await loadProduct(product);
-    dom.append(view);
+    if (product.active) {
+      const view = await loadProduct(product);
+      dom.append(view);
+    }
   }
 }
 

@@ -167,7 +167,7 @@ const hasBeenBought = async (product) => {
     for (i in transactions) {
         const transaction = transactions[i];
         for (j in transaction.transactions) {
-            const payment = transaction.transactions[i];
+            const payment = transaction.transactions[j];
             if (payment.productId == product.id) {
                 return true;
             }
@@ -528,10 +528,7 @@ module.exports.webHook = async (req, res) => {
                 res.sendStatus(200);
             }
         }
-    } else {
-        console.log("Nog niet betaald");
     }
-
 }
 
 module.exports.subscriptionWebhook = async (req, res) => {
