@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const path = require("path");
 const mollieClient = require("../mollie/mollieClient");
 const Transactions = require("../models/Transactions");
+const Session = require("../models/Session");
 
 module.exports.get = async (req, res) => {
     const { id } = req.params;
@@ -146,19 +147,40 @@ module.exports.delete = async (req, res) => {
             let user = await User.findOne({ _id: id });
             //Check if user exists ->
             if (user) {
+                //Delete from sessions ->
+                await removeFromSession(user);
+                //Delete transactions ->
+                await Transactions.deleteOne({ customerId: user.customerId });
                 //Delete user ->
                 await user.remove();
-                res.status(200).send();
+
+                res.status(200).json({ message: "Gebruiker succesvol verwijderd" });
             } else {
                 //User does not exit ->
-                res.status(404).send();
+                res.status(404).json({ message: "Geen gebruiker gevonden met dit id" });
             }
         } catch (err) {
-            res.sendStatus(400);
+            res.status(400).json({ message: "Er is iets fout gegaan", error: err.message });
         }
     } else {
         //Id was not provided ->
-        res.sendStatus(400);
+        res.status(400).json({ message: "Er is geen id gevonden" });
+    }
+}
+
+const removeFromSession = async (user) => {
+    const sessions = await Session.find({});
+    for (i in sessions) {
+        const session = sessions[i];
+        session.participants.some(e => deleteUser(e, session, user.id));
+    }
+}
+
+const deleteUser = (e, session, userId) => {
+    if (e.userId == userId) {
+        const index = session.participants.indexOf(e);
+        session.participants.splice(index, 1)
+        session.save();
     }
 }
 
