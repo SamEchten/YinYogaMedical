@@ -115,7 +115,7 @@ const addSubscriptionItem = async () => {
         $(".subscriptions").after(element);
         totalSpent += amount * subscription.payments.length;
         $("#" + subscription.subscriptionId).on("click", function () {
-            window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + subscription.subscriptionId);
+            window.open("https://www.mollie.com/dashboard/org_15275729/customers/" + userCredentials.customerId);
         });
     }
     console.log(subscription)
