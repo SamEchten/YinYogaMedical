@@ -305,9 +305,12 @@ function templateCanceldSession(sessionData) {
     `
     <div id="${sessionData.id}" class="row ps-4 p-2 agendaItem canceled swing-in-top-fwd align-items-center">
       <div class="col-md-2">
-        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(sessionData.date).time}</h4>
+        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i><del>${dateFormat(sessionData.date).time}</del></h4>
       </div>
-      <div class="col-md-10 text-start sessionDetails">
+      <div class="col-md-2 sessionDetails">
+        <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${sessionData.title}</h4>
+      </div>
+      <div class="col-md-8 text-start sessionDetails">
         <h4 class="m-0">Geannuleerd <h4>
       </div>
            

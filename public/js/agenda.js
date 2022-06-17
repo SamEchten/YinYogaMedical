@@ -459,10 +459,10 @@ async function removeSession(sessionData) {
   let header;
   if(sessionData.amountOfParticipants > 0){
     text = "Het lijkt erop dat er mensen staan ingeschreven voor deze les, de les zal geannuleerd worden en de gebruikers zullen een mail ontvangen.";
-    header = "annuleren";
+    header = "Annuleren";
   } else {
     text = `Op het moment staan er geen gebruikers ingeschreven voor ${sessionData.title}, de les zal verwijderd worden uit het rooster als u op door gaan klikt.`;
-    header = "verwijderen"
+    header = "Verwijderen"
   }
   Swal.fire({
     title: `Weet u zeker dat u deze les wilt ${header}?`,

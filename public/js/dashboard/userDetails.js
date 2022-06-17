@@ -115,7 +115,7 @@ const addSubscriptionItem = async () => {
         $(".subscriptions").after(element);
         totalSpent += amount * subscription.payments.length;
         $("#" + subscription.subscriptionId).on("click", function () {
-            window.open("https://www.mollie.com/dashboard/org_15275729/payments/" + subscription.subscriptionId);
+            window.open("https://www.mollie.com/dashboard/org_15275729/customers/" + userCredentials.customerId);
         });
     }
     console.log(subscription)
@@ -130,7 +130,7 @@ const eventHandlers = (product) => {
         } else {
             Swal.fire({
                 title: "Cadeau",
-                text: "Dit product is een gift van een andere gebruiker of uw zelf, dit product heeft geen betaal gegeven omdat het valt uw eigen applicatie.",
+                text: "Dit product is een gift van een andere gebruiker of uw zelf, dit product heeft geen betaalgegevens omdat het valt uw eigen applicatie.",
                 icon: "warning"
             });
         }
