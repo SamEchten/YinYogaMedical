@@ -17,7 +17,7 @@ async function displayVideos () {
     console.log(videos)
     if(videos == false){
         $(".contentRow").html(`<div class="col-md text-center"><h2 class="lead">Geen video's beschikbaar</h2></div>`);
-        if(roleCheck()) {
+        if(isAdmin()) {
             $(".addVideo").css("display", "block");
         }
         //loader(false);
@@ -36,7 +36,7 @@ $(".scrollbar").scroll(function() {
     if($(".scrollbar").scrollTop()  + $(".scrollbar").height() >= $(".scrollbar").prop('scrollHeight') - 20) {
         for(let i = 0; i < 4 && numberOfPodcastsShown < videos.length; numberOfPodcastsShown++, i++)
             addAPodcast()
-        if(roleCheck())
+        if(isAdmin())
             showAdminItems()
     }
 });
@@ -62,7 +62,7 @@ function addEventHandlers(bought, id) {
                 userActionBought(id);
             });
         }
-    } else if(roleCheck()) { // click event admin
+    } else if(isAdmin()) { // click event admin
         $("#" + id).addClass("bought");
         $("#" + id).children().remove();
         $("#" + id).on("click", function() {
@@ -85,7 +85,7 @@ function userActionBought(id) {
 }
 
 function adminActions() {
-    if(roleCheck()) {
+    if(isAdmin()) {
         showAdminItems();// show admin items ->
 
         // Edit video as ADMIN ->
@@ -163,7 +163,7 @@ $(".addVideo").on("click", function() {
 // Add a video as admin
 function addVideo() {
     let html = addVideoTemplate();
-    if(roleCheck()) {
+    if(isAdmin()) {
         Swal.fire({
             title: 'Podcast toevoegen',
             text: "Voeg hier een video of podcast toe met daarbij een thumbnail.",

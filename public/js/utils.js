@@ -178,7 +178,7 @@ function createDateString(date, time) {
 }
 
 // Checks client role  ->
-function roleCheck() {
+function isAdmin() {
   try {
     if (user.isEmployee) {
       return true
@@ -189,14 +189,15 @@ function roleCheck() {
 
   }
 }
-// Checks if the session is full or not ->
+// Checks if the session is full or not or that it is in the past ->
 function checkIfSessionIsValid(sessionData) {
   let today = new Date;
   let sessionDay = new Date(sessionData.date);
   const result = new Date(sessionDay.toISOString().slice(0, -1))
-
+  // Check if session is full or session date is in de past today > result = sessionDate
+  console.log(sessionData.amountOfParticipants)
   if ((sessionData.amountOfParticipants >= sessionData.maxAmountOfParticipants && !sessionData.participates) || today > result) {
-    if (!roleCheck()) {
+    if (!isAdmin()) {
       $("#" + sessionData.id).addClass("showOrHide");
     }
   }
@@ -205,7 +206,7 @@ function checkIfSessionIsValid(sessionData) {
 
 // Hide elements for none admins else show them ->
 function showOrhideElements() {
-  if (roleCheck()) {
+  if (isAdmin()) {
     $(".hiding").css("display", "block");
     $(".subscribe").attr("disabled", true);
     $(".BuyNow").attr("disabled", true);
