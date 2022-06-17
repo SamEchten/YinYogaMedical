@@ -46,6 +46,8 @@ module.exports.createFirstPayment = async (product, user) => {
 }
 
 module.exports.createSubscription = async (customerId, amount, description, webhookUrl) => {
+    const startDate = getStartDate();
+    console.log(startDate);
     const subscription = await mollieClient.customers_subscriptions.create({
         customerId: customerId,
         amount: {
@@ -53,10 +55,32 @@ module.exports.createSubscription = async (customerId, amount, description, webh
             value: amount,
         },
         interval: '1 month',
+        startDate: startDate,
         description: description,
         webhookUrl: webhookUrl
     });
     return subscription;
+}
+
+const getStartDate = () => {
+    const curDate = new Date();
+    let startDate = new Date(curDate.setMonth(curDate.getMonth() + 1));
+
+    let day = startDate.getDate();
+    if (day < 10) {
+        let dayString = day.toString();
+        day = "0" + dayString
+    }
+
+    let month = startDate.getMonth();
+    if (month < 10) {
+        let monthString = month.toString();
+        month = "0" + monthString
+    }
+
+    let year = startDate.getFullYear();
+
+    return (year + "-" + month + "-" + day)
 }
 
 module.exports.hasMandate = async (customerId) => {

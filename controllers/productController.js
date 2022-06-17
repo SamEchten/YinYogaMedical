@@ -298,7 +298,7 @@ const startSubscription = async (product, user) => {
             return { message: "U heeft dit abonnement al gekocht" };
         }
     } else {
-        return { message: "Gebruiker heeft al een abonnement" };
+        return { message: "U kunt niet meer dan 1 abonnement hebben, sluit eerst uw huidige abonnement af." };
     }
 }
 
