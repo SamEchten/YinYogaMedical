@@ -169,7 +169,7 @@ function swalItemAddSession() {
               <div class="col-md-12">
                 <div class="row">
                   <div class="col-md  test">
-                    <h3 class="lead lbs"><b>Prive les</b></h3>
+                    <h3 class="lead lbs"><b>Privé les</b></h3>
                     <small id="emailHelp" class="form-text text-muted">Bij het inplannen van een privé les moet u zelf de persoon nog toevoegen aan de les.</small>
                   </div>
                 </div>

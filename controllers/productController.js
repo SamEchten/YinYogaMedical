@@ -292,6 +292,7 @@ const startSubscription = async (product, user) => {
             //Create first payment to start the scubscription
             const payment = await mollieClient.createFirstPayment(product, user);
             const checkOutUrl = payment.getCheckoutUrl();
+            console.log("sub started")
             return { checkOutUrl: checkOutUrl };
         } catch (err) {
             console.log(err);
@@ -310,6 +311,7 @@ const hasSubscription = (user) => {
 }
 
 const createSubscription = async (user, customerId, amount, description) => {
+    
     //Create subscription with mollie api
     const webhookUrl = config.webhookUrl + "/api/product/subscriptions/webhook";
     const subscription = await mollieClient.createSubscription(customerId, amount, description, webhookUrl);

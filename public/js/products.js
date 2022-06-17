@@ -432,8 +432,7 @@ async function addProduct() {
 }
 
 // buy product
-function buyProduct(product) {
-  console.log(product);
+function buyProduct(product, id) {
   let html1 = swalBuyProductCheck(product);
   let html2 = swalGiftProduct();
   const id = product._id;

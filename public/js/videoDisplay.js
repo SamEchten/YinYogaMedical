@@ -16,7 +16,7 @@ async function getVideoInfo(id){
 }
 
 async function setvideoPlayer(id) {
-    let url = ApiCaller.baseUrl + "/api/video/stream/"
+    let baseUrl = "https://het-eigen-wijze-lichaam.nl/api/video/stream/";
     let json = await getVideoInfo(id);
     let videoSrc = url + json.videoPath + "/" + user.id;
     let vidElement = $(`<source src='${videoSrc}'>`);

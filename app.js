@@ -8,7 +8,7 @@ const https = require("https");
 const fs = require("fs");
 
 //Server port ->
-const port = 80;
+const port = 443;
 
 //Optinos for https connection
 const httpsOptions = {
