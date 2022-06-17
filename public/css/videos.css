@@ -36,7 +36,7 @@ img {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    border-radius: 15px 15px 0px 0px;
+    border-radius: 3px 3px 0px 0px;
     border-top: 1px solid rgb(209, 209, 209);
     border-left: 1px solid rgb(209, 209, 209);
     border-right: 1px solid rgb(209, 209, 209);
@@ -67,7 +67,7 @@ img {
 .lockIcon {
     font-size: 70px;
     font-weight: 500;
-    color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
 }
 .bought {
     filter: none;
@@ -84,7 +84,7 @@ img {
 .videoInfo {
     height: 100%;
     overflow: auto;
-    border-radius: 0px 0px 15px 15px;   
+    border-radius: 0px 0px 3px 3px;   
     background-color: rgb(255, 255, 255);
     border-bottom: 1px solid rgb(209, 209, 209);
     border-left: 1px solid rgb(209, 209, 209);
@@ -109,15 +109,15 @@ img {
     .videoRowTop {
         height: 100%;
     }
-    .h-60 {
+    /* .h-60 {
         height: 97% !important;
     }
     .h-40 {
         height: 3% !important
-    }
-    .videoInfo {
+    } */
+    /* .videoInfo {
         background-color: #d5ca9b;
-    }
+    } */
 
 
 }

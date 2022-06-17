@@ -45,7 +45,7 @@ function addVideoTemplate () {
 function videoTemplate (title, description, videoId) {
     let html = `
     
-    <div class="col-md-3 test p-4">
+    <div class="col-md-3 h-100 test p-4">
         <div class="row h-60 videoIdRow ">
             <div id=${videoId} class="col-md videoThumbnail">
                 <div class="row h-100 align-items-center">

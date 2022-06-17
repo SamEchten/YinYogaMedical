@@ -1,4 +1,5 @@
 function swalProductDetails(data) {
+  console.log(data);
   const currentdate = new Date();
   currentdate.setFullYear(currentdate.getFullYear() + data.validFor);
   let template = '';
@@ -98,7 +99,7 @@ function swalItemGiftUser() {
 
 // Create userItem element in side add user to session
 function createUserItem(fullName, email, phoneNumber, id) {
-  let element = `
+  let element = $(`
   <div class="row pb-2 slide-in-blurred-top">
     <div class="col-md-10 p-2 lead userFilterItem text-start">
       <h4><i class="bi bi-person pe-2"></i> ${fullName}</h4>
@@ -110,13 +111,13 @@ function createUserItem(fullName, email, phoneNumber, id) {
     <div class="col-md-2">
       <div class="row h-100 align-items-center">
         <div class="col-md-12 cursor giftFreeSession">
-          <i id=${id} class="bi bi-gift gift" data-toggle="tooltip" data-placement="top" title="Geef product cadeau"></i>
+          <i id=${id} class="bi bi-gift giftBtn" data-toggle="tooltip" data-placement="top" title="Geef product cadeau"></i>
         </div>
       </div>
       
       
     </div>
-  </div>`
+  </div>`);
 
   return element;
 }
@@ -308,35 +309,18 @@ function swalItemAddProduct(category) {
   return template;
 }
 
-function hasSubscription(product) {
-  if (user) {
-    for (i in user.subscriptions) {
-      let subscription = user.subscriptions[i];
-      if (subscription == product.productName) {
-        return true;
-      }
-    }
-    return false;
-  }
-  return false;
-}
-
-function loadSingleProductItem(product, price, category) {
-  console.log(product);
+function loadSingleProductItem(product) {
   const id = product._id;
+  const price = product.price;
+  const category = product.category;
   const productName = product.productName;
   const validFor = product.validFor;
 
   let date = new Date();
   date.setFullYear(date.getFullYear() + validFor);
 
-  let btnClass;
-  if (hasSubscription(product)) {
-    btnClass = "disabled";
-  }
-
   let template = '';
-  if (category == "subscriptions") {
+  if (category == "Abonnementen") {
     template = `
     <div id="${id}" class="row productItem align-items-center">
       <div class="col-md-8 productnameTitle" id="productNameText">
@@ -344,21 +328,20 @@ function loadSingleProductItem(product, price, category) {
         <p id="subtitle" class="productSubtitle">Geldig tot ${dateFormat(date).date}</p>
       </div>
       <div class="col-md text-md-end">
-        <h4 id="price" class="lead fw-bold productPrice">€${price}</h4>
+        <h4 id="price" class="lead fw-bold productPrice">€${price} <p class="lead m-0" id="pmTag">per maand</p></h4>
       </div>
-      <div class="col-md-1">
+      <div class="col-md-1 midCol">
         <div class="row">
           <div class="col-md-4 col-2 text-md-end text-start">
             <i class="bi bi-pencil hiding editProduct icons"></i>
           </div>
           <div class="col-md-4 col-2 text-md-end text-start"></div>
           <div class="col-md-4 col-8 text-md-end text-start">
-            <i class="bi bi-person-check hiding addPeople icons"></i>
           </div>
         </div>
       </div>
       <div class="col-md text-end">
-        <button type="submit" class="btn btn-primary yinStyle ${btnClass} BuyNow">+ Koop nu</button>
+        <button type="submit" class="btn btn-primary yinStyle BuyNow">+ Koop nu</button>
       </div>
     </div>`
   } else {
@@ -380,7 +363,7 @@ function loadSingleProductItem(product, price, category) {
             <i class="bi bi-trash3 hiding removeProduct icons"></i>
           </div>
           <div class="col-md-4 col-8 text-md-end text-start">
-          <i class="bi bi-person-check hiding addPeople icons"></i>
+          <i class="bi bi-gift  hiding addPeople icons"></i>
           </div>
         </div>
       </div>
@@ -393,9 +376,24 @@ function loadSingleProductItem(product, price, category) {
 }
 
 function swalBuyProductCheck(product) {
-  let template = `
-  <h2>Product kopen</h2>
-  <hr>
-  <p>U wilt u het product <b>${product}</b> kopen. Klopt dit?</p>`
+  const productName = product.productName;
+  const price = product.price.replace(".", ",");
+  let template;
+  if (product.category == "Abonnementen") {
+    template = `
+      <h2>Abonnement afsluiten</h2>
+      <hr>
+      <p>Wanneer u dit abonnement afsluit gaat u er mee akkoord dat er elke maand €${price} euro zal worden afgeschreven.</p>
+      <div class="alert alert-warning" role="alert">
+        <label for="lname"><i class="bi bi-exclamation-diamond pe-2"></i><small>Hierbij accepteer ik de algemene voorwaarden voor het afsluiten van een abonnement</small></label>
+        <input id="TOS" type="checkbox" id="lname" name="lname">
+      </div>`
+  } else {
+    template = `
+      <h2>Product kopen</h2>
+      <hr>
+      <p>U wilt u het product <b>${productName}</b> kopen. Klopt dit?</p>`
+  }
+
   return template;
 }

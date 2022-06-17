@@ -45,8 +45,7 @@ module.exports.updateEvent = async (id, newEvent) => {
             event.when.endTime = newEvent.when.endTime;
             event.save();
         });
-    } catch(err) {
+    } catch (err) {
         console.log(err)
     }
-
 }

@@ -10,7 +10,7 @@ module.exports.get = async (req, res) => {
     const { id } = req.params;
     let userId;
     if (req.cookies.user) {
-        userId = JSON.parse(req.cookies.user).userId;
+        userId = JSON.parse(req.cookies.user).id;
     }
 
     if (id) {
@@ -52,7 +52,8 @@ const getSingleSessionInfo = async (session, userId) => {
                 teacher: session.teacher,
                 description: session.description,
                 maxAmountOfParticipants: session.maxAmountOfParticipants,
-                amountOfParticipants: await Session.getAmountOfParticipants(session._id)
+                amountOfParticipants: await Session.getAmountOfParticipants(session._id),
+                canceled: session.canceled
             }
         }
     }
@@ -124,7 +125,8 @@ const getSessionInfo = async (session, userId) => {
         amountOfParticipants: await Session.getAmountOfParticipants(session._id),
         maxAmountOfParticipants: session.maxAmountOfParticipants,
         teacher: session.teacher,
-        description: session.description
+        description: session.description,
+        canceled: session.canceled
     }
 
     if (userId != null) {
@@ -276,22 +278,61 @@ const updateSessionEvent = async (session) => {
 }
 
 module.exports.delete = async (req, res) => {
-    const { id } = req.params;
-
     try {
+        const { id } = req.params;
         const session = await Session.findOne({ _id: id });
         if (session) {
-            const eventId = session.eventId;
-            session.remove();
-            deleteEvent(eventId);
-            //Send email to participants
-            //Set back hours of participants
-            res.status(200).json({ message: "Sessie is verwijderd" });
+            if (session.participants.length > 0) {
+                await refundHours(session);
+                await cancelSession(session);
+                //send mail to participants
+                res.status(200).json({ message: "Sessie is geannuleerd" });
+            } else {
+                await refundHours(session);
+                await removeSession(session);
+                //Send email to participants
+                res.status(200).json({ message: "Sessie is verwijderd" });
+            }
         } else {
             res.status(404).json({ message: "Geen sessie gevonden met dit Id" })
         }
     } catch (err) {
+        console.log(err)
         res.status(400).json({ message: "Er is iets fout gegaan", error: err });
+    }
+}
+
+const cancelSession = async (session) => {
+    session.canceled = true;
+
+    //Update calender item to canceled
+    const time = converTime(session.date, (session.duration / 60));
+    updateEvent(session.eventId, {
+        title: session.title + " (geannuleerd)",
+        location: session.location,
+        description: session.description,
+        when: { startTime: time.startTime, endTime: time.endTimeUnix }
+    });
+
+    await session.save();
+}
+
+const removeSession = async (session) => {
+    const eventId = session.eventId;
+    session.remove();
+    deleteEvent(eventId);
+}
+
+const refundHours = async (session) => {
+    for (i in session.participants) {
+        const row = session.participants[i];
+        const userId = row.userId;
+
+        const user = await User.findOne({ _id: userId })
+        const oldBalance = user.classPassHours;
+        const newBalance = oldBalance + row.cost;
+
+        await User.updateOne({ _id: userId }, { $set: { classPassHours: newBalance } });
     }
 }
 
@@ -301,7 +342,7 @@ module.exports.signup = async (req, res) => {
 
     const comingWith = req.body.comingWith;
     const comingWithAmount = comingWith ? comingWith.length : null;
-    const reqId = JSON.parse(req.cookies.user).userId;
+    const reqId = JSON.parse(req.cookies.user).id;
     const admin = await isAdmin(reqId);
 
     if (userId == reqId || admin) {
@@ -314,12 +355,16 @@ module.exports.signup = async (req, res) => {
                             const sessionDate = new Date(session.date.toISOString().slice(0, -1));
                             if (sessionDate > new Date()) {
                                 if (checkUserBalance(user, session, comingWithAmount)) {
-                                    try {
-                                        await session.addParticipants(sessionId, { userId, comingWith });
-                                        await updateUserHours(user, session, comingWithAmount);
-                                        res.status(200).json({ message: "U bent succesvol aangemeld" });
-                                    } catch (err) {
-                                        res.status(400).json({ message: err.message });
+                                    if (validComingWith(comingWith)) {
+                                        try {
+                                            await session.addParticipants(sessionId, { userId, comingWith });
+                                            await updateUserHours(user, session, comingWithAmount);
+                                            res.status(200).json({ message: "U bent succesvol aangemeld" });
+                                        } catch (err) {
+                                            res.status(400).json({ message: err.message });
+                                        }
+                                    } else {
+                                        res.status(400).json({ message: "Vul alle velden in" })
                                     }
                                 } else {
                                     if (admin) {
@@ -347,6 +392,16 @@ module.exports.signup = async (req, res) => {
     } else {
         res.status(400).json({ message: "U bent niet gemachtigd om deze persoon aan te melden" })
     }
+}
+
+const validComingWith = (comingWith) => {
+    for (i in comingWith) {
+        const row = comingWith[i];
+        if (row.name == "" || row.email == "") {
+            return false;
+        }
+    }
+    return true;
 }
 
 const updateUserHours = async (user, session, comingWithAmount) => {
@@ -396,7 +451,7 @@ const returnSaldo = async (user, participants) => {
 module.exports.signout = async (req, res) => {
     const sessionId = req.params.id;
     const userId = req.body.userId;
-    const cookieUserId = JSON.parse(req.cookies.user).userId;
+    const cookieUserId = JSON.parse(req.cookies.user).id;
     const cookieEmployee = JSON.parse(req.cookies.user).isEmployee;
 
     if (userId) {
@@ -406,17 +461,21 @@ module.exports.signout = async (req, res) => {
                     try {
                         let session = await Session.findOne({ _id: sessionId });
                         if (session) {
-                            if (userParticipates(userId, session.participants)) {
-                                if (cookieUserId == userId || cookieEmployee == true) {
-                                    await returnSaldo(user, session.participants);
-                                    session.participants.some(e => deleteUser(e, session, userId));
-                                    res.status(200).json({ message: "Succesvol uitgeschreven" });
-                                }
-                                else {
-                                    res.status(400).json({ message: "U bent niet gemachtigd deze gebruiker uit te schrijven" });
+                            if (onTime(session.date) || cookieEmployee) {
+                                if (userParticipates(userId, session.participants)) {
+                                    if (cookieUserId == userId || cookieEmployee == true) {
+                                        await returnSaldo(user, session.participants);
+                                        session.participants.some(e => deleteUser(e, session, userId));
+                                        res.status(200).json({ message: "Succesvol uitgeschreven" });
+                                    }
+                                    else {
+                                        res.status(400).json({ message: "U bent niet gemachtigd deze gebruiker uit te schrijven" });
+                                    }
+                                } else {
+                                    res.status(400).json({ message: "Deze gebruiker is momenteel niet ingeschreven voor deze les" });
                                 }
                             } else {
-                                res.status(400).json({ message: "Deze gebruiker is momenteel niet ingeschreven voor deze les" });
+                                res.status(400).json({ message: "U kunt u helaas niet meer uitschrijven voor deze les, dit moet minimaal 4 uur van te voren." })
                             }
                         } else {
                             res.status(400).json({ message: "Er is geen sessie gevonden met dit id" });
@@ -437,6 +496,27 @@ module.exports.signout = async (req, res) => {
     } else {
         res.status(400).json({ message: "Er is geen userOd gegeven" });
     }
+}
+
+const onTime = (sessionDate) => {
+    const startDate = new Date(sessionDate);
+    const curDate = addHours(2);
+    const diffTime = Math.abs(startDate - curDate) / 1000 / 60 / 60;
+
+    if (curDate > startDate) {
+        return false;
+    } else {
+        if (diffTime < 4) {
+            return false;
+        }
+    }
+    return true;
+}
+
+const addHours = (numOfHours, date = new Date()) => {
+    date.setTime(date.getTime() + numOfHours * 60 * 60 * 1000);
+
+    return date;
 }
 
 module.exports.view = (req, res) => {

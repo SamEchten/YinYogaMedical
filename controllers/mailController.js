@@ -22,6 +22,7 @@ const sendMail = async (receiver, html) => {
 
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
+            console.log(error);
             throw Error({ message: "Mail kon niet worden verzonden", error: error.message });
         } else {
             mailConfirmation = info;
@@ -32,11 +33,15 @@ const sendMail = async (receiver, html) => {
 }
 
 module.exports.sessionSignOutMail = async (user, session) => {
+    const date = new Data(session.date);
     let html = `
-        <h1>Hallo ${user.fullName}</h1>
-        <p>U heeft uitgeschreven voor de les: ${session.title}</p>
-        <p>Met vriendelijke groet, </p>
-        <p>Het Eigen Wijze Lichaam</p>
+    <h1>Hallo ${user.fullName}</h1>
+    <p U heeft u uitgeschreven voor de les ${session.title} op ${date.getDate()} " " ${date.getMonth()} om ${date.getTime()}
+    </p>
+    <p>Heb je nog vragen? Neem gerust contact op</p>
+    <p>Met vriendelijke groet,</p>
+    <p>Natascha Puper</p>
+    <p>Het Eigen Wijze Lichaam</p>
     `;
     try {
         if (sendMail(receiver, html)) {
@@ -52,68 +57,83 @@ module.exports.sessionSignOutMail = async (user, session) => {
 module.exports.signUpMail = async (user) => {
     let receiver = user.email;
     let html = `
-    <html>
-    <head>  
-    <style>
-        table{
-            background-color: #d5ca9b;
+    <h1>Welkom ${user.fullName}</h1>
+    <p>U heeft u in geschreven op het platform <a href='https://het-eigen-wijze-lichaam.nl'>Het eigen wijze Lichaam</a>. Op het platform kunt u het les rooster vinden, 
+    u inschrijven voor lessen en video's en podcasts bekijken en beluisteren.
+    </p>
+    <p>Heb je nog vragen? Neem gerust contact op</p>
+    <p>Met vriendelijke groet,</p>
+    <p>Natascha Puper</p>
+    <p>Het Eigen Wijze Lichaam</p>
+    `;
+    try {
+        if (sendMail(receiver, html)) {
+            return true;
+        } else {
+            return false;
         }
-        h1{
-            color: #FFFFFF!important;
-            font-size: 32px;
-            text-align: center;
+    } catch (err) {
+        return false;
+    }
+}
+
+module.exports.productConfirmationMail = async (user, product) => {
+    let receiver = user.email;
+    let html = `
+    <h1>Hallo ${user.fullName}</h1>
+    <p>U heeft zojuist het product ${product.productName} gekocht op <a href='https://het-eigen-wijze-lichaam.nl'>Het eigen wijze lichaam</a>
+    </p>
+    <p>Heb je nog vragen? Neem gerust contact op</p>
+    <p>Met vriendelijke groet,</p>
+    <p>Natascha Puper</p>
+    <p>Het Eigen Wijze Lichaam</p>
+    `;
+    try {
+        if (sendMail(receiver, html)) {
+            return true;
+        } else {
+            return false;
         }
-        .content{
-            background-color: #FFFFFF;
-            padding-left: 2vw;
-            padding-right: 2vw;
+    } catch (err) {
+        return false;
+    }
+}
+
+module.exports.sessionCanceledMail = async (user, session) => {
+    let receiver = user.email;
+    let html = `
+    <h1>Hallo ${user.fullName}</h1>
+    <p>U heeft u aangemeld voor de les ${session.title}, deze gaat helaas niet door. De uren die van uw account zijn afgegaan zullen terug worden gezet.
+    </p>
+    <p>Heb je nog vragen? Neem gerust contact op</p>
+    <p>Met vriendelijke groet,</p>
+    <p>Natascha Puper</p>
+    <p>Het Eigen Wijze Lichaam</p>
+    `;
+    try {
+        if (sendMail(receiver, html)) {
+            return true;
+        } else {
+            return false;
         }
-        .topBottom{
-            width: 100%;
-            padding-left: 2vw;
-            padding-right: 2vw;
-            margin: auto;
-        }
-        .topBottom p{
-            color:#FFFFFF!important;
-            text-align: left;
-        }
-    </style>
-    </head>
-    <body>
-    <table>
-        <tbody>
-            <tr>
-                <th class="topBottom">
-                    <h1>Natascha Puper
-                        <br> Welkom bij het eigen wijze lichaam
-                    </h1>
-                </th>
-            </tr>
-            <tr>
-                <td class="content">
-                    <p>Hallo Natascha, Zoals ook in de app gestuurd is, is dit de opzet van de mail die klanten krijgen bij het registreren op de website. De klanten krijgen een mail bij het registreren op de website, het kopen van een product, bij het in- en uitschrijven van een les en als u/de admin een les annuleerd waarvoor de klant ingeschreven staat.</p>
-                    <p>Vind u de opzet van de mail zoals het nu is goed of heeft u een ander idee voor deze mails?</p>
-                    <p> Zou u voor de volgende situaties een opzet maken van de inhoud voor een mailtje bij de desbetreffende situaties. De situaties zijn:</p>
-                    <ul>
-                        <li>Registreren op het platform</li>
-                        <li>Kopen van een product</li>
-                        <li>Inschrijven voor een les</li>
-                        <li>Uitschrijven voor een les</li>
-                        <li>Anuleringsmail van een les als je bent ingeschreven in die les</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td class="topBottom">
-                    <p>Met vriendelijke
-                        groet,<br> Het eigenwijze lichaam <br> Natascha Puper <br> E-mail: info@nataschapuper.nl <br> Tel: 06-42461736
-                    </p>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    </body>
+    } catch (err) {
+        return false;
+    }
+}
+module.exports.sessionSignUp = async (user, session) => {
+    const date = new Data(session.date);
+    let html = `
+    <h1>Hallo ${user.fullName}</h1>
+    <p U heeft zich aangemeld voor de les ${session.title} op ${date.getDate()} " " ${date.getMonth()} om ${date.getTime()}.
+    </p>
+    <hr>
+    <p>Klik <a href="www.het-eigen-wijze-lichaam.nl">hier</a> om nar het lesrooster te gaan</p>
+    <p>Heb je nog vragen? Neem gerust contact op</p>
+    <h3>Tot snel!</h3>
+    <br>
+    <p>Met vriendelijke groet,</p>
+    <p>Natascha Puper</p>
+    <p>Het Eigen Wijze Lichaam</p>
     `;
     try {
         if (sendMail(receiver, html)) {

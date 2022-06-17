@@ -1,5 +1,111 @@
 let category = "";
 let checkedToSchedule = false;
+let allProducts = [];
+
+$(async function () {
+  await getProducts();
+  loadProducts();
+});
+
+//Gets all products from the server
+const getProducts = async () => {
+  let res = await ApiCaller.getAllProducts();
+  allProducts = await res.json();
+}
+
+//View all products
+const loadProducts = async () => {
+  for (i in allProducts) {
+    const row = allProducts[i];
+    if (row.category == "Overige producten") {
+      row.category = "Overig";
+    }
+    await loadCategory(row);
+  }
+
+  if (isAdmin()) {
+    const addProductBtn = $(".addProduct");
+    addProductBtn.removeClass("hiding");
+  }
+}
+
+const loadCategory = async (row) => {
+  const dom = $("#" + row.category);
+  for (i in row.products) {
+    const product = row.products[i];
+    if (product.active) {
+      const view = await loadProduct(product);
+      dom.append(view);
+    }
+  }
+}
+
+const loadProduct = async (product) => {
+  await updateUser();
+  const template = $(loadSingleProductItem(product));
+  const buyBtn = template.find(".BuyNow");
+  const titleBtn = template.find(".productTitle");
+  const midCol = template.find(".midCol");
+
+  buyBtn.on("click", function () {
+    if (checkLogin()) {
+      buyProduct(product);
+    } else {
+      location.href = "/login";
+    }
+  });
+
+  titleBtn.on("click", function () {
+    productDetails(product);
+  });
+
+  const hasSub = hasProductSubscription(product);
+  if (hasSub) {
+    midCol.append(`<img height="15px"src="./static/check.png">`)
+    buyBtn.addClass("disabled");
+  }
+
+  if (isAdmin()) {
+    addAdminIcons(template, product._id);
+    buyBtn.addClass("disabled");
+  }
+
+  return template;
+}
+
+const addAdminIcons = (template, productId) => {
+  const icons = template.find(".icons");
+  for (let i = 0; i < icons.length; i++) {
+    const icon = $(icons[i]);
+    icon.removeClass("hiding");
+
+    if (icon.hasClass("editProduct")) {
+      icon.on("click", function () {
+        editProduct(productId);
+      });
+    } else if (icon.hasClass("removeProduct")) {
+      icon.on("click", function () {
+        removeProduct(productId);
+      });
+    } else if (icon.hasClass("addPeople")) {
+      icon.on("click", function () {
+        addPeople(productId);
+      });
+    }
+  }
+}
+
+const hasProductSubscription = (product) => {
+  if (user) {
+    for (i in user.subscriptions) {
+      let subscription = user.subscriptions[i];
+      if (subscription.description == product.productName) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 // Show all details per session ->
 function productDetails(data) {
@@ -13,42 +119,16 @@ function productDetails(data) {
     });
 }
 
-$(async function () {
-  const res = await (await ApiCaller.getAllSessions()).json();
-  loadProducts();
-});
-
 async function loadSingleProduct(product, category) {
   let price = product.price.replace(".", ",");
   loadProductItem(product, price, category);
 }
 
-// Loading product data  ->
-async function loadProducts() {
-  const res = await (await ApiCaller.getAllProducts()).json();
-  for (r in res) {
-    const row = res[r]
-    const products = row.products;
-    for (i in products) {
-      const product = products[i];
-      if (row.category == "Strippenkaarten") {
-        loadSingleProduct(product, "stripcards");
-      } else if (row.category == "Abonnementen") {
-        loadSingleProduct(product, "subscriptions");
-      } else {
-        loadSingleProduct(product, "otherProducts");
-      }
-    }
-  }
-  addEventHandlersSession();
-  showOrhideElements();
-  clickEvents();
-}
-
 async function reloadProducts() {
-  $("#stripcards").empty();
-  $("#subscriptions").empty();
-  $("#otherProducts").empty();
+  $("#Strippenkaarten").empty();
+  $("#Abonnementen").empty();
+  $("#Overig").empty();
+  await getProducts();
   loadProducts();
 }
 
@@ -74,22 +154,26 @@ function addEventHandlersSession() {
 // Add eventlisteners for button that render in after dom has loaded ->
 function clickEvents() {
 
-  if (roleCheck()) {
+  if (isAdmin()) {
+    console.log("is admin")
     // Add tooltips on icons
     createToolTip($(".editProduct"), "Wijzigen van product", "top");
     createToolTip($(".removeProduct"), "Verwijderen van product", "top");
     createToolTip($(".addPeople"), "Geef product cadeau", "top");
     $('[data-toggle="tooltip"]').tooltip();
+
     // Edit a session ->
     $(".editProduct").on("click", function () {
       const productId = $(this).parent().parent().parent().parent().attr("id");
       editProduct(productId);
     });
+
     // Remove a session ->
     $(".removeProduct").on("click", function () {
       const productId = $(this).parent().parent().parent().parent().attr("id");
       removeProduct(productId);
     });
+
     $(".addPeople").on("click", function () {
       const productId = $(this).parent().parent().parent().parent().attr("id");
       addPeople(productId);
@@ -117,9 +201,9 @@ async function editProduct(productId) {
       html: html,
       customClass: 'sweetalert-makeProduct',
       showCancelButton: true,
-      confirmButtonText: 'Update les',
+      confirmButtonText: 'Update',
       confirmButtonColor: '#D5CA9B',
-      cancelButtonText: 'Terug',
+      cancelButtonText: 'Annuleren',
     }).then(async (result) => {
       if (result.isConfirmed) {
         let jsonData = {
@@ -132,12 +216,13 @@ async function editProduct(productId) {
         }
         try {
           let resUpdate = await ApiCaller.updateProduct(jsonData, productId);
+          console.log(resUpdate);
           let resJson = await resUpdate.json();
           if (resUpdate.status == 200) {
             toastPopUp("Product " + $("#productName").val() + " is gewijzigd!", "success");
             reloadProducts();
           } else {
-            toastPopUp("Er is iets misgegaan", "error");
+            toastPopUp("Er is iets mis gegaan", "error");
           }
         } catch (err) {
           console.log(err);
@@ -206,15 +291,25 @@ function addPeople(productId) {
 
 function loopAndAddElements(userArray, productId) {
   for (item in userArray) {
-    $(".userItem").append(createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id));
-    $('[data-toggle="tooltip"]').tooltip();
-    $("#" + userArray[item].id).on("click", function () {
-      let data = {
-        "userId": $(this).attr("id")
-      };
-      giftProduct(data, productId);
-      $('[data-toggle="tooltip"]').tooltip('hide');
+    const userItem = createUserItem(userArray[item].fullName, userArray[item].email, userArray[item].phoneNumber, userArray[item].id);
+    const giftBtn = userItem.find(".giftBtn");
+    giftBtn.on("click", function () {
+      const id = $(this).attr("id");
+      Swal.fire({
+        title: 'Weet u zeker dat u dit product cadeau wilt doen?',
+        showCancelButton: true,
+        cancelButtonText: "Nee, ga terug",
+        confirmButtonColor: '#D5CA9B',
+        confirmButtonText: 'Ja, doe cadeau',
+      }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          giftProduct({ userId: id }, productId);
+          $('[data-toggle="tooltip"]').tooltip();
+        }
+      });
     });
+    $(".userItem").append(userItem);
   }
 }
 
@@ -223,7 +318,7 @@ async function giftProduct(data, productId) {
     let res = await ApiCaller.giftProduct(data, productId);
     let json = await res.json();
     if (res.status == 200) {
-      location.href = json.purchaseInfo.checkOutUrl;
+      toastPopUp(json.message, "success");
     } else {
       toastPopUp(json.message, "error");
     }
@@ -237,9 +332,9 @@ async function giftProductAsUser(data, productId) {
     let json = await res.json();
     if (res.status == 200) {
       // Redirects to mollie.
-      location.href = json.redirectUrl;
+      location.href = json.redirectUrl.checkOutUrl;
     } else {
-      toastPopUp("Er is iets misgegaan", "error");
+      toastPopUp(json.message, "error");
     }
   } catch (err) {
   }
@@ -263,7 +358,8 @@ $(".addProduct").on("click", async function () {
     showCancelButton: true,
     showConfirmButton: false,
     cancelButtonText: 'Cancel'
-  })
+  });
+
   $(".categoryButton").on("click", function () {
     setCategory(this.id);
     let html1 = swalItemAddProduct(category);
@@ -339,24 +435,38 @@ async function addProduct() {
 function buyProduct(product, id) {
   let html1 = swalBuyProductCheck(product);
   let html2 = swalGiftProduct();
-  Swal.fire({
+  const id = product._id;
+
+  const options = {
     html: html1,
+    icon: "warning",
     customClass: {
       html: 'sweetalert-subscribe',
       denyButton: 'giftButton',
-      confirmButton: 'buyButton',
-      cancelButton: 'cancelButton'
+      cancelButton: 'cancelButton',
+      confirmButton: 'buySub'
     },
     showCancelButton: true,
-    showDenyButton: true,
-    denyButtonText: `<i class="bi bi-gift"></i> &nbsp; Doe product cadeau`,
-    confirmButtonText: 'Koop product',
+    confirmButtonText: 'Abonnement afsluiten',
     confirmButtonColor: '#D5CA9B',
-    cancelButtonText: 'Cancel'
-  })
+    cancelButtonText: 'Annuleren'
+  };
+
+  if (!product.recurring) {
+    options.icon = null;
+    options.denyButton = 'giftButton';
+    options.denyButtonText = '<i class="bi bi-gift"></i> &nbsp; Doe product cadeau';
+    options.confirmButtonText = 'Product kopen';
+    options.showDenyButton = true;
+    options.customClass["confirmButton"] = "buyBtn";
+  }
+
+  console.log(options);
+
+  Swal.fire(options)
     .then(async (result) => {
       if (result.isConfirmed) {
-        buyAProduct(user.userId, id);
+        buyAProduct(user.id, id);
       } else if (result.isDenied) {
         Swal.fire({
           html: html2,
@@ -368,7 +478,7 @@ function buyProduct(product, id) {
         }).then((result) => {
           if (result.isConfirmed) {
             let tempdata = {
-              "userId": user.userId,
+              "userId": user.id,
               "email": $("#giftEmail").val()
             }
             giftProductAsUser(tempdata, id);
@@ -376,6 +486,19 @@ function buyProduct(product, id) {
         });
       }
     });
+
+  $(".buySub").css("display", "none");
+  $("#TOS").on("change", function () {
+    if ($("#TOS").is(":checked")) {
+      $(".buySub").css("display", "block");
+    } else {
+      $(".buySub").css("display", "none");
+    }
+  });
+
+  $(".addButton").on("click", function () {
+    buyAProduct(user.id, id);
+  });
 }
 
 async function buyAProduct(data, productId) {
@@ -392,7 +515,3 @@ async function buyAProduct(data, productId) {
   } catch (err) {
   }
 }
-
-
-
-

@@ -39,7 +39,7 @@
           <a class="nav-link" href="/videos">Videos</a>
         </li>
         <li class="nav-item text-center">
-          <a class="nav-link" href="#">Podcasts</a>
+          <a class="nav-link" href="/podcasts">Podcasts</a>
         </li>
         <li class="nav-item text-center">
           <a class="nav-link" href="/profile">Profiel</a>
@@ -63,6 +63,7 @@
       </div>
     </div>
   </nav>
+
   <div class="main-wrapper container-fluid">
     <div class="row h-100">
       <div class="col-md h-100">
@@ -71,7 +72,7 @@
             <h1 class="lead text-start m-0 headerText">Producten</h1>
           </div>
         </div>
-        <div class="row contentcontainer">
+        <div class="row contentRow">
           <div class="col-md">
             <div class="row align-items-center">
               <div class="col-md"></div>
@@ -85,24 +86,27 @@
                 </div>
               </div>
             </div>
-            <div class="row align-items-start">
+            <div class="row p-2 align-items-start">
               <div class="col-md-12">
                 <div class="row">
                   <div class="col-md-12">
-                    <h2 class="lbs categoryTitle lead">Strippenkaarten</h2>
-                    <div id="stripcards"></div>
+                    <h4 class="lbs categoryTitle">Strippenkaarten</h4>
+                    <hr>
+                    <div id="Strippenkaarten"></div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-12">
-                    <h2 class="lbs categoryTitle lead">Abonnementen</h2>
-                    <div id="subscriptions"></div>
+                    <h4 class="lbs categoryTitle">Abonnementen</h4>
+                    <hr>
+                    <div id="Abonnementen"></div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-12">
-                    <h2 class="lbs categoryTitle lead">Overige producten</h2>
-                    <div id="otherProducts"></div>
+                    <h4 class="lbs categoryTitle">Overige producten</h4>
+                    <hr>
+                    <div id="Overig"></div>
                   </div>
                 </div>
               </div>
@@ -120,9 +124,9 @@
   <script src="./js/bootstrap.min.js"></script>
   <script src="sweetalert"></script>
   <script src="static/utils.js"></script>
+  <script src="static/apiCaller.js"></script>
   <script src="static/productsTemplateItems.js"></script>
   <script src="static/products.js"></script>
-  <script src="static/apiCaller.js"></script>
 </body>
 
 </html>

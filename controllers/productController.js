@@ -144,9 +144,14 @@ module.exports.update = async (req, res) => {
 module.exports.delete = async (req, res) => {
     const id = req.params.id;
     try {
-        Product.findOne({ _id: id }, (err, product) => {
+        Product.findOne({ _id: id }, async (err, product) => {
             if (product) {
-                product.delete();
+                const beenBought = await hasBeenBought(product);
+                if (!beenBought) {
+                    product.delete();
+                } else {
+                    await setProductNonActive(product);
+                }
                 res.status(200).json({ message: "Product is succesvol verwijderd" })
             } else {
                 res.status(404).json({ message: "Er is geen product gevonden met dit id" });
@@ -155,6 +160,25 @@ module.exports.delete = async (req, res) => {
     } catch (err) {
         res.status(400).json({ message: "Er is iets fout gegaan", error: err });
     }
+}
+
+const hasBeenBought = async (product) => {
+    const transactions = await Transactions.find({});
+    for (i in transactions) {
+        const transaction = transactions[i];
+        for (j in transaction.transactions) {
+            const payment = transaction.transactions[j];
+            if (payment.productId == product.id) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+const setProductNonActive = async (product) => {
+    product.active = false;
+    await product.save();
 }
 
 module.exports.purchase = async (req, res) => {
@@ -186,18 +210,84 @@ module.exports.purchase = async (req, res) => {
     }
 }
 
+module.exports.cancel = async (req, res) => {
+    const subId = req.params.id;
+    const userId = req.body.userId;
+
+    User.findOne({ _id: userId }, async (err, user) => {
+        if (user) {
+            const subscription = await cancelSubscription(user, subId);
+            const customerId = user.customerId;
+            const transactions = await Transactions.findOne({ customerId });
+
+            //Remove subscription from user model
+            let userSubscriptions = user.subscriptions;
+            for (i in userSubscriptions) {
+                let subscription = user.subscriptions[i];
+                if (subscription.subscriptionId == subId) {
+                    user.subscriptions.splice(i, 1);
+                }
+            }
+
+            await User.updateOne({ _id: userId }, { $set: { subscriptions: userSubscriptions } });
+
+            //Set status of subscription to canceled in transactions model
+            for (i in transactions.subscriptions) {
+                let subscription = transactions.subscriptions[i];
+                if (subscription.subscriptionId == subId) {
+                    subscription.status = "canceled";
+                }
+            }
+
+            transactions.markModified("subscriptions");
+            await transactions.save();
+
+            res.status(200).json({ message: "Abonnement succesvol geannuleerd" });
+        } else {
+            res.status(404).json({ message: "Er is geen gebruiker gevonden met dit id" });
+        }
+    });
+}
+
 const purchaseProduct = async (product, user) => {
     if (product.recurring) {
         return await startSubscription(product, user);
     } else {
-        return await createPayment(product, user);
+        try {
+            return await createPayment(product, user);
+        } catch (err) {
+            if (err.message == "The customer is no longer available") {
+                //Create new customer
+                const customerId = user.customerId;
+                const newCustomerId = await mollieClient.createCustomer(user.id);
+
+                //Change customer id to new one
+                let transactions = await Transactions.findOne({ customerId });
+                if (transactions) {
+                    transactions.customerId = newCustomerId;
+                } else {
+                    transactions = await Transactions.create({
+                        customerId: newCustomerId,
+                        transactions: [],
+                        subscriptions: []
+                    });
+                }
+
+                user.customerId = newCustomerId;
+
+                //Save models
+                await User.updateOne({ _id: user.id }, { $set: { customerId: newCustomerId } });
+                transactions.save();
+
+                //Recreate payment with new customerId
+                return await createPayment(product, user);
+            }
+        }
     }
 }
 
 const startSubscription = async (product, user) => {
-    const description = product.productName;
-
-    if (!hasSubscription(user, description)) {
+    if (!hasSubscription(user)) {
         try {
             //Create first payment to start the scubscription
             const payment = await mollieClient.createFirstPayment(product, user);
@@ -209,16 +299,13 @@ const startSubscription = async (product, user) => {
             return { message: "U heeft dit abonnement al gekocht" };
         }
     } else {
-        return { message: "U heeft dit abonnement al gekocht 2" };
+        return { message: "U kunt niet meer dan 1 abonnement hebben, sluit eerst uw huidige abonnement af." };
     }
 }
 
-const hasSubscription = (user, description) => {
-    for (i in user.subscriptions) {
-        let subscription = user.subscriptions[i];
-        if (subscription == description) {
-            return true;
-        }
+const hasSubscription = (user) => {
+    if (user.subscriptions.length > 0) {
+        return true;
     }
     return false;
 }
@@ -228,13 +315,21 @@ const createSubscription = async (user, customerId, amount, description) => {
     //Create subscription with mollie api
     const webhookUrl = config.webhookUrl + "/api/product/subscriptions/webhook";
     const subscription = await mollieClient.createSubscription(customerId, amount, description, webhookUrl);
+
     let subscriptions = user.subscriptions;
-    subscriptions.push(description);
+    subscriptions.push({ description: description, subscriptionId: subscription.id });
+
     await User.updateOne({ _id: user.id }, { $set: { subscriptions: subscriptions } });
     return subscription;
 }
 
-const savePaymentData = async (customerId, payment) => {
+const cancelSubscription = async (user, subscriptionId) => {
+    const customerId = user.customerId;
+    const subscription = await mollieClient.cancelSubscription(subscriptionId, customerId);
+    return subscription;
+}
+
+const savePaymentData = async (customerId, payment, product) => {
     const paymentId = payment.id;
     const description = payment.description;
     const createdAt = payment.createdAt;
@@ -246,6 +341,7 @@ const savePaymentData = async (customerId, payment) => {
     transactions.transactions.push({
         paymentId: paymentId,
         description: description,
+        productId: product.id,
         amount: amount,
         paidAt: createdAt,
         status: status,
@@ -277,6 +373,7 @@ const saveSubscriptionData = async (customerId, subscription) => {
     if (!exists) {
         transactions.subscriptions.push({
             subscriptionId: id,
+            status: "active",
             startDate: subscription.startDate,
             description,
             amount,
@@ -304,7 +401,7 @@ const isAdmin = async (userId) => {
 const createPayment = async (product, user) => {
     const price = product.price;
     const description = product.productName;
-    const redirectUrl = config.webhookUrl + "/producten?succes=true&productId=" + product.id + "";
+    const redirectUrl = config.webhookUrl + "/producten/succes/" + product.id + "";
     const webHookUrl = config.webhookUrl + "/api/product/webhook";
     const productId = product.id;
     const customerId = user.customerId;
@@ -318,7 +415,7 @@ module.exports.gift = async (req, res) => {
     const id = req.params.id;
     const userId = req.body.userId;
     const userEmail = req.body.email;
-    const reqId = JSON.parse(req.cookies.user).userId;
+    const reqId = JSON.parse(req.cookies.user).id;
     const productId = req.params.id;
 
     if (!await isAdmin(reqId)) {
@@ -343,9 +440,20 @@ module.exports.gift = async (req, res) => {
     } else {
         User.findOne({ _id: userId }, async (err, user) => {
             if (user) {
-                Product.findOne({ _id: productId }, (err, product) => {
+                Product.findOne({ _id: productId }, async (err, product) => {
                     if (product) {
                         addClassPass(user, product, "gift");
+                        const transactions = await Transactions.findOne({ customerId: user.customerId });
+                        transactions.transactions.push({
+                            paymentId: null,
+                            description: product.description,
+                            amount: { "currency": "EUR", "value": product.price },
+                            paidAt: null,
+                            status: "Gift",
+                            method: null
+                        });
+                        transactions.markModified("transactions");
+                        transactions.save();
                         res.status(200).json({ message: "Product succesvol gegeven aan: " + user.fullName });
                     } else {
                         res.status(400).json({ message: "Geen product gevonden met dit id" })
@@ -359,7 +467,8 @@ module.exports.gift = async (req, res) => {
 }
 
 module.exports.succes = async (req, res) => {
-    res.send("succes!")
+    res.render(path.join(__dirname, "../views/paymentSucces"));
+
 }
 
 const addClassPass = async (user, product) => {
@@ -368,15 +477,6 @@ const addClassPass = async (user, product) => {
         const newSaldo = user.classPassHours += product.amountOfHours;
         await User.updateOne({ _id: user.id }, { $set: { classPassHours: newSaldo } });
     }
-}
-
-const getExpireDate = (validFor) => {
-    const date = new Date();
-    const year = date.getFullYear() + validFor;
-    const month = date.getMonth();
-    const day = date.getDate();
-    const expireDate = new Date(year, month, day, 2);
-    return expireDate;
 }
 
 module.exports.webHook = async (req, res) => {
@@ -389,49 +489,48 @@ module.exports.webHook = async (req, res) => {
     const customerId = payment.customerId;
 
     if (await mollieClient.isPaid(paymentId)) {
-        if (!product.recurring) {
-            //Normal payment
-            if (user) {
-                await addClassPass(user, product);
-                await savePaymentData(customerId, payment);
+        if (product) {
+            if (!product.recurring) {
+                //Normal payment
+                if (user) {
+                    await addClassPass(user, product);
+                    await savePaymentData(customerId, payment, product);
 
-                //TODO: Send confirmation mail
+                    //TODO: Send confirmation mail
+                    res.sendStatus(200);
+                }
+            } else {
+                if (payment.sequenceType == "first") {
+                    //Subscription payment
+                    const customerId = payment.customerId;
+                    const amount = payment.amount.value;
+                    const description = payment.description;
+
+                    const subscription = await createSubscription(user, customerId, amount, description);
+                    await saveSubscriptionData(customerId, subscription);
+
+                    const transactions = await Transactions.findOne({ customerId: customerId });
+                    for (i in transactions.subscriptions) {
+                        let subscription = transactions.subscriptions[i];
+                        if (subscription.description == payment.description) {
+                            subscription.payments.push({
+                                paymentId: payment.id,
+                                description: payment.description,
+                                productId: productId,
+                                amount: payment.amount,
+                                paidAt: payment.paidAt,
+                                status: payment.status,
+                                method: payment.method
+                            });
+                        }
+                    }
+                    transactions.markModified("subscriptions")
+                    await transactions.save();
+                }
                 res.sendStatus(200);
             }
-        } else {
-            if (payment.sequenceType == "first") {
-                //Subscription payment
-                const customerId = payment.customerId;
-                const amount = payment.amount.value;
-                const description = payment.description;
-
-                const subscription = await createSubscription(user, customerId, amount, description);
-                await saveSubscriptionData(customerId, subscription);
-
-                const transactions = await Transactions.findOne({ customerId: customerId });
-                for (i in transactions.subscriptions) {
-                    let subscription = transactions.subscriptions[i];
-                    if (subscription.description == payment.description) {
-                        subscription.payments.push({
-                            paymentId: payment.id,
-                            description: payment.description,
-                            amount: payment.amount,
-                            paidAt: payment.paidAt,
-                            status: payment.status,
-                            method: payment.method
-                        });
-                    }
-                }
-                transactions.markModified("subscriptions")
-                await transactions.save();
-            }
-
-            res.sendStatus(200);
         }
-    } else {
-        console.log("Nog niet betaald");
     }
-
 }
 
 module.exports.subscriptionWebhook = async (req, res) => {
@@ -439,24 +538,27 @@ module.exports.subscriptionWebhook = async (req, res) => {
     const payment = await mollieClient.getPaymentInfo(id);
     const customerId = payment.customerId;
     const transactions = await Transactions.findOne({ customerId: customerId });
-    let subscriptions = transactions.subscriptions;
 
-    for (i in subscriptions) {
-        let subscription = subscriptions[i];
-        if (subscription.subscriptionId == payment.subscriptionId) {
-            subscription.payments.push({
-                paymentId: payment.id,
-                description: payment.description,
-                amount: payment.amount,
-                paidAt: payment.createdAt,
-                status: payment.status,
-                method: payment.method
-            });
+    if (transactions) {
+        let subscriptions = transactions.subscriptions;
+        for (i in subscriptions) {
+            let subscription = subscriptions[i];
+            if (subscription.subscriptionId == payment.subscriptionId) {
+                subscription.payments.push({
+                    paymentId: payment.id,
+                    description: payment.description,
+                    amount: payment.amount,
+                    paidAt: payment.createdAt,
+                    status: payment.status,
+                    method: payment.method
+                });
+            }
         }
+
+        transactions.markModified("subscriptions");
+        await transactions.save();
     }
 
-    transactions.markModified("subscriptions");
-    await transactions.save();
     res.sendStatus(200);
 }
 

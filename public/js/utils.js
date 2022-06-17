@@ -1,8 +1,10 @@
-let cookie = $.cookie("user");
+let cookie;
 let user;
 let allUsers;
-if (cookie) {
-  user = JSON.parse(cookie);
+
+if($.cookie("user")) {
+  cookie = JSON.parse($.cookie("user"));
+  user = cookie;
 }
 
 $(async function () {
@@ -15,15 +17,18 @@ $(async function () {
 
 // Update users saldo 
 async function updateNav() {
-  await updateUser(user.userId);
+  await updateUser();
   if (user) {
     setUserItemsNav();
   }
 }
 
-async function updateUser(userId) {
-  let res = await ApiCaller.getUserInfo(userId);
-  user = await res.json();
+async function updateUser() {
+  if(cookie){
+    let res = await ApiCaller.getUserInfo(cookie.id);
+    user = await res.json();
+  }
+  
 }
 
 function showWelcomMessage() {
@@ -36,6 +41,16 @@ function showWelcomMessage() {
     }
   }
   sessionStorage.setItem("firstPageLoad", true);
+}
+
+function hasSubscription(sub) {
+  for (i in user.subscriptions) {
+    let subscription = user.subscriptions[i].description;
+    if (sub == subscription || subscription == "Premium") {
+      return true;
+    }
+  }
+  return false;
 }
 
 function setUserItemsNav() {
@@ -53,7 +68,7 @@ function setUserItemsNav() {
     username.html(`<i class="bi bi-person-square"></i>  ` + user.fullName);
     saldo.append(`<i class="bi bi-clock"></i>  ` + user.saldo + " uur");
     for (i in user.subscriptions) {
-      let subscription = user.subscriptions[i];
+      let subscription = user.subscriptions[i].description;
       if (subscription) {
         if (subscription == "Video") {
           subscriptionNav.append(`<div class='row'><div class='col-md-3'><i class="bi bi-camera-video"></i></div  <div class='col-md-9'>` + subscription + `</div></div>`);
@@ -163,9 +178,8 @@ function createDateString(date, time) {
 }
 
 // Checks client role  ->
-function roleCheck() {
+function isAdmin() {
   try {
-    user = JSON.parse(cookie);
     if (user.isEmployee) {
       return true
     } else {
@@ -175,15 +189,16 @@ function roleCheck() {
 
   }
 }
-// Checks if the session is full or not ->
-function checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amountOfParticipants, date) {
+// Checks if the session is full or not or that it is in the past ->
+function checkIfSessionIsValid(sessionData) {
   let today = new Date;
-  let sessionDay = new Date(date);
+  let sessionDay = new Date(sessionData.date);
   const result = new Date(sessionDay.toISOString().slice(0, -1))
-
-  if ((amountOfParticipants >= maxAmountOfParticipants && !participates) || today > result) {
-    if (!roleCheck()) {
-      $("#" + id).addClass("showOrHide");
+  // Check if session is full or session date is in de past today > result = sessionDate
+  console.log(sessionData.amountOfParticipants)
+  if ((sessionData.amountOfParticipants >= sessionData.maxAmountOfParticipants && !sessionData.participates) || today > result) {
+    if (!isAdmin()) {
+      $("#" + sessionData.id).addClass("showOrHide");
     }
   }
 
@@ -191,7 +206,7 @@ function checkIfSessionIsValid(id, participates, maxAmountOfParticipants, amount
 
 // Hide elements for none admins else show them ->
 function showOrhideElements() {
-  if (roleCheck()) {
+  if (isAdmin()) {
     $(".hiding").css("display", "block");
     $(".subscribe").attr("disabled", true);
     $(".BuyNow").attr("disabled", true);
@@ -250,4 +265,20 @@ function checkSessionSize(amountOfParticipants, maxAmountOfParticipants) {
   } else if (amountOfParticipants >= threshold) {
     return "orange";
   }
+}
+
+// shuffle a random array
+function shuffleArray(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  while (currentIndex != 0) {
+
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
 }

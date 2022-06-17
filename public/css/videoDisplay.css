@@ -1,8 +1,57 @@
+html {
+    font-size: 1rem;
+}
+
 .main-wrapper {
     height: calc(100vh - 58px);
 }
 .headerRow {
     height: 10%;
+}
+.copyright{
+    font-size: 15px !important;
+}
+#videoPlayer {
+    background-color: black;
+}
+.vidHeader {
+    border-bottom: 1px solid #e9e9e9;
+    height: 15%;
+}
+.vidContent {
+    height: 100%;
+}
+.smallVid {
+    height: 30%;
+    padding: 5px;
+    transition: 0.2s;
+    
+}
+.smallVid:hover {
+    /* background-color: rgb(224, 224, 224); */
+}
+.playIcon {
+    font-size: 67px;
+    color: #ffffff;
+    filter: drop-shadow(2px 4px 6px black);
+}
+
+.smallThumbnailItem {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    
+}
+.smallVidItem {
+    background-color: rgb(238, 238, 238);
+    border-left: 2px solid #D5CA9B;
+    border-bottom: 1px solid #dadada;
+    border-right: 1px solid #dadada;
+    border-top: 1px solid #dadada;
+    border-radius: 4px;
+}
+.descriptionVid {
+
 }
 body {
     background-image: url("./background.png");
@@ -22,11 +71,7 @@ body {
     cursor: pointer;
 }
 .contentRow {
-    height: 90%;
+    height: 100%;
     background-color: white;
-    margin-left: 5px !important;
-    margin-right: 5px !important;
     overflow: auto;
-    border-radius: 10px 10px 0px 0px;
-    border: 1px solid #eeeeee;
 }

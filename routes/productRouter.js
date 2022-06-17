@@ -9,17 +9,17 @@ const { validateAdmin } = require("../middleware/validator");
 router.post("/webhook", controller.webHook);
 //Webhook for mollie to send subscription info to
 router.post("/subscriptions/webhook", controller.subscriptionWebhook);
-//Succes page after payments is succesfull
-router.get("/succes/:id", controller.succes);
 //Get all products
 router.get("/", controller.get);
+//Get Single product by id
+router.get("/:id", controller.get);
 
 //Accessible by logged in users
 router.use(validateJwt);
-//Get Single product by id
-router.get("/:id", controller.get);
 //Buy product
 router.post("/purchase/:id", controller.purchase);
+//Cancel subscription
+router.post("/cancel/:id", controller.cancel);
 //Gift product
 router.post("/gift/:id", controller.gift);
 

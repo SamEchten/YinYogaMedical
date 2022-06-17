@@ -5,17 +5,16 @@ const { runInNewContext } = require("vm");
 const Video = require("../models/Video");
 
 module.exports.streamFile = async (req, res) => {
-    const id  = req.params.id;
-    // Ensure there is a range given for the video
+    const fileName = req.params.fileName;
+
     const range = req.headers.range;
     if (!range) {
         res.status(400).send("Requires Range header");
     }
     // get video stats (about 61MB)
-    try{
-        const videoPath = path.join(__dirname, "../media/videos/" + id);
-        const videoSize = fs.statSync(path.join(__dirname, "../media/videos/" + id)).size;
-        //console.log(videoPath)
+    try {
+        const videoPath = path.join(__dirname, "../media/videos/" + fileName);
+        const videoSize = fs.statSync(path.join(__dirname, "../media/videos/" + fileName)).size;
         // Parse Range
         // Example: "bytes=32324-"
         const CHUNK_SIZE = 10 ** 6; // 1MB
@@ -32,14 +31,15 @@ module.exports.streamFile = async (req, res) => {
         res.writeHead(206, headers);
         // create video read stream for this particular chunk
         const videoStream = fs.createReadStream(videoPath, { start, end });
-        
+
         // Stream the video chunk to the client
         videoStream.pipe(res);
 
-    } catch(err) {
+    } catch (err) {
         console.log(err);
     }
 };
+
 
 // Render video page
 module.exports.view = (req, res) => {
@@ -94,42 +94,42 @@ module.exports.get = async (req, res) => {
 
 module.exports.delete = async (req, res) => {
     const id = req.params.id;
-    const thumbnailPathServer = path.join(__dirname,"../public/images/thumbnails/");
-    const videoPathServer = path.join(__dirname,"../media/videos/");
+    const thumbnailPathServer = path.join(__dirname, "../public/images/thumbnails/");
+    const videoPathServer = path.join(__dirname, "../media/videos/");
 
     try {
-        let video = await Video.findOne({_id : id});
-        if(video){
+        let video = await Video.findOne({ _id: id });
+        if (video) {
             video.remove();
             try {
                 let thumbnailPath = thumbnailPathServer + video.thumbnailPath;
                 let videoPath = videoPathServer + video.videoPath;
                 console.log(thumbnailPath);
                 console.log(videoPath);
-                fs.unlink(thumbnailPath, function(err) {
-                    if(err && err.code == "ENOENT") {
-                        res.status(400).json({message: "File does not exist"});
-                    }else {
+                fs.unlink(thumbnailPath, function (err) {
+                    if (err && err.code == "ENOENT") {
+                        res.status(400).json({ message: "File does not exist" });
+                    } else {
                         console.log("Thumbnail removed");
                     }
                 });
-                fs.unlink(videoPath, function(err) {
-                    if(err && err.code == "ENOENT") {
-                        res.status(400).json({message: "File does not exist"});
-                    }else {
+                fs.unlink(videoPath, function (err) {
+                    if (err && err.code == "ENOENT") {
+                        res.status(400).json({ message: "File does not exist" });
+                    } else {
                         console.log("video removed");
                     }
                 });
-                res.status(200).json({message: "Video verwijderd"});
-                
-            } catch(err) {
+                res.status(200).json({ message: "Video verwijderd" });
+
+            } catch (err) {
                 res.status(400).send(err);
-            } 
-        } else {    
-            res.status(400).json({message: "Video met opgegeven ID niet gevonden"});
+            }
+        } else {
+            res.status(400).json({ message: "Video met opgegeven ID niet gevonden" });
         }
     } catch (err) {
-        res.status(400).json({message: "Gegeven ID niet correct ID format"});
+        res.status(400).json({ message: "Gegeven ID niet correct ID format" });
     }
 }
 
@@ -140,7 +140,7 @@ module.exports.update = async (req, res) => {
         Video.findOne({ _id: id }, async (err, product) => {
             if (product) {
                 await Video.updateOne({ _id: id }, { $set: body });
-                res.status(200).json({message: "Video gewijzigd"});
+                res.status(200).json({ message: "Video gewijzigd" });
             } else {
                 res.status(404).json({ message: "Er is geen Video gevonden met dit id" });
             }
@@ -151,16 +151,16 @@ module.exports.update = async (req, res) => {
 }
 
 module.exports.videoDisplay = async (req, res) => {
-   let id = req.params.id;
+    let id = req.params.id;
     try {
-        let video = await Video.findOne({__id: id})
-        if(video) {
+        let video = await Video.findOne({ _id: id })
+        if (video) {
             res.render(path.join(__dirname, "../views/videoDisplay"));
         } else {
             res.redirect("/videos");
         }
     } catch (err) {
         console.log(err);
+        res.redirect("/videos");
     }
-    
 } 

@@ -30,7 +30,7 @@ $(".addVideo").on("click", function() {
 // Add a video as admin 
 function addVideo () {
   let html = addVideoTemplate();
-  if(roleCheck()) {
+  if(isAdmin()) {
       Swal.fire({
           title: 'Video toevoegen',
           text: "Voeg hier een video of podcast toe met daarbij een thumbnail.",
@@ -41,7 +41,7 @@ function addVideo () {
         });
       $("#media").on("change", function() {
         let size = Math.round(this.files[0].size / 1024 / 1024);
-        if(size > 100) {
+        if(size > 500) {
           $("#fileSize").text("Bestandsgrootte : " + size + " MB");
           $("#fileSize").addClass("failedColor").removeClass("text-muted");
         } else {
@@ -79,7 +79,7 @@ async function displayVideos (i) {
   console.log(videos)
   if(videos == false){
     $(".vidTop").html(`<div class="col-md text-center"><h2 class="lead">Geen video's beschikbaar</h2></div>`);
-    if(roleCheck()) {
+    if(isAdmin()) {
       $(".addVideo").css("display", "block");
     }
     loader(false);
@@ -95,7 +95,7 @@ async function displayVideos (i) {
         } else {
           $(".vidBot").last().append(element);
           addEventHandlers(video.bought, video.id);
-          $("#"+ video.id).append(`<img src="static/${video.thumbnailPath}" width="100%" height="100%">`);
+          $("#"+ video.id).css("background-image", "url(/static/"+ video.thumbnailPath + ")");
         }
       }
     } 
@@ -131,7 +131,7 @@ function sortVideoArray(array, chunkSize) {
 
 }
 function adminActions() {
-  if(roleCheck()) {
+  if(isAdmin()) {
     showAdminItems();// show admin items ->
 
     // Edit video as ADMIN ->
@@ -204,28 +204,34 @@ function showAdminItems() {
 }
 
 function addEventHandlers(bought, id) {
-    if(bought) { // click event user that bought video || user.subscription == "videoAccess"
+  if(user){
+    if(user.subscriptions.length > 0) { 
+      // click event user that bought video || user.subscription == "videoAccess"
+      if(user.subscriptions[0].description == "Video") {
+        $("#" + id).addClass("bought");
+        $("#" + id).children().remove();
+        $("#" + id).parent().parent().find(".videoInfo").children("h4").append(`<i class="bi bi-unlock unlockIcon"></i>`);
+        $("#" + id).on("click", function() {
+          userActionBought(id);
+        });
+      }
+    } else if(isAdmin()) { // click event admin
       $("#" + id).addClass("bought");
       $("#" + id).children().remove();
-      $("#" + id).parent().parent().find(".videoInfo").children("h4").append(`<i class="bi bi-unlock unlockIcon"></i>`);
       $("#" + id).on("click", function() {
         userActionBought(id);
-      });
-    } else if(roleCheck()) { // click event admin
-      $("#" + id).addClass("bought");
-      $("#" + id).children().remove();
-      $("#" + id).on("click", function() {
-        userActionBought(id);
-      });
-    } else if(user == undefined) {
-      $("#" + id).on("click", function() {
-        nonUserAction(id);
-      }) 
+      }); 
     } else {
       $("#" + id).on("click", function() {
         userActionBuy(id);
       });
     }
+  } else {
+      $("#" + id).on("click", function() {
+        nonUserAction(id);
+      });
+  }
+    
 }
 
 async function setAllVideosObject() {

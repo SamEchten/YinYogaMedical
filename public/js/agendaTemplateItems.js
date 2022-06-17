@@ -48,7 +48,7 @@ function swalItemEditSession() {
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-12">
-            <h2>Voeg nieuwe les toe</h2>
+            <h2>Wijzig les</h2>
             <hr>
           </div>
         </div>
@@ -253,7 +253,11 @@ function swalItemSubscribeToSession(lesson) {
     <p><b> Hoeveel personen wilt u inschrijven?</b></p>
     <div class="row width">
       <div class="col-md-12 text-start">
-        <input id="nrOfPeople" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="0">
+        <input id="nrOfPeople" value="1" class="swal2-input" onchange="nrOfPeopleChanged()" align="left" type="number" min="1">
+        <p id="saldoText">Uw saldo is <b id="saldo"></b> uur. Deze les kost <b id="sessionCost"></b> uur.</p>
+        <div class="alert alert-primary" role="alert">
+          <label for="lname"><i class="bi bi-info-circle pe-2"></i><small>De duur van de les zal worden afgeschreven van uw saldo, ook die van de mensen die u mee neemt.</small></label>
+        </div>
       </div>
     </div>
     <p><b id="extraPeopleTitle"></b></p>
@@ -266,32 +270,23 @@ function swalItemSubscribeToSession(lesson) {
 
 //Loading session items for to add to the agenda ->
 
-function templateLoadSession(id, date, title, teacher, amountOfParticipants, maxAmountOfParticipants) {
+function templateLoadSession(sessionData) {
   let template =
     `
-    <div id="${id}" class="row ps-4 p-2 agendaItem swing-in-top-fwd align-items-center">
+    <div id="${sessionData.id}" class="row ps-4 p-2 agendaItem swing-in-top-fwd align-items-center">
       <div class="col-md-2">
-        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(date).time}</h4>
+        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i>${dateFormat(sessionData.date).time}</h4>
       </div>
       <div class="col-md-2 sessionDetails">
-        <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${title}</h4>
+        <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${sessionData.title}</h4>
       </div>
       <div class="col-md-2">
-        <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${teacher}</h4>
+        <h4 id="teacher" class="text-left lead "><i class="bi bi-person pe-3"></i>${sessionData.teacher}</h4>
       </div>
       <div class="col-md-4 settings">
-        <div class="row">
+        <div class="row adminItems">
           <div class="col-md-3 participantsColor text-start">
-            ${amountOfParticipants} / ${maxAmountOfParticipants}
-          </div>
-          <div class="col-md-2 text-center">
-            <i class="bi bi-pencil hiding editSession"></i>
-          </div>
-          <div class="col-md-2 text-center">
-            <i class="bi bi-trash3 hiding removeSession"></i>
-          </div>
-          <div class="col-md-2 text-center">
-            <i class="bi bi-person-check hiding addUser"></i>
+            ${sessionData.amountOfParticipants} / ${sessionData.maxAmountOfParticipants}
           </div>
           <div class="col-md-3 participate text-start">
           
@@ -301,6 +296,25 @@ function templateLoadSession(id, date, title, teacher, amountOfParticipants, max
       <div class="col-md-2 subscribeCol text-end ">
         
       </div>
+    </div>`
+
+  return template;
+}
+function templateCanceldSession(sessionData) {
+  let template =
+    `
+    <div id="${sessionData.id}" class="row ps-4 p-2 agendaItem canceled swing-in-top-fwd align-items-center">
+      <div class="col-md-2">
+        <h4 id="time" class="text-left lead fw-bold rbs"><i class="bi bi-clock pe-3"></i><del>${dateFormat(sessionData.date).time}</del></h4>
+      </div>
+      <div class="col-md-2 sessionDetails">
+        <h4 id="title" class="text-left lead"><i class="bi bi-info-circle pe-3"></i>${sessionData.title}</h4>
+      </div>
+      <div class="col-md-8 text-start sessionDetails">
+        <h4 class="m-0">Geannuleerd <h4>
+      </div>
+           
+    </div>
     </div>`
 
   return template;

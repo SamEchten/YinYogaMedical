@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="icon" type="image/png" href="../static/favicon.png" />
+    <link rel="stylesheet" href="../../static/dashboard.css">
+    <link rel="stylesheet" href="../../static/styles.css">
+    <link rel="stylesheet" href="../../static/userDetails.css">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../bicons/bootstrap-icons.css">
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+        integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <nav id="sidebar">
+            <div class="toggleSideBar"><i class="bi bi-chevron-left"></i></div>
+            <div class="sidebar-header">
+                <h3 class="display-6 today">Welkom <%=userId%>
+                </h3>
+            </div>
+
+            <ul class="list-unstyled lead components">
+                <p class="lead">Maandag 11-6-2022</p>
+                <li class="">
+                    <a href="#homeSubmenu" id="dashboardBtn" data-bs-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle"><i class="bi bi-speedometer2 pe-2"></i> Dashboard</a>
+                </li>
+                <!-- <li>
+                    
+                    <!-- <a href="#pageSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+                        class="bi bi-people pe-2"></i> Klanten <i class="bi bi-chevron-down float-right"></i>
+                    </a> -->
+
+                <!-- <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a class="lbs subItems" href="#">inzichten <i
+                                    class="bi bi-chevron-right float-right"></i></a>
+                        </li>
+                        <li>
+                            <a class="lbs subItems" href="#">Producten <i
+                                    class="bi bi-chevron-right float-right"></i></a>
+                        </li>
+                        <li>
+                            <a class="lbs subItems" href="#">Betalingen <i
+                                    class="bi bi-chevron-right float-right"></i></a>
+                        </li>
+                    </ul> 
+                </li> -->
+                <li>
+                    <a href="#" id="usersBtn"><i class="bi bi-people pe-2"></i> Klanten</a>
+                </li>
+                <li>
+                    <a href="#" id="productsBtn"><i class="bi bi-box-seam pe-2 "></i> Producten</a>
+                </li>
+                <li>
+                    <a href="#" id="sessionsBtn"><i class="bi bi-calendar4-week pe-2"></i> Lessen</a>
+                </li>
+                <li>
+                    <a href="#" id="toScheduleBtn"><i class="bi bi-journal-plus pe-2"></i> To schedule</a>
+                </li>
+            </ul>
+        </nav>
+        <div id="content" class="container-fluid">
+            <div class="row header">
+                <div class="col-md-12">
+                    <h1 class="display-4 ps-5">Klant gegevens</h1>
+                </div>
+            </div>
+            <div class="row content">
+                <div class="col-md-6 left">
+                    <div class="row">
+                        <div class="col-md">
+                            <h5 class="headers">Betaalgeschiedenis</h1>
+                            <p>
+                                <small>Klik op een betaling om vervolgens die te openen in mollie en alle gegevens van uw klant in te zien.</small>
+                            </p>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md paymentHistory">
+                            <table class="table table-striped">
+                                <thead class="thead-dark">
+                                  <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Aankoop</th>
+                                    <th scope="col">Status</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="tablePaymentHistory">
+                                </tbody>
+                              </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 right">
+                    <div class="row">
+                        <div class="col-md">
+                            <h4 class="headers">Klant informatie</h4>
+                            <p>
+                                <small>Alle gegevens van uw klant</small>
+                            </p>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md userInfo">
+                                    <div class="row">
+                                        <div class="col-md-6 p-2">
+                                            <h5 >Naam:</h5>
+                                            <p id="nameTextField">-</p>
+                                        </div>
+                                        <div class="col-md-6 p-2">
+                                            <h5>Uitgave:</h5>
+                                            <p id="spent" class="icons">-</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md p-2">
+                                            <h5>Email:</h5>
+                                            <p id="emailTextField">-</p>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md p-2">
+                                                <h5>Aantal uren:</h5>
+                                                <p id="balanceTextField">-</p>
+                                            </div>
+                                            <div class="col-md p-2">
+                                                <h5>Mollie klanten id:</h5>
+                                                <p id="mollieTextField">-</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md subscriptions">
+                            <h5 class="headers">Abonnementen</h5>
+                            <p>
+                               <small> Deze klant heeft het volgende abonnement. Om meer informatie te krijgen over de transacties van dit abonnement kunt u klikken op het abonnement.</small>
+                            </p>
+                            <hr>
+                            
+                        </div>
+                        
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="./js/bootstrap.min.js">
+    </script>
+    <script src="../../../static/apiCaller.js"></script>
+    <script src="../../../static/utils.js"></script>
+    <script src="../../../static/dashboard/userDetails.js"></script>
+    <script src="../../../static/dashboard/dashboard.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,7 +1,8 @@
-
 class ApiCaller {
     //static functions
     // Creates a new user and logs them in ->
+    static baseUrl = "https://b645-194-171-182-60.eu.ngrok.io";
+
     static registerUser = async (data) => {
         let url = "/api/auth/signup/";
         let options = {
@@ -81,6 +82,7 @@ class ApiCaller {
         };
         try {
             let response = await fetch(url, options);
+            console.log(response);
             return response;
         } catch (err) {
             //error
@@ -173,6 +175,21 @@ class ApiCaller {
             //error
         }
     }
+    static getSingleProduct = async (id) => {
+        let url = "/api/product/" + id;
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
     // Add a product -> *ADMIN*
     static addProduct = async (data) => {
         let url = "/api/product/";
@@ -229,6 +246,7 @@ class ApiCaller {
     // Gift a product to a user -> *ADMIN*
     // Gift a product to another user -> *USER*
     static giftProduct = async (data, productId) => {
+        console.log(data, productId);
         let url = "/api/product/gift/" + productId;
         let options = {
             method: 'POST',
@@ -263,9 +281,74 @@ class ApiCaller {
         }
     }
 
+
+    static paymentHistory = async (id) => {
+        let url = this.baseUrl + "/api/user/purchasehistory/" + id;
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
     // Gets all users with information -> *ADMIN*
     static getAllUsers = async () => {
         let url = "/api/user/";
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    static cancelSubscription = async (subscriptionId) => {
+        let url = "/api/product/cancel/" + subscriptionId;
+        let options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    static getSessionStats = async () => {
+        let url = "/api/dashboard/sessionStats";
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    static getProductStats = async () => {
+        let url = "/api/dashboard/productStats";
         let options = {
             method: 'GET',
             headers: {
@@ -388,8 +471,70 @@ class ApiCaller {
             //error
         }
     }
+
     static updateVideo = async (id, data) => {
         let url = "/api/video/" + id;
+        let options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    // Get all Podcasts ->
+    static getAllPodcasts = async () => {
+        let url = "/api/podcast/";
+        let options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    static getSinglePodcast = async (id) => {
+        let url = "/api/podcast/" + id;
+        let options = {
+            method: 'GET',
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    // Delete podcest and thumbnail ->
+    static deletePodcast = async (id) => {
+        let url = "/api/podcast/" + id;
+        let options = {
+            method: 'DELETE',
+        };
+        try {
+            let response = await fetch(url, options);
+            return response;
+        } catch (err) {
+            //error
+        }
+    }
+
+    static updatePodcast = async (id, data) => {
+        let url = "/api/podcast/" + id;
         let options = {
             method: 'PUT',
             headers: {
