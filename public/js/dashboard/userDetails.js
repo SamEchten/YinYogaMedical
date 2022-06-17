@@ -130,7 +130,7 @@ const eventHandlers = (product) => {
         } else {
             Swal.fire({
                 title: "Cadeau",
-                text: "Dit product is een gift van een andere gebruiker of uw zelf, dit product heeft geen betaal gegeven omdat het valt uw eigen applicatie.",
+                text: "Dit product is een gift van een andere gebruiker of uw zelf, dit product heeft geen betaalgegevens omdat het valt uw eigen applicatie.",
                 icon: "warning"
             });
         }
